@@ -1,0 +1,109 @@
+#header {
+	width: 100%;
+    height: 300px;
+}
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote
+{ font-family: "Microsoft Yahei";}
+*{
+	-webkit-overflow-scrolling:touch;
+	-webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+.gap{    background-color: #F0F0F0;
+    height: 20px;
+}
+
+body{margin:0px;}
+
+.he1{height:150px;width:100%;text-align: center;}
+.he2{height:150px;width:100%;text-align: center;font-size:40px;  }
+.he3{font-size:35px; color: grey;}
+.bigimg{
+	height:130px;width:130px;margin:0 auto;margin-top:20px;
+}
+.totalAmt{font-size:40px;margin-right:20px;text-align: right;
+    color: red;}
+.smallimg{
+	height:80px;width:80px;float:left;
+}
+.fd{      font-size: 40px;
+    width: 100%;
+    height: 100px;
+    margin-left: 20px;
+    line-height: 100px;
+        color: #333333;}
+.dishName{font-size:35px;float:left;height:100%;width:60%; }
+.dishAmount{font-size:35px;float:left;height:100%;width:20%;}
+.dishPrice{font-size:35px;float:left;height:100%;width:20%;}
+.text1{font-size:35px;width: 200px;float:left;}
+.val1{font-size:35px;width:55%; float: left;}
+
+#footer {
+	width: 100%;
+	height: 110px;
+	position: absolute;
+	bottom: 0;
+}
+
+#content{    
+	overflow: auto;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: 300px;
+    bottom: 110px;
+    overflow-x: hidden;}
+
+.content1 {
+    background-color: white;
+    /* margin-left: 10px;
+    margin-right: 10px; */
+}
+
+button{
+	height: 70px;
+    width: 260px;
+    float: right;
+    margin-right: 80px;
+    margin-top: 20px;
+    font-size: 35px;
+    border-radius: 15px;
+    background-color: #d81e06;
+    color: white;
+	
+}
+
+
+ul{
+	width:100%;
+	list-style: none;
+	margin: 0;
+	padding: 0px 0px 0px 30px;
+
+
+
+}
+
+li{
+	width:100%;
+	height: 80px;
+    line-height: 80px;
+	display:inline-block;
+	    color: #868686;
+}
+
+
+.img_wrap {
+	height: 48px;
+	display: table-cell; 
+	vertical-align: middle;
+	text-align: center;
+}
+
+sup {
+	background: red;
+	color: white;
+	border-radius: 20px; /*Ô²½Ç*/
+	padding: 0px 8px; /*×óÓÒ±ß¾à*/
+	top: -0.5em; /*Êý×ÖÀëÍ¼Æ¬ÓÒÉÏ½ÇµÄ¸ß¶È*/
+	font-size: 30px;
+}

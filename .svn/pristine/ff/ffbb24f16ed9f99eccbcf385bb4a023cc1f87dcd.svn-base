@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.todo.salary.SalaryCustomMapper">
+	<!-- 插入自定义模板信息 -->
+	<insert id="insertSalaryCustomTemplate"   parameterType = "java.util.List">
+		insert into salary_custom_template (company_id , type , name , category, col_index) values 
+		<foreach collection="paramsList" item="item"  separator="," >
+				(#{item.companyId} , #{item.type} , #{item.name}, #{item.category} , #{item.colIndex} )
+   	    </foreach>
+	</insert>
+	
+	<!-- 删除 -->
+	<delete id="delCustomTemplate">
+		delete from salary_custom_template where id =#{id}
+	</delete>
+	<!-- 根据公司id删除模板 -->
+		<delete id="delCustomTemplateByComid" >
+		delete from salary_custom_template where company_id =#{companyId}
+	</delete>
+	<!-- 修改 -->
+	<!-- 更新共用模板信息 -->
+	<update id="updateCommonTemplate">
+		update salary_custom_template set  type = #{type} ,name = #{name} ,col_index = #{colIndex} ,category = #{category} where name=#{name}
+	</update>
+	<!-- 根据公司id查询模板信息 -->
+	<select id="getCustomTemplate"   resultType = "com.icbc.rel.hefei.entity.todo.salary.SalaryCustomTemplate">
+		select id,company_id as companyId,type,name,col_index as colIndex,category   from  salary_custom_template  where company_id =#{companyId} or company_id =0
+	</select>
+</mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.SysParaDescDao">
+  <select id="GetAllSysParaDescs" resultType="com.icbc.rel.hefei.entity.SysParaDesc">
+    select  * from Sys_ParaDesc
+  </select>
+  
+  <select id="GetSysParaDescByKey" resultType="com.icbc.rel.hefei.entity.SysParaDesc" parameterType="Integer">
+    select  * from Sys_ParaDesc where `Key`=#{key}
+  </select>
+  
+  <update id="UpdateSysParaDesc">
+     update Sys_ParaDesc set ModifyTime=now() where `Key`=#{key}
+  </update>
+</mapper>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.SysReturnInfoDao">
+  <insert id="add" parameterType="com.icbc.rel.hefei.entity.SysReturnInfo">			
+		INSERT INTO SYS_RETURNINFO(
+		REQUESTID,
+		TRANSOK,
+		TRANSCODE,
+		TRANSMSG,
+		PROMOTIONID,
+		ACTIVITYUID,
+		TEMP1,
+		TEMP2,
+		TEMP3,
+		CREATETIME,
+		MODIFYTIME)
+		VALUES(
+		#{RequestId},
+		#{TransOk},
+		#{TransCode},
+		#{TransMsg},
+		#{PromotionId},
+		#{ActivityUid},
+		#{Temp1},	
+		#{Temp2},
+		#{Temp3},
+		#{CreateTime},
+		#{ModifyTime})
+	</insert>
+	
+	<update id="update">
+	  update sys_returninfo set 
+	    TRANSOK=#{TransOk},
+		TRANSCODE=#{TransCode},
+		TRANSMSG=#{TransMsg},
+		PROMOTIONID=#{PromotionId},
+		MODIFYTIME=#{ModifyTime}
+		where ACTIVITYUID=#{ActivityUid}	 
+	</update>
+	
+	<select id="getpromotionId" resultType="com.icbc.rel.hefei.entity.SysReturnInfo" >
+	   SELECT *  from sys_returninfo where ACTIVITYUID=#{ActivityUid} ORDER BY IID desc LIMIT 1
+	</select>
+	
+  
+    
+</mapper>

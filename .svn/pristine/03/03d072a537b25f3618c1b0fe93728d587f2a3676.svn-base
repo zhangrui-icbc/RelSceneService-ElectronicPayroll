@@ -1,0 +1,20 @@
+package com.icbc.rel.hefei.service.todo.salary.service;
+
+import com.icbc.rel.hefei.entity.todo.salary.AjaxResult;
+
+public interface SalaryUserService {
+	/**
+	 * ÓÃ»§µÇÂ¼
+	 * @param username
+	 * @param password
+	 */
+	AjaxResult login(String username, String password);
+	/**
+	 * 
+	 * @param username
+	 * @param newPassword1
+	 * @return
+	 */
+	AjaxResult resetPassword(String username, String newPassword1);
+
+}

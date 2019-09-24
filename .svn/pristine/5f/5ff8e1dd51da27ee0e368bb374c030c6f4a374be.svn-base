@@ -1,0 +1,174 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html style="min-width: 900px;">
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link th:href="@{/salary/css/icon.css}" rel="stylesheet" />
+		 <link th:href="@{/salary/css/indexNew.css}" rel="stylesheet" />
+		<style type="text/css">
+			.hid{
+			display:none
+			}
+			.tab .act1{
+			  background:brown;
+			  color:white;
+			  border:0
+			}
+			#mytab_04 table tr:nth-child(1){
+				background:#00A65A;
+			}
+			.tab-content {
+			    width: 70%;
+			    margin: 0 auto;
+			    min-width: 910px;
+			}
+			#mytab_01_1 .add-input {
+	                width:130px		
+			}
+		</style>
+	</head>
+	<body>
+		 <div class="main-tab">
+        <div class="tab-box">
+            <ul id="nav-ul">
+                <li class="title alter" id="mytab_02" onclick="nTabs('mytab_02');location.href='#mytab_02'">
+                    <sapn> 报销明细类型增加</span>
+                    <img th:src="@{/salary/img/icon1.png}" />
+                </li>
+                <!-- <span>报销明细类型增加</span>
+                	<img th:src="@{/salary/img/icon1.png}"/>   ss -->
+                <li class="title com" id="mytab_01" onclick="nTabs('mytab_01');location.href='#mytab_01'" shiro:hasRole="admin">
+                	 <span>通用报销类型</span>
+                     <img th:src="@{/salary/img/icon6.png}" />
+                </li>
+                <li class="title zdy alter1" style="width: 160px;"id="mytab_03" onclick="nTabs('mytab_03');location.href='#mytab_03'">
+                	<span> 报销模板调整</span>
+                    <img th:src="@{/salary/img/icon2.png}" />
+                </li>
+               	<li class="title sc" id="mytab_04" onclick="nTabs('mytab_04');location.href='#mytab_04'">
+               		<span>报销上传</span>
+                    <img th:src="@{/salary/img/icon3.png}" />
+               	</li>
+            </ul>
+            <div class="tab-content">
+            
+                <div class="tab active-txt" id="mytab_01_1"  shiro:hasRole="admin">
+                	<div class="input-box">
+                		<span class="input-name">项目名称：</span><input class="add-input column" type="text" placeholder="请输入项目名称" />
+                		<span class="input-name">排列序号：</span><input class="add-input column_num" type="text" placeholder="请输入排列序号" />
+                		<span class="input-name">备注：</span><input class="add-input note" type="text" placeholder="请输入备注" />
+                		<a href="##" class="add-btn btn1">添加</a>
+                	</div>
+                	<table class="table" id="mytable"  cellspacing="0" style="margin-top:45px">
+					<thead>
+					  <tr>
+						<th>项目名称</th>
+						<th>排列序号</th>
+						<th>备注</th>
+						<th style="width:186px">操作</th>
+					  </tr>
+					</thead>
+					<tbody  id="tab-com">
+					</tbody>
+				</table>
+                </div>
+                
+                <!--  报销明细类型增加 -->
+            	<div class="tab tab2" id="mytab_02_1" >
+	            	<div class="input-box">
+	            		<span class="input-name" style="line-height:32px">类型名称：</span><input class="add-input column_b" type="text" placeholder="请输入类型名称" />
+	            		<a href="##" class="add-btn btn2">确定提交</a>
+	            	</div>
+            		<table class="table" id="mytable2"  cellspacing="0" style="margin-top:45px">
+						<thead>
+							<tr>
+								<td>类型名称</td>
+								<td>收支类型</td>
+								<td>操作</td>
+							</tr>
+						</thead>
+						<tbody id="tab-com2">
+						
+						</tbody>
+					</table>
+            	</div>
+            	
+                <div class="tab tab3" id="mytab_03_1">
+                	<div class="alternative">
+                	</div>
+                	<div class="add">
+                		<div class="fixed_field">
+                		</div>
+                		<div class="DIY">
+                		</div>
+                	</div>
+                	<div class="tab3_btnBox">
+                		<div class="sunmit-btn">提交</div>
+                		<div class="clear">清除</div>
+                	</div>
+                	<div class="notes"  style="margin-top:50px;">
+    	            	<h2>注:报销合计为必选项,否则会导致模板上传失败。<br>
+	                	&nbsp;&nbsp;&nbsp;&nbsp;
+	                	鼠标点击单个明细类型，可前后挪动更改明细类型前后位置顺序。</h2>
+                	</div>
+                </div>
+		         <!-- 工资单上传 -->
+				<div class="tab tab4" id="mytab_04_1">
+					<form id="formId">			
+						<div class="download-bg">
+							<div class="down-div select-list">
+								<button type="button" class="gz-download bx-download">报销模板下载</button>
+								<span>报销单上传：</span>
+								<input id="filePath" name="filePath" class="form-control" type="file">
+								<input class="sub" id="sal_sub" type="button" value="上传" onclick="uploadFile()"/> 
+							</div>					
+						</div>
+						
+						
+						<table class="sal_log table" id="sal_log"  cellspacing="0" style="margin-top:45px">
+							<!-- <thead>
+								<tr><th>导入时间</th><th>发放时间</th><th>excel文件</th></tr>
+							</thead>
+							<tbody>
+								
+							</tbody> -->
+						</table>
+						
+					</form>
+				<div th:include="include :: footer"></div>	
+			</div>
+        
+    </div>
+	</body>
+	<script src="../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+	<script src="../static/js/jquery-ui.js" th:src="@{/js/jquery-ui.js}"></script>
+	<script src="../static/js/layer.js" th:src="@{/js/layer.js}"></script>
+	<script src="../static/salary/js/salary.js" th:src="@{/reimbursement/js/reimbursement.js}"></script>
+	<script src="../static/salary/js/zdy.js" th:src="@{/reimbursement/js/zdy.js}"></script>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript">
+		var hash = location.hash;
+		//获取url参数 
+		if(hash){ 
+			$('.tab').hide(); 
+			$(hash).addClass('active'); 
+			$(hash+'_1').show(); 
+		}
+		else { 
+			$('.tab').hide(); 
+			$('#mytab_02').addClass('active'); 
+			$(".alter").click();
+			$('#mytab_02_1').show(); 
+		} 
+		function nTabs(id) { 
+			$('.title').removeClass('active'); 
+			$('#'+id).addClass('active'); 
+			$('.tab').hide(); 
+			$('#'+id+'_1').show(); 
+		}
+		$("#filePath").click(function(){
+			$(".sc").addClass("active");
+		})
+	</script>
+</html>

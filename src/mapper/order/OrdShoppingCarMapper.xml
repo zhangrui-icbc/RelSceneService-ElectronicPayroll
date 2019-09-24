@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.order.OrdShoppingCarDao">
+  <select id="selectByOpenid" resultType="com.icbc.rel.hefei.entity.order.OrdShoppingCar" >
+    select * from ord_ShoppingCar WHERE OpenId=#{openid} and ActivityUid=#{activityUid}  order by iid asc
+  </select>
+  
+  <update id="Update" parameterType="com.icbc.rel.hefei.entity.order.OrdShoppingCar" >
+   UPDATE ord_ShoppingCar SET DishAmount =#{dishAmount}, DishPrice=#{dishPrice}
+   WHERE IID=#{iID}
+  </update>
+  
+  <update id="updateDeadline" parameterType="com.icbc.rel.hefei.entity.order.OrdShoppingCar" >
+   update ord_ShoppingCar set DeadlineTime=#{deadlineTime} WHERE OpenId=#{openId} 
+  </update>
+  
+  <insert id="Insert" parameterType="com.icbc.rel.hefei.entity.order.OrdShoppingCar">
+   INSERT INTO ord_ShoppingCar
+           (OpenId
+           ,DishUid
+           ,DishName
+           ,DishPrice
+           ,DishAmount
+           ,CreateTime
+           ,DeadlineTime
+           ,ActivityUid)
+     VALUES
+           (#{openId}
+           ,#{dishUid}
+           ,#{dishName}
+           ,#{dishPrice,jdbcType=FLOAT}
+           ,#{dishAmount}
+           ,#{createTime,jdbcType=TIMESTAMP}
+           ,#{deadlineTime,jdbcType=TIMESTAMP}
+           ,#{activityUid})
+  </insert>
+  
+  <delete id="delete" parameterType="com.icbc.rel.hefei.entity.order.OrdShoppingCar" >
+   delete from ord_ShoppingCar WHERE IID=#{iID}
+  </delete>
+  
+   <select id="getOrderAmount" resultType="Integer">
+   select ifnull(sum(DishAmount),0) from Ord_ShoppingCar 
+   where DishUid=#{dishUid} and DeadlineTime>now() and OPENID=#{openid};
+  </select>
+  
+  <delete id="deleteAll" >
+   delete from ord_ShoppingCar WHERE OpenId=#{openid} and activityUid=#{activityUid}
+  </delete>
+  
+  <delete id="deleteDeadline"  >
+   delete from ord_ShoppingCar WHERE  DeadlineTime &lt;now()
+  </delete>
+  
+  
+  
+</mapper>

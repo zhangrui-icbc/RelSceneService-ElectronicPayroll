@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.todo.client.SalaryWebMapper">
+    <resultMap id="salaryResultMap" type="com.icbc.rel.hefei.entity.todo.client.SalaryVO">
+        <id column="id" property="id"/>
+        <result column="import_time" property="importTime"/>
+        <result column="issue_time" property="issueTime"/>
+        <result column="excel_name" property="excelName"/>
+        <collection property="importList" ofType="com.icbc.rel.hefei.entity.todo.client.SalaryImportVO">
+            <result column="salary_item_id" property="salaryItemId"/>
+            <result column="salary_id" property="salaryId"/>
+            <result column="template_id" property="templateId"/>
+            <result column="template_col_type" property="templateColType"/>
+            <result column="template_col_name" property="templateColName"/>
+            <result column="import_amount" property="importAmount"/>
+            <result column="user_id" property="userId"/>
+            <result column="col_index" property="colIndex"/>
+             <result column="category" property="category"/>
+        </collection>
+    </resultMap>
+	<!-- 查询工资信息 -->
+	<select id="getSalaryInfo" resultMap="salaryResultMap">
+		SELECT oa.id AS id , oa.import_time AS import_time , oa.issue_time AS issue_time , oai.salary_item_id AS salary_item_id , oai.salary_id AS salary_id, oai.col_index as col_index,
+		oai.template_id AS template_id, oai.template_col_type AS template_col_type, oai.template_col_name AS template_col_name,  oai.import_amount AS import_amount, oai.user_id AS user_id,oai.category as category
+		FROM salary_import oai LEFT JOIN salary oa  ON oa.`id` = oai.`salary_id` WHERE oai.`user_id`=#{params.userId} AND (oai.`template_id`=#{params.companyId} or oai.`template_id`="0"  )  
+		and  oa.issue_time in ( SELECT a.issue_time FROM (SELECT a.`issue_time` AS issue_time FROM  salary a LEFT JOIN salary_import b ON a.`id` = b.`salary_id` WHERE b.`user_id`=#{params.userId} ORDER BY a.`issue_time` DESC ) AS a)	
+		order by oai.col_index asc
+    </select>
+    <!-- 查询工资汇总信息 -->
+	<select id="getSumSalaryInfo" resultMap="salaryResultMap">
+		SELECT oa.id AS id , oa.import_time AS import_time , oa.issue_time AS issue_time , oai.salary_item_id AS salary_item_id , oai.salary_id AS salary_id,  oai.col_index as col_index,
+		oai.template_id AS template_id, oai.template_col_type AS template_col_type, oai.template_col_name AS template_col_name, sum(oai.import_amount) AS import_amount, oai.user_id AS user_id,oai.category as category
+		FROM salary oa LEFT JOIN salary_import oai ON oa.`id` = oai.`salary_id` WHERE oai.`user_id`=#{params.userId} AND  (oai.`template_id`=#{params.companyId} or oai.`template_id`="0" ) 
+			and  oa.issue_time in ( SELECT a.issue_time FROM (SELECT a.`issue_time` AS issue_time FROM  salary a LEFT JOIN salary_import b ON a.`id` = b.`salary_id` WHERE b.`user_id`=#{params.userId} ORDER BY a.`issue_time` DESC) AS a)	
+		<if test="params.startDate != null and  params.startDate != '' ">
+			and date_format(oa.issue_time,'%Y-%m')>= #{params.startDate}
+		</if>
+		<if test="params.endDate != null and  params.endDate != '' ">
+			<![CDATA[  and date_format(oa.issue_time,'%Y-%m') <= #{params.endDate} ]]>
+		</if>
+		group by oai.template_col_name,oai.template_col_type  order by oai.col_index asc
+    </select>
+    <!-- 工资明细 -->
+    <select id="getSalaryDetail" resultType="com.icbc.rel.hefei.entity.todo.client.SalaryImportVO">
+    	select  si.salary_item_id as salaryItemId , si.salary_id as salaryId, si.template_id as templateId , si.template_col_type as templateColType , si.template_col_name as templateColName, si.import_amount as importAmount , si.user_id as userId, si.col_index as colIndex, si.category as category 
+    	from salary_import si left join salary s on si.salary_id = s.id  where si.user_id =#{params.userId}  and si.salary_id =#{params.salaryId} and DATE_FORMAT(s.issue_time,'%Y%m%d') =#{params.issueTime} order by si.col_index asc
+    </select>
+</mapper>

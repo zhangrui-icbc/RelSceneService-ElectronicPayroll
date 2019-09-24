@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.SysParaInfoDao">
+  <select id="GetAllSysParaInfos" resultType="com.icbc.rel.hefei.entity.SysParaInfo">
+    select  * from Sys_ParaInfo
+  </select>
+  
+  <select id="GetSysParaInfoByKey" resultType="com.icbc.rel.hefei.entity.SysParaInfo" parameterType="Integer">
+    select  * from Sys_ParaInfo where `Key`=#{key}
+  </select>
+
+  <update id="UpdateSystemPara" >
+    update Sys_ParaInfo set `Value`=#{value}  where `key`=#{key} and dataName=#{name}
+  </update>
+</mapper>

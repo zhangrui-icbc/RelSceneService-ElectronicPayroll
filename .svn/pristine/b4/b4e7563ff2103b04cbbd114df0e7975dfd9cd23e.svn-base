@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.order.OrdParaInfoDao">
+  <select id="getOrderPara" resultType="com.icbc.rel.hefei.entity.order.OrdParaInfo" parameterType="String">
+    select  * from ord_ParaInfo where activityUid=#{activityUid}
+  </select>
+  
+  <select id="insertPara" parameterType="com.icbc.rel.hefei.entity.order.OrdParaInfo" >
+    insert into ord_ParaInfo 
+    (activityUid
+    ,orderTimeType
+    ,orderBeginTime
+    ,orderEndTime
+    ,cancelTime
+    ,takeTime
+    ,takelocation
+    ,telephone
+    )value(
+    #{activityUid}
+    ,#{orderTimeType}
+    ,#{orderBeginTime}
+    ,#{orderEndTime}
+    ,#{cancelTime}
+    ,#{takeTime}
+    ,#{takelocation}
+    ,#{telephone}
+    )
+  </select>
+
+  <update id="updatePara" parameterType="com.icbc.rel.hefei.entity.order.OrdParaInfo">
+    update ord_ParaInfo set orderTimeType=#{orderTimeType},orderBeginTime=#{orderBeginTime},
+    orderEndTime=#{orderEndTime},cancelTime=#{cancelTime},takeTime=#{takeTime},takeLocation=#{takelocation},telephone=#{telephone}
+    where activityUid=#{activityUid}
+  </update>
+</mapper>

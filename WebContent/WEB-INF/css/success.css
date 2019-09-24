@@ -1,0 +1,29 @@
+﻿@charset "utf-8";
+ .success{
+     margin: 0 auto;
+    width: 500px;
+    text-align: center;
+    margin-top: 260px;
+ }
+ .success img{    height: 60px;}
+ 
+ .t1{
+     font-weight: bold;
+    margin: 20px 0 20px 0;
+    font-size: 20px;
+ }
+ 
+ .t2{    color: #0d6fb5d4;
+    margin-bottom: 20px;}
+    
+ .t3{    line-height: 20px;
+    font-size: 14px;
+    font-weight: normal;
+    margin-bottom: 50px;}   
+
+
+
+
+
+
+

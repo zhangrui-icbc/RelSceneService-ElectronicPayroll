@@ -1,0 +1,72 @@
+html{
+	background: #EDEFEC;
+}
+tr:nth-child(1) td{
+	 color:#A1A1A1;
+}
+.fl-r{
+	position: absolute;
+	/*float: right;*/
+	right: 10px;
+}
+.title{
+	text-align: center;
+	color: white;
+	background: #E7363F;
+	margin: 0;
+	padding: 8px 10px;
+	font-size: 16px;
+}
+.tit{
+	margin: 0;
+	padding: 5px 8px;
+	text-align: right;
+	font-size: 16px;
+	color: #A4A4A4;
+}
+.total{
+	background: white;
+	padding: 10px 5px;
+}
+.total table{
+	width: 100%;
+	text-align: center;
+}
+.total table tr:nth-child(2) td{
+	font-size: 18px;
+	font-weight: 600;
+}
+
+
+
+.list{
+
+    margin-top: 15px;
+   overflow: scroll;
+}
+.list-box {
+	background: white;
+	padding: 10px 20px;
+	margin-bottom: 10px;
+}
+.list p{
+	margin: 0;
+	line-height: 28px;
+}
+.list p span{
+	display: inline-block;
+}
+.list p span:nth-child(2){
+	float: right;
+	    font-weight: 600;
+}
+
+.list .list-box p:nth-child(1) span:nth-child(1){
+	color: #7BA7B8;
+}
+.list .list-box p span:nth-child(1){
+	color: #A1A1A1;
+}
+.list .desc span:nth-child(2){
+	float:none;
+}

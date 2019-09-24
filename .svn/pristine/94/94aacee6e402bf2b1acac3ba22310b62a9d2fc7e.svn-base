@@ -1,0 +1,176 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html style="min-width: 900px;">
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link th:href="@{/salary/css/icon.css}" rel="stylesheet" />
+		<!-- <link th:href="@{/salary/css/index.css}" rel="stylesheet" />
+		<link th:href="@{/salary/css/index2.css}" rel="stylesheet" /> -->
+		 <link th:href="@{/salary/css/indexNew.css}" rel="stylesheet" />
+		<style type="text/css">
+			.hid{
+			display:none
+			}
+			.tab .act1{
+			  background:brown;
+			  color:white;
+			  border:0
+			}
+			#mytab_04 table tr:nth-child(1){
+				background:#00A65A;
+			}
+			.tab-content {
+			    width: 70%;
+			    margin: 0 auto;
+			    min-width: 910px;
+			}
+			#mytab_01_1 .add-input {
+	                width:130px		
+			}
+		</style>
+	</head>
+	<body>
+		 <div class="main-tab">
+        <div class="tab-box">
+            <ul id="nav-ul">
+                <li class="title alter" id="mytab_02" onclick="nTabs('mytab_02');location.href='#mytab_02'">
+                    <sapn> æ¥éæç»ç±»åå¢å </span>
+                    <img th:src="@{/salary/img/icon1.png}" />
+                </li>
+                <!-- <span>æ¥éæç»ç±»åå¢å </span>
+                	<img th:src="@{/salary/img/icon1.png}"/>   ss -->
+                <li class="title com" id="mytab_01" onclick="nTabs('mytab_01');location.href='#mytab_01'" shiro:hasRole="admin">
+                	 <span>éç¨æ¥éç±»å</span>
+                     <img th:src="@{/salary/img/icon6.png}" />
+                </li>
+                <li class="title zdy alter1" style="width: 160px;"id="mytab_03" onclick="nTabs('mytab_03');location.href='#mytab_03'">
+                	<span> æ¥éæ¨¡æ¿è°æ´</span>
+                    <img th:src="@{/salary/img/icon2.png}" />
+                </li>
+               	<li class="title sc" id="mytab_04" onclick="nTabs('mytab_04');location.href='#mytab_04'">
+               		<span>æ¥éä¸ä¼ </span>
+                    <img th:src="@{/salary/img/icon3.png}" />
+               	</li>
+            </ul>
+            <div class="tab-content">
+            
+                <div class="tab active-txt" id="mytab_01_1"  shiro:hasRole="admin">
+                	<div class="input-box">
+                		<span class="input-name">é¡¹ç®åç§°ï¼</span><input class="add-input column" type="text" placeholder="è¯·è¾å¥é¡¹ç®åç§°" />
+                		<span class="input-name">æååºå·ï¼</span><input class="add-input column_num" type="text" placeholder="è¯·è¾å¥æååºå·" />
+                		<span class="input-name">å¤æ³¨ï¼</span><input class="add-input note" type="text" placeholder="è¯·è¾å¥å¤æ³¨" />
+                		<a href="##" class="add-btn btn1">æ·»å </a>
+                	</div>
+                	<table class="table" id="mytable"  cellspacing="0" style="margin-top:45px">
+					<thead>
+					  <tr>
+						<th>é¡¹ç®åç§°</th>
+						<th>æååºå·</th>
+						<th>å¤æ³¨</th>
+						<th style="width:186px">æä½</th>
+					  </tr>
+					</thead>
+					<tbody  id="tab-com">
+					</tbody>
+				</table>
+                </div>
+                
+                <!--  æ¥éæç»ç±»åå¢å  -->
+            	<div class="tab tab2" id="mytab_02_1" >
+	            	<div class="input-box">
+	            		<span class="input-name" style="line-height:32px">ç±»ååç§°ï¼</span><input class="add-input column_b" type="text" placeholder="è¯·è¾å¥ç±»ååç§°" />
+	            		<a href="##" class="add-btn btn2">ç¡®å®æäº¤</a>
+	            	</div>
+            		<table class="table" id="mytable2"  cellspacing="0" style="margin-top:45px">
+						<thead>
+							<tr>
+								<td>ç±»ååç§°</td>
+								<td>æ¶æ¯ç±»å</td>
+								<td>æä½</td>
+							</tr>
+						</thead>
+						<tbody id="tab-com2">
+						
+						</tbody>
+					</table>
+            	</div>
+            	
+                <div class="tab tab3" id="mytab_03_1">
+                	<div class="alternative">
+                	</div>
+                	<div class="add">
+                		<div class="fixed_field">
+                		</div>
+                		<div class="DIY">
+                		</div>
+                	</div>
+                	<div class="tab3_btnBox">
+                		<div class="sunmit-btn">æäº¤</div>
+                		<div class="clear">æ¸é¤</div>
+                	</div>
+                	<div class="notes"  style="margin-top:50px;">
+    	            	<h2>æ³¨:æ¥éåè®¡ä¸ºå¿éé¡¹,å¦åä¼å¯¼è´æ¨¡æ¿ä¸ä¼ å¤±è´¥ã<br>
+	                	&nbsp;&nbsp;&nbsp;&nbsp;
+	                	é¼ æ ç¹å»åä¸ªæç»ç±»åï¼å¯ååæªå¨æ´æ¹æç»ç±»åååä½ç½®é¡ºåºã</h2>
+                	</div>
+                </div>
+		         <!-- å·¥èµåä¸ä¼  -->
+				<div class="tab tab4" id="mytab_04_1">
+					<form id="formId">			
+						<div class="download-bg">
+							<div class="down-div select-list">
+								<button type="button" class="gz-download bx-download">æ¥éæ¨¡æ¿ä¸è½½</button>
+								<span>å·¥èµåä¸ä¼ ï¼</span>
+								<input id="filePath" name="filePath" class="form-control" type="file">
+								<input class="sub" id="sal_sub" type="button" value="ä¸ä¼ " onclick="uploadFile()"/> 
+							</div>					
+						</div>
+						
+						
+						<table class="sal_log table" id="sal_log"  cellspacing="0" style="margin-top:45px">
+							<!-- <thead>
+								<tr><th>å¯¼å¥æ¶é´</th><th>åæ¾æ¶é´</th><th>excelæä»¶</th></tr>
+							</thead>
+							<tbody>
+								
+							</tbody> -->
+						</table>
+						
+					</form>
+				<div th:include="include :: footer"></div>	
+			</div>
+        
+    </div>
+	</body>
+	<script src="../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
+	<script src="../static/js/jquery-ui.js" th:src="@{/js/jquery-ui.js}"></script>
+	<script src="../static/js/layer.js" th:src="@{/js/layer.js}"></script>
+	<script src="../static/salary/js/salary.js" th:src="@{/reimbursement/js/reimbursement.js}"></script>
+	<script src="../static/salary/js/zdy.js" th:src="@{/reimbursement/js/zdy.js}"></script>
+	<div th:include="include::footer"></div>
+	<script type="text/javascript">
+		var hash = location.hash;
+		//è·åurlåæ° 
+		if(hash){ 
+			$('.tab').hide(); 
+			$(hash).addClass('active'); 
+			$(hash+'_1').show(); 
+		}
+		else { 
+			$('.tab').hide(); 
+			$('#mytab_02').addClass('active'); 
+			$(".alter").click();
+			$('#mytab_02_1').show(); 
+		} 
+		function nTabs(id) { 
+			$('.title').removeClass('active'); 
+			$('#'+id).addClass('active'); 
+			$('.tab').hide(); 
+			$('#'+id+'_1').show(); 
+		}
+		$("#filePath").click(function(){
+			$(".sc").addClass("active");
+		})
+	</script>
+</html>

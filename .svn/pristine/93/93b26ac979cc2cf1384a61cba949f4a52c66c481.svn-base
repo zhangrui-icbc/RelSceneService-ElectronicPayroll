@@ -1,0 +1,96 @@
+tr:nth-child(1) td{
+	 color:#A1A1A1;
+}
+
+
+html{
+	background: #FFFFFF;
+}
+p{
+	margin: 0;
+}
+.fl-r{
+	position: absolute;
+	/*float: right;*/
+	right: 10px;
+}
+.title{
+	text-align: center;
+	color: white;
+	background: #E7363F;
+	margin: 0;
+	padding: 8px 10px;
+	font-size: 16px;
+}
+.list-title{
+	margin: 0;
+	padding: 8px 9%;
+	background: #CBCBCB;
+}
+.list-title .fl-r{
+	margin-right: 5%;
+}
+.list{
+	padding: 4%;
+	overflow: scroll;
+}
+.list-box{
+	border-bottom: 1px dashed #E06371;
+	padding: 15px 5%;
+}
+.left span{
+	font-size: 18px;
+	color: #878787;
+}
+.list-box .right{
+    display: inline-block;
+    text-align: left;
+    width: 60%;
+}
+.right p{
+	line-height: 25px;
+}
+.right div{
+	 display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+}
+.right div p{
+	font-size: 15px;
+    float: left;
+    color: #878787;
+}
+.right div p span{
+	color: black;
+}
+.right div p span{
+	float: left;
+    line-height: 25px;
+}
+.total{
+	padding: 0 0 5px 0;
+    font-size: 18px;
+}
+.total span{
+    display: inline-block;
+    margin-left: 5%;
+}
+.list-box .left{
+	display: inline-block;
+    width: 40%;
+    text-align: left;
+    float: left;
+    margin-top: 13px;
+}
+
+
+
+.detail-btn{
+	color: #59B5D7;
+	font-size: 14px;
+	line-height: 25px;
+}
+.left .year{
+	font-size: 22px;
+    color: black;
+}

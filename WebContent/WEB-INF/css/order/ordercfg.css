@@ -1,0 +1,28 @@
+ @charset "utf-8";
+ #circle-panel
+ {
+  padding-right: 20px;
+  overflow: hidden;
+  margin-bottom:20px;
+  }
+
+
+.layui-table-tips-main{display:none;}
+.layui-table-tips-c{display:none;}
+.layui-table-grid-down{display:none;}
+
+
+
+.importlabel{width: 100px;}    
+.import{width:200px;}
+.excel{display:inline;margin-left: 10px;}
+.layui-table-cell {
+    height: auto;
+    line-height: 28px;}
+.hide{display:none;}
+
+.layui-textarea{    width: 50%;}
+.layui-form-label {width:180px;}
+.btngroup{margin:0 auto;width:200px;}
+
+#diag{display:none}

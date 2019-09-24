@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.order.OrdMenuInfoDao">
+
+  <select id="selectByuid" resultType="com.icbc.rel.hefei.entity.order.OrdMenuInfo" parameterType="String">
+    select * from ord_menuInfos where MenuUid=#{uid} order by iid asc
+  </select>
+  
+  <select id="getDinnerByDate" resultType="com.icbc.rel.hefei.entity.order.OrdMenuInfo" >
+    select a.*
+    from ord_menuInfos   a
+    left join ord_ImportInfos  b
+    on a.MenuUid=b.FileUid
+    where  date_format(a.MenuDate,'%Y-%m-%d')=#{date} and a.MenuType=0 and a.activityUid=#{activityUid}
+    and b.Status=1 and a.DishName != '——'
+    order by a.iid asc
+  </select>
+  
+  <select id="getDinnerByDate2" resultType="com.icbc.rel.hefei.entity.order.OrdMenuInfo" >
+    select a.* from ord_menuInfos  a
+    left join ord_ImportInfos  b
+	on a.MenuUid=b.FileUid
+     where a.MenuDate &gt;= to_date(#{beginDate},'yyyy-mm-dd')
+     and to_date(#{endDate},'yyyy-mm-dd') &gt;= a.MenuDate
+     and b.Status=1 and a.DishName != '——'
+     and a.MenuType=0 order by a.iid asc
+  </select>
+  
+  <select id="getLockedMenuInfo" resultType="com.icbc.rel.hefei.entity.order.OrdMenuInfo" parameterType="String">
+   select  * from ord_menuInfos  where  DishUid=#{dishUid} for update
+   
+  </select>
+  <update id="updateUsedAmount" parameterType="com.icbc.rel.hefei.entity.order.OrdMenuInfo">
+   update ord_menuInfos set UsedAmount=#{usedAmount} where DishUid=#{dishUid}
+  </update>
+  
+  <select id="selectDate" resultType="Date" parameterType="String">
+    select  MenuDate  from ord_menuInfos where DishUid=#{DishUid}
+  </select>
+  
+  <insert id="add" parameterType="com.icbc.rel.hefei.entity.order.OrdMenuInfo">
+   INSERT INTO ord_menuInfos
+           (ActivityUid
+           ,MenuDate
+           ,Title
+           ,ClassifyName
+           ,SetmealName
+           ,DishUid
+           ,DishName
+           ,DishDesc
+           ,DishPrice
+           ,Amount
+           ,MenuUid
+           ,MenuType
+           ,SheetName
+           ,MenuLimit
+           ,CreateTime
+           ,DishUnit)
+     VALUES
+           (#{ActivityUid}
+           ,#{MenuDate}
+           ,#{Title}
+           ,#{ClassifyName,jdbcType=VARCHAR}
+           ,#{SetmealName,jdbcType=VARCHAR}
+           ,#{DishUid}
+           ,#{DishName,jdbcType=VARCHAR}
+           ,#{DishDesc}
+           ,#{DishPrice}
+           ,#{Amount}
+           ,#{MenuUid}
+           ,#{MenuType}
+           ,#{SheetName}
+           ,#{MenuLimit}
+           ,#{CreateTime,jdbcType=TIMESTAMP}
+           ,#{DishUnit}
+           )
+  </insert>
+  
+ <!--  <select id="selectLunch" resultType="com.icbc.rel.hefei.entity.order.OrdMenuInfo" parameterType="String">
+  	select a.* from ord_menuInfos  a
+  	left join ord_ImportInfos  b
+    on a.MenuUid = b.FileUid
+  	where to_char(a.MenuDate,'yyyy-mm-dd') = #{MenuDate} and DishName != '——' and b.AuditStatus = 1 and a.MenuType =2 order by TITLE,a.IID asc	
+  </select>
+  
+  <select id="selectSupper" resultType="com.icbc.rel.hefei.entity.order.OrdMenuInfo" parameterType="String">
+  	select a.* from ord_menuInfos  a
+  	left join ord_ImportInfos  b
+    on a.MenuUid = b.FileUid
+  	where to_char(a.MenuDate,'yyyy-mm-dd') = #{MenuDate} and DishName != '——' and b.AuditStatus = 1 and a.MenuType =3 order by TITLE,a.IID asc	
+  </select>
+  
+  <select id="selectBreakfast" resultType="com.icbc.rel.hefei.entity.order.OrdMenuInfo" parameterType="String">
+  	select a.* from ord_menuInfos  a
+  	left join ord_ImportInfos  b
+    on a.MenuUid = b.FileUid
+  	where to_char(a.MenuDate,'yyyy-mm-dd') = #{MenuDate} and DishName is not null and DishName != '——' and b.AuditStatus = 1 and a.MenuType =1 order by TITLE,a.IID asc	
+  </select>
+   -->
+  <select id="selectName" resultType="String" parameterType="String">
+  	select a.DishName from ord_menuInfos  a
+  	left join ord_ImportInfos  b
+    on a.MenuUid = b.FileUid
+  	where to_char(a.MenuDate,'yyyy-mm-dd') = #{MenuDate} and DishName != '——' and b.AuditStatus = 1 and a.MenuType != 0 order by a.IID asc
+  </select>
+  
+  <delete id="delete" parameterType="String">
+    delete from ord_menuInfos where MenuUid=#{Uid}
+  </delete>
+</mapper>

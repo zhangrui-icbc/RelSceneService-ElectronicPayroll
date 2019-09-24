@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+	<context:component-scan base-package="com.icbc.rel.hefei">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+	
+	<context:component-scan base-package="com.icbc.rel.hefei.service" />
+	
+
+	<!-- Spring的配置文件，这里主要配置和业务逻辑有关的 -->
+	<!--=================== 数据源，事务控制，xxx ================-->
+	<!-- <context:property-placeholder location="classpath:properties/default.properties" /> -->
+	<bean name="datasource"  id="dataSource" 
+    class="org.springframework.jndi.JndiObjectFactoryBean">   
+  <!--  <property name="jndiName" value="jdbc/cjyDataSource" /> </bean> -->
+     <property name="jndiName" value="java:comp/env/jdbc/cjyDataSource" /> </bean> 
+<!-- 	<bean name="datasource" class="com.alibaba.druid.pool.DruidDataSource"  
+        init-method="init" destroy-method="close">  
+   <property name="driverClassName" value="${jdbc.driver}" />dirverClassName 可以不加  
+       <property name="url" value="${jdbc.url}"></property>
+        <property name="url" value="${jdbc.url}"></property>  
+        <property name="username" value="${jdbc.username}" />  
+        <property name="password" value="${jdbc.password}" />  
+        <property name="filters" value="config" />
+        <property name="maxActive" value="50"/>
+        <property name="validationQuery" value="SELECT 1" /> 验证连接是否成功, SQL SELECT 指令至少要返回一行  (测试/验证连接池连接的SQL语句也因数据库而异)
+        <property name="testOnBorrow" value="true" /> 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。 
+        <property name="testOnReturn" value="false" /> 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+        <property name="minEvictableIdleTimeMillis" value="300000" /> 配置一个连接在池中最小生存的时间，单位是毫秒
+         建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+        <property name="testWhileIdle" value="true" />
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+        超过removeAbandonedTimeout时间后，是否进行没用连接（废弃）的回收
+        <property name="removeAbandoned" value="true"></property>
+        1800秒
+        <property name="removeAbandonedTimeout" value="1800"></property>
+         <property name="connectionProperties" value="config.decrypt=true" /> 
+    </bean> -->
+    
+     
+    <bean id="multipleDataSource" class="com.icbc.rel.hefei.util.MultipleDataSource">  
+        <property name="defaultTargetDataSource" ref="datasource"/>  
+        <property name="targetDataSources">  
+            <map>  
+               <entry key="datasource" value-ref="datasource"/>  
+              <!--  <entry key="datasource1" value-ref="datasource1"/>   -->
+            </map>  
+        </property>  
+    </bean>
+    
+    
+     <!-- 上传文件配置 -->
+ 	<!-- <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="104857600" />
+		<property name="maxInMemorySize" value="4096" />
+		<property name="defaultEncoding" value="UTF-8"></property>
+	</bean> 
+ -->
+    
+    <bean id="logFilter" class="com.alibaba.druid.filter.logging.Slf4jLogFilter"> 
+	  <property name="statementExecutableSqlLogEnable" value="false" /> 
+	</bean>
+	
+	<!--================== 配置和MyBatis的整合=============== -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="multipleDataSource" />
+        <property name="configLocation" value="classpath:config/mybatis-config.xml"></property>
+        <property name="typeAliasesPackage" value="com.icbc.rel.hefei.entity"/>
+        <property name="mapperLocations" value="classpath:mapper/**/*.xml"></property>
+    </bean>
+	
+	<!-- 配置扫描器，将mybatis接口的实现加入到ioc容器中 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!--扫描所有dao接口的实现，加入到ioc容器中 -->
+		<property name="basePackage" value="com.icbc.rel.hefei.dao"></property>
+	</bean>
+	
+	<!-- 配置一个可以执行批量的sqlSession -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory"></constructor-arg>
+		<constructor-arg name="executorType" value="BATCH"></constructor-arg>
+	</bean>
+	<!--=============================================  -->
+	
+	
+	<!-- ===============事务控制的配置 ================-->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<!--控制住数据源  -->
+		<property name="dataSource" ref="datasource"></property>
+	</bean>
+	
+	<!--基于注解的声明式配置事务 -->
+   <!--  <tx:annotation-driven transaction-manager="transactionManager" /> -->
+	
+	<!--开启基于注解的事务，使用xml配置形式的事务（必要主要的都是使用配置式）  -->
+	<aop:config>
+		<!-- 切入点表达式 -->
+		<aop:pointcut expression="execution(* com.icbc.rel.hefei.service..*(..))" id="txPoint"/>
+		<!-- 配置事务增强 -->
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="txPoint"/>
+	</aop:config>
+	
+	<!-- 配置事务增强，事务如何切入  -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<!-- 所有方法都是事务方法 -->
+			<tx:method name="*"/>
+			<!-- 以get开始的所有方法 --> 
+			<tx:method name="get*" read-only="true"/>
+			<!--  <tx:method name="insert*" propagation="REQUIRED" /> -->
+		</tx:attributes>
+	</tx:advice>
+	<bean id="SpringContextUtil" class="com.icbc.rel.hefei.util.SpringContextUtil" scope="singleton"></bean>
+	
+</beans>

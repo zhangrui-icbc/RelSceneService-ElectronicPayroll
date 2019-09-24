@@ -1,0 +1,98 @@
+html{
+	background: #EDEFEC;
+	font-size: 微软雅黑;
+}
+.title{
+	text-align: center;
+	color: white;
+	background: #E7363F;
+	margin: 0;
+	padding: 8px 0;
+	font-size: 16px;
+}
+tr:nth-child(1) td{
+	 color:#A1A1A1;
+}
+.btn-div{
+	display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    /* border: 1px solid; */
+    border-bottom: 1px dashed #B0B0B0;
+    padding: 10px 0;
+    background: white;
+}
+.btn-div a{
+	    background: #7BA7B8;
+    color: white;
+    padding: 5px 8px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+.date input{
+	padding: 2px 5px;
+	border-radius: 5px;
+	border: 1px solid #000000;
+}
+.btn-div .query-btn{
+	 background: #7BA7B8;
+    color: white;
+    padding: 6px 80px;
+    border-radius: 5px;
+    font-size: 15px;
+    letter-spacing: 5px;
+}
+
+.tit{
+	margin: 0;
+	padding: 5px 8px;
+	text-align: right;
+	font-size: 16px;
+	color: #A4A4A4;
+}
+
+.total{
+	background: white;
+	padding: 10px 5px;
+}
+.total table{
+	width: 100%;
+	text-align: center;
+}
+.total table tr:nth-child(2) td{
+	font-size: 18px;
+	font-weight: 600;
+}
+
+.list{
+
+    margin-top: 15px;
+   overflow: scroll;
+}
+.list-box{
+	background: white;
+	padding: 10px 20px;
+	margin-bottom: 10px;
+}
+.list p{
+	margin: 0;
+	line-height: 24px;
+}
+.list p span{
+	display: inline-block;
+}
+.list p span:nth-child(1){
+	color:#979797;
+}
+.list p span:nth-child(2){
+	float: right;
+	font-weight: 600;
+}
+
+.list .list-box p:nth-child(1) span:nth-child(1){
+	color: #7BA7B8;
+}
+
+.income{
+	color: #7BA7B8;
+}

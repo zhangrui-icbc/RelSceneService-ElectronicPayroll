@@ -1,0 +1,63 @@
+package com.icbc.rel.hefei.entity.todo.reimbursement;
+
+
+import java.util.Date;
+import java.util.List;
+/**
+ * ≈˙¥Œ¿‡
+ * @author fc
+ *
+ */
+public class Reimbursement {
+	private int id;
+	
+	private Date importTime;
+	
+	private Date issueTime;
+	
+	private String excelName;
+	
+	private List<ReImport> importList;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Date getImportTime() {
+		return importTime;
+	}
+
+	public void setImportTime(Date importTime) {
+		this.importTime = importTime;
+	}
+
+	public Date getIssueTime() {
+		return issueTime;
+	}
+
+	public void setIssueTime(Date issueTime) {
+		this.issueTime = issueTime;
+	}
+
+	public List<ReImport> getImportList() {
+		return importList;
+	}
+
+	public void setImportList(List<ReImport> importList) {
+		this.importList = importList;
+	}
+
+	public String getExcelName() {
+		return excelName;
+	}
+
+	public void setExcelName(String excelName) {
+		this.excelName = excelName;
+	}
+	
+	
+}

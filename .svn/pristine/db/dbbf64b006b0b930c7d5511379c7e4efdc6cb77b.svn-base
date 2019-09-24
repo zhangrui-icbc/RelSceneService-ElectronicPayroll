@@ -1,0 +1,11 @@
+
+#存放密钥的路径
+rootPath=F:/workspace/keys
+#临时路径
+tempPath=F:/workspace/temp
+
+
+#密钥文件名称
+thirdDesPath=ICBC_MIMS_12_00000_3DES_24
+rsaPrivPath=ICBC_MIMS_1_00000_RSA_1024_PRIV.key
+rsaPubPath=ICBC_MIMS_1_00000_RSA_1024_PUB.key

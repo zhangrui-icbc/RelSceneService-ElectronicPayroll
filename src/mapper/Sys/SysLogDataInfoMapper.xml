@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.SysLogDataInfoDao">
+
+    <select id="getlog"  resultType="com.icbc.rel.hefei.entity.SysLogDataInfo">
+      select * from sys_logdatainfo where LogUid=#{logUid}
+    </select>
+	<insert id="insert" parameterType="com.icbc.rel.hefei.entity.SysLogDataInfo">	   
+	INSERT into sys_logdatainfo(
+	     LogUid,
+		 ColumnName,
+		 ColumnText,
+	     DataType,
+	     OldValue,
+	     Value
+	     )
+	VALUES(
+	     #{LogUid},
+		 #{ColumnName},
+		 #{ColumnText},
+	     #{DataType},
+	     #{OldValue},
+	     #{Value})    
+	</insert>
+	
+	
+</mapper>

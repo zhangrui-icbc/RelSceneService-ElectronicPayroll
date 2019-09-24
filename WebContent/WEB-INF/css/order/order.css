@@ -1,0 +1,234 @@
+
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote
+{ font-family: "Microsoft YaHei";}
+
+#foodType {
+	width: 100%;
+	height: 100%;
+	border-collapse: collapse;
+}
+
+*{
+	-webkit-overflow-scrolling:touch;
+	-webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+
+body{margin:0px;}
+
+.fooddesc {
+	color: #ADADAD;
+	font-size: 35px;
+	text-align: left;
+}
+
+.dishName{
+	font-size: 40px;
+    margin-top: 30px;
+    color: #333333;
+}
+
+.dishPrice {
+	color: #d81e06;
+	font-size: 50px;
+	float: left;
+}
+
+.amount {
+	color: #868686;
+    font-size: 30px;
+    margin-left: 50px;
+    position: relative;
+    top: 18px;
+}
+.totalAmount{
+	    padding: 5px 20px 5px 20px;
+    font-size: 30px;
+    /* background-color: #d81e06; */
+    width: 130px;
+    margin-top: 10px;
+    border-radius: 12px;
+    border: 2px solid #767676;
+    color: #767676;
+}
+
+.desc1{       float: left;
+    font-size: 40px;
+    color: #868686;
+    padding: 10px 10px 0px 0px;}
+    
+.desc2{       float: left;
+    font-size: 40px;
+    color: #868686;
+    padding: 10px 10px 0px 30px;}
+
+.imageSize {
+	height: 180px;
+    width: 180px;
+    margin: 35px 35px;
+    border-radius: 50%;
+}
+
+ ul {
+	list-style: none;
+	    list-style: none;
+    padding-inline-start: 0px;
+    margin-block-start: 0em;
+    padding: 0px 30px 0px 30px;
+    margin-block-end: 0em;
+    /* padding-inline-start: 0px; */
+}
+
+.left-content ul{
+	    -webkit-padding-start: 0px;
+	    -webkit-margin-before: 0px;
+}
+
+.title{ font-size: 40px;
+    text-align: center;
+    color: white;
+    width: 100%;
+    height: 60px;
+    font-weight: bolder;
+    background-image: url(../images/ordertitle.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    margin-top: 50px; 
+    }
+
+
+.item{
+    margin: 30px 50px;
+    height: 250px;
+    border-radius: 10px;
+    -moz-box-shadow: 0px 0px 14px #bbb8b8;
+    -webkit-box-shadow: 0px 0px 14px #bbb8b8;
+    box-shadow: 0px 0px 14px #bbb8b8;
+}
+
+.right-content li p {
+	line-height: 50px;
+    margin-block-start: 0em;
+    margin-block-end: 0em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+}
+
+.right-content li {
+/* 	height: 250px; */
+	/* border-bottom: 1px solid #ccc */
+}
+.left-content li{
+	    line-height: 40px;
+    padding: 15px 15px;
+    text-align: center;
+    font-size: 30px;
+}
+.mui-numbox [class*=btn-numbox], .mui-numbox [class*=numbox-btn] {
+	top: 2px;
+}
+
+.mui-btn-numbox-plus {
+	    width: 60px;
+    height: 60px;
+    border-style: none;
+}
+
+.mui-btn-numbox-plus button{
+	    background-image: url(./add.png);
+    background-size: 100%;
+    background-color: white;
+    outline: none;
+    width: 100%;
+    border: none;
+    height: 100%;
+    border-radius: 15px;
+}
+
+.ulstyle {
+	line-height: 100px;
+}
+
+.menu {
+	font-size: 40px;
+	text-align: center;
+}
+
+#header {
+	width: 100%;
+	height: 200px;
+	position: absolute;
+	top: 0;
+	background-image: url(../images/bg.png);
+}
+
+#footer {
+	width: 100%;
+	height: 130px;
+	position: absolute;
+	bottom: 0;
+	border-top:1px grey solid;
+}
+
+#content ,#content1{
+/* 	width: 100%;
+	overflow: auto;
+	position: absolute;
+	top: 200px;
+	bottom: 110px; */
+	
+	width: 100%;
+	overflow: auto;
+	position: absolute;
+/*     left: 20px;
+    right: 20px; */
+    top: 0px;
+    bottom: 130px;
+    overflow-x: hidden;
+}
+
+#content1{
+    font-size: 40px;
+    text-align: center;
+    color: grey;
+    margin-top: 500px;
+}
+
+.active{
+	background:#fff;
+	border-left:2px solid #3190e8;
+}
+
+.left-content{
+	overflow: auto; width: 25%; height: 100%;  float: left;top:40px;background:#eee;
+}
+
+.right-content{
+	overflow: auto; width: 100%; height: 100%; float: left;
+}
+
+.item-img{
+	float: left; width: 30%; height: 250px;
+}
+
+.item-dish{
+	float: left; width: 70%; height: 250px;
+}
+
+.img_wrap {
+	height: 48px;
+	display: table-cell; 
+    vertical-align: middle;
+	text-align: center;
+	margin-top: 20px;
+}
+
+
+sup {
+	background: red;
+	color: white;
+	border-radius: 30px; /*Ô²½Ç*/
+	padding: 0px 10px; /*×óÓÒ±ß¾à*/
+	top: -20px;
+        position: relative;
+	font-size: 30px;
+}

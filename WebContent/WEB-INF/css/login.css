@@ -1,0 +1,82 @@
+body{height:100%;width:100%;background:url(../image/com/bg.jpg)}
+.login-form{
+background-color:white;
+border:1px solid #8a9bab;
+height:auto;
+width:400px;
+/* position: absolute;
+right:150px;
+top:200px; */
+border-radius: 10px;
+margin:0 auto;
+margin-top:20px;
+}
+
+h1{margin-left:50px;margin-top:20px;}
+hr{margin:20px;}
+
+table{margin-top:20px;margin-left:50px;}
+
+.home{
+	
+	height:100%;
+	width:100%;
+}
+
+tr{height:50px;width:260px;}
+input:-webkit-autofill {  
+    -webkit-box-shadow: 0 0 0px 1000px white inset !important;  
+}  
+
+input 
+{
+	width:80%;height:30px;font-size:16px;
+}
+
+#ckbox{height:20px;width:20px;}
+#remember{margin-left:10px;font-size:16px;margin-top:-10px;
+ position: absolute;
+left:30px;
+top:25px; }
+
+.loginbt{
+    width:80%;height:50px;
+    font-size:20px;
+    margin-top:20px;
+    margin-bottom:20px;
+    display: inline-block;
+    background-image:linear-gradient(rgb(236, 109, 0) 0%, rgb(247, 186, 91) 100%);
+    line-height: 40px;
+    border: 1px #c9000a solid;
+    color: #FFFFFF;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-color: #ec6d00;
+    border-radius: 10px;
+}
+
+@font-face
+{
+font-family: myFirstFont;
+src: url(a1.ttf),
+     url('Sansation_Light.eot'); /* IE9+ */
+}
+
+.alert{    height: 60px;
+    line-height: 60px;
+    margin-left: 20px;
+    padding-left: 20px;
+    margin-right: 20px;
+    font-size: 14px;
+    font-family: "微软雅黑", "宋体";}
+    
+a {
+    color: #428bca;
+    text-decoration: none;
+}
+
+.title{font-size:40px;
+font-family:myFirstFont;
+color:black;
+    margin-top: 100px;
+    text-align: center;}

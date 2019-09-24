@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.order.OrdImportInfoDao">
+  <select id="selectAll" resultType="com.icbc.rel.hefei.entity.order.OrdImportInfo">
+    select * from ord_ImportInfos where activityUid=#{activityUid}  order by iid desc LIMIT #{start},#{limit}
+  </select>
+  
+  <select id="selectAllNum" resultType="Integer">
+    select count(iid) from ord_ImportInfos where activityUid=#{activityUid}
+  </select>
+  
+  <select id="selectOne" resultType="com.icbc.rel.hefei.entity.order.OrdImportInfo">
+    select * from ord_ImportInfos where FileUid=#{Uid}
+  </select>
+  
+  <update id="updateStatus" parameterType="String">
+  update ord_ImportInfos set Status=-1 where FileUid=#{fileUid}
+  </update>
+ 
+  
+  <insert id="add" parameterType="com.icbc.rel.hefei.entity.order.OrdImportInfo">
+  INSERT INTO ord_ImportInfos
+           (
+           FileName
+           ,ActivityUid
+           ,FileUid
+           ,`Status`
+           ,ImportTime)
+     VALUES
+           (#{FileName}
+           ,#{ActivityUid}
+           ,#{FileUid}
+           ,#{Status}
+           ,#{ImportTime})
+  </insert>
+  
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.order.OrdImportPicDao">
+
+	<insert id="add" parameterType="com.icbc.rel.hefei.entity.order.OrdImportPicInfo">
+		INSERT INTO ord_ImportPicInfos
+			(ActivityUid
+			,DishName
+			,PicUrl
+			,ImportTime)
+		VALUES
+			(#{activityUid}
+			,#{DishName}
+			,#{PicUrl}
+			,#{ImportTime})
+	</insert>
+	
+	<select id="selectAll" resultType="com.icbc.rel.hefei.entity.order.OrdImportPicInfo">
+		select * from ord_ImportPicInfos  where activityUid=#{activityUid}  order by IID desc  LIMIT #{start},#{limit}
+	</select>
+	
+	<select id="getAllPic" resultType="com.icbc.rel.hefei.entity.order.OrdImportPicInfo">
+	select * from ord_ImportPicInfos  where activityUid=#{activityUid} 
+	</select>
+	
+	<select id="selectAllNum" resultType="Integer">
+		select count(iid) from ord_ImportPicInfos  where activityUid=#{activityUid}  order by IID desc 
+	</select>
+	
+	<delete id="delete" parameterType="String">
+		delete from ord_ImportPicInfos where iid= #{iid}
+	</delete>
+
+</mapper>

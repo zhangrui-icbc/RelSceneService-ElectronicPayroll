@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.order.OrdOrderInfoDao">
+  <select id="getOrderInfos" resultType="com.icbc.rel.hefei.entity.order.OrdOrderInfo" >
+    select  * from ord_OrderInfos WHERE OpenId=#{openid}  and activityUid=#{activityUid} order by iid desc
+  </select>
+  
+  <select id="getOrderInfoByOrderId" resultType="com.icbc.rel.hefei.entity.order.OrdOrderInfo" >
+    select  * from ord_OrderInfos WHERE OrderId=#{orderId} and activityUid=#{activityUid}  order by iid desc
+  </select>
+  
+  <select id="getOrderInfoByDate" resultType="com.icbc.rel.hefei.entity.order.OrdOrderInfo" >
+    select  * from ord_OrderInfos where  date_format(orderDate,'%Y-%m-%d')=#{date} 
+    and activityUid=#{activityUid}
+    and OrderStatus=1
+    <if test="mobileNo != null and mobileNo != '' ">
+		and moblieNo = #{mobileNo}
+	</if>
+	order by iid asc
+  </select>
+  
+  <select id="getOrderAmount" resultType="Integer">
+   select ifnull(sum(DishAmount),0)  from ord_OrderDetailInfos  a  
+	left join ord_OrderInfos  b 
+	on a.OrderId=b.OrderId 
+	where a.DishUid=#{dishUid} and  b.OrderStatus=1 and OPENID=#{openid};
+  </select>
+  
+  <update id="update" parameterType="com.icbc.rel.hefei.entity.order.OrdOrderInfo" >
+   update ord_OrderInfos set OrderStatus=#{OrderStatus} ,ModifyTime=#{ModifyTime}
+   where OrderId=#{OrderId} and activityUid=#{activityUid}
+  </update>
+  
+  <select id="selectOpenId" resultType="String">
+     select distinct OpenId from ord_OrderInfos where to_char(OrderDate,'yyyy-mm-dd')=to_char(sysdate,'yyyy-mm-dd') and OrderStatus=1
+  </select>
+  
+  <insert id="add" parameterType="com.icbc.rel.hefei.entity.order.OrdOrderInfo">
+   INSERT INTO ord_OrderInfos
+           (OrderId
+           ,OrderDate
+           ,OpenId
+           ,MoblieNo
+           ,UserName
+           ,UniNo
+           ,UserStruName
+           ,OrderDesc
+           ,OrderAmt
+           ,OrderStatus
+           ,CreateTime
+           ,ModifyTime
+           ,activityUid)
+     VALUES
+           (#{OrderId}
+           ,#{OrderDate}
+           ,#{OpenId}
+           ,#{MoblieNo}
+           ,#{UserName}
+           ,#{UniNo}
+           ,#{UserStruName}
+           ,#{OrderDesc}
+           ,#{OrderAmt}
+           ,#{OrderStatus}
+           ,#{CreateTime}
+           ,#{ModifyTime}
+           ,#{activityUid})
+  </insert>
+<select id="getCurrentMonthOrderAmt"  resultType="Integer">
+   select  ifnull(count(iid),0) from ord_OrderInfos where  date_format(orderDate,#{formatStr})=#{date} 
+    and activityUid=#{activityUid} and OrderStatus!=-1
+</select>  
+
+    <update id="updateStatusByOrderId">
+      update ord_orderinfos set OrderStatus=-1,ModifyTime=now() where OrderId=#{orderId} ;
+    
+    </update>
+
+
+</mapper>

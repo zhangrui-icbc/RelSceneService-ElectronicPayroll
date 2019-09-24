@@ -1,0 +1,95 @@
+#cards{
+	width:65%;
+	height:auto;
+	float:left;
+}
+
+#cards .layui-card{
+	width:90%;
+	min-width:160px;
+	height:100px;
+	float:center;
+	margin-right:20px;
+}
+#cards .layui-card-body{font-size:30px;color:green;}
+
+#visit-panel{width:65%;
+	height:400px;float:left;margin-top:20px}
+
+#visit-panel .layui-card{
+	width:100%;
+	height:400px;
+	float:left;
+}
+
+#activity-panel{
+	width:33%;
+	height:510px;float:right;margin-right:0px;
+}
+
+.activity-detail{height:260px;}
+
+.activity-rule{
+	height:250px;
+	
+}
+
+.scroll{
+	height:180px;
+	overflow-y: scroll;
+}
+
+.data-panel{width:100%;float:left;background-color: white;margin-top:20px;}
+
+.tool{width:100%;float:left;}
+
+.layui-carousel-ind ul{
+	position:absolute;
+	top:-330px;
+	right:50px;
+
+}
+.layui-form-label{
+	width:auto;
+}
+
+
+.layui-carousel {
+    background-color: white;}
+    
+.layui-carousel>[carousel-item]>* {
+    background-color: white;
+}
+
+.layui-carousel[lay-indicator=outside] .layui-carousel-ind ul {
+    background-color: white;
+}
+
+.layui-carousel-ind li{
+	    background-color: #d2d2d2;
+}
+
+.layui-table-cell {
+    height: auto;
+    line-height: 28px;}
+    
+    .layui-table-view .layui-form-checkbox[lay-skin=primary] i {
+    width: 17px;
+    height: 17px;
+}
+
+.layui-carousel-ind li.layui-this {
+    background-color: #777;
+}
+.layui-table-cell .layui-form-checkbox[lay-skin=primary] {
+    top: 1px;
+}
+
+.report{width:600px;height:260px;margin:0 auto;}
+#diag{margin-top:20px;display:none;z-index: 100;} 
+.layui-textarea{width:350px;}
+#send{margin-left:100px;margin-top:20px;}
+#cancel{margin-left:10px;margin-top:20px;}
+
+.layui-table-view {
+    margin: 0 0;

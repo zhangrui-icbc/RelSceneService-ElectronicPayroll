@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.order.OrdOrderDetailInfoDao">
+  <select id="getOrderDetail" resultType="com.icbc.rel.hefei.entity.order.OrdOrderDetailInfo" >
+    select  * from ord_OrderDetailInfos where OrderId=#{orderId} and activityUid=#{activityUid}  order by iid desc
+  </select>
+  
+  <select id="getOrderDetailByDate" resultType="com.icbc.rel.hefei.entity.order.OrdOrderDetailInfo" >
+    select  * from ord_OrderDetailInfos where  date_format(OrderDate,'%Y-%m-%d')=#{date}
+    and activityUid=#{activityUid}
+  </select>
+  
+  <insert id="insertOrderDetail" parameterType="com.icbc.rel.hefei.entity.order.OrdOrderDetailInfo">
+   INSERT INTO ord_OrderDetailInfos
+           (OrderId
+           ,DishUid
+           ,DishName
+           ,DishPrice
+           ,DishAmount
+           ,OrderDate
+           ,CreateTime
+           ,activityUid)
+     VALUES
+           (#{OrderId}
+           ,#{DishUid,}
+           ,#{DishName}
+           ,#{DishPrice}
+           ,#{DishAmount}
+           ,#{OrderDate}
+           ,#{CreateTime}
+           ,#{activityUid})
+  </insert>
+  
+  <select id="selectOrderReport" resultType="com.icbc.rel.hefei.entity.order.OrdMenuInfo" parameterType="String">
+     select DishUid,DishName,SUM(DishAmount)  Amount from ord_OrderDetailInfos   a
+     left join ord_OrderInfos  b
+     on a.OrderId=b.OrderId
+     where b.OrderStatus in (1,2) 
+     and b.OrderDate &gt;= to_date(#{beginDate} ,'yyyy-mm-dd')
+     and to_date(#{endDate},'yyyy-mm-dd') &gt;=b.OrderDate
+     group by a.DishUid ,a.DishName
+  </select>
+  
+
+</mapper>

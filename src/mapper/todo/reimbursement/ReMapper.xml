@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.todo.reimbursement.ReMapper">
+    <resultMap id="ReResultMap" type="com.icbc.rel.hefei.entity.todo.reimbursement.Reimbursement">
+        <id column="id" property="id"/>
+        <result column="import_time" property="importTime"/>
+        <result column="issue_time" property="issueTime"/>
+         <result column="excel_name" property="excelName"/>
+        <collection property="importList" ofType="com.icbc.rel.hefei.entity.todo.reimbursement.ReImport">
+            <id column="city_id" property="id"/>
+            <result column="reimbursement_item_id" property="reimbursementItemId"/>
+            <result column="reimbursement_id" property="reimbursementId"/>
+            <result column="template_id" property="templateId"/>
+            <result column="template_col_type" property="templateColType"/>
+            <result column="template_col_name" property="templateColName"/>
+            <result column="import_amount" property="importAmount"/>
+            <result column="user_id" property="userId"/>
+        </collection>
+    </resultMap>
+    <!-- 查询工资日志信息 -->
+    <select id="getUpLoadLog" resultMap="ReResultMap">
+		SELECT a.id AS id ,a.import_time AS import_time,a.issue_time AS issue_time,a.excel_name AS excel_name, oai.reimbursement_item_id AS reimbursement_item_id , oai.reimbursement_id AS reimbursement_id, oai.col_index AS col_index,
+		oai.template_id AS template_id, oai.template_col_type AS template_col_type, oai.template_col_name AS template_col_name,  oai.import_amount AS import_amount, oai.user_id AS user_id,oai.category AS category 
+		FROM reimbursement a LEFT JOIN  reimbursement_import oai  ON a.`id`=oai.`reimbursement_id` where oai.template_id =#{params.companyId}	order by a.import_time desc
+    </select>
+    <!-- 删除日志 -->
+    <delete id="delLog">
+    	DELETE FROM reimbursement_import WHERE reimbursement_id = #{reId};
+    </delete>
+    <delete id="delLog1">
+    	    DELETE FROM reimbursement WHERE id = #{reId};
+    </delete>
+    
+	<!-- 根据公司id查询模板信息 -->
+	<select id="getReTemplate"   resultType = "com.icbc.rel.hefei.entity.todo.reimbursement.ReCustomTemplate">
+		select id,company_id as companyId,type,name,col_index as colIndex ,category  from  reimbursement_custom_template  where company_id =#{companyId} 
+	</select>
+	<!-- 共用模板信息 -->
+	<select id="getCommonTemplate"   resultType = "com.icbc.rel.hefei.entity.todo.reimbursement.ReCommonTemplate">
+		select id,company_id as companyId,type,name,col_index as colIndex   from  reimbursement_common_template  
+	</select>
+	
+	
+	
+	
+	<!-- 保存工资信息 -->
+	<insert id="insertReimbursement" useGeneratedKeys="true" keyProperty="id" parameterType = "com.icbc.rel.hefei.entity.todo.reimbursement.Reimbursement">
+		insert into reimbursement (id,import_time,issue_time,excel_name) values (#{id},#{importTime},#{issueTime},#{excelName})
+	</insert>
+    
+    
+	<!-- 插入自定义项 -->
+	<insert id="insertReimbursementImport"   parameterType = "com.icbc.rel.hefei.entity.todo.reimbursement.Reimbursement">
+		insert into reimbursement_import (reimbursement_item_id , reimbursement_id , template_id , template_col_type , template_col_name , import_amount , user_id, col_index , category) values
+			<foreach collection="importList" item="item"  separator="," >
+				(#{item.reimbursementItemId} , #{id} , #{item.templateId} , #{item.templateColType} , #{item.templateColName} , #{item.importAmount} , #{item.userId}, #{item.colIndex}, #{item.category} )
+   			</foreach>
+   	</insert>
+   	
+	
+</mapper>

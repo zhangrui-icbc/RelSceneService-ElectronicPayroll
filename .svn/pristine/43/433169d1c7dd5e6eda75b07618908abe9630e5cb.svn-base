@@ -1,0 +1,74 @@
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, textarea, p, blockquote
+{font-family: "Microsoft Yahei";}
+
+body {
+	padding: 0;
+	background-color: white;
+}
+
+h1 {
+	margin: 0px;
+	font-size: 80px;
+}
+
+#p1{text-align: center; margin: 60px;}
+#p2{font-size: 50px; text-align: center;    color: #333333;}
+#p22{font-size: 40px; text-align: center;margin-right:100px;margin-left:100px;    color: #333333;}
+#p3{ font-size: 40px; line-height: 70px; text-align: left}
+#p4{ font-size: 60px; text-align: center; color: #FF0000;}
+#href{margin-left:50px;}
+
+.detail span{margin-left:50px;}
+a{text-decoration: none;
+    color: #d81e06;}
+#header {
+	width: 100%;
+	height: 0px;
+	position: absolute;
+	top: 20px;
+	text-align: center;
+	line-height: 200px;
+}
+
+#footer {
+	width: 100%;
+	height: 130px;
+	position: absolute;
+	bottom: 0;
+	border-top:1px grey solid;
+}
+
+#content {
+	width: 100%;
+	overflow: auto;
+	position: absolute;
+	top: 0px;
+	bottom: 130px;
+}
+
+.detail {
+	position: absolute;
+	left: 150px;
+	right: 120px;
+	color:#868686;
+}
+
+.img_wrap {
+	height: 48px;
+	display: table-cell; 
+	vertical-align: middle;
+	text-align: center;
+	margin-top: 20px;
+}
+sup {
+	background: red;
+	color: white;
+	border-radius: 30px; /*Ô²½Ç*/
+	padding: 0px 10px; /*×óÓÒ±ß¾à*/
+	top: -20px;
+        position: relative;
+	font-size: 30px;
+}
+li.active {
+	color: black;
+	background-color: white;}

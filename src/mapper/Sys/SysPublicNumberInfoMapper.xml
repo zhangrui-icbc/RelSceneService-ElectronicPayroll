@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.SysPublicNumberInfoDao">
+   <select id="getPublicNumberInfo" resultType="com.icbc.rel.hefei.entity.SysPublicNumberInfo">
+      select * from SYS_PUBLICNUMBERINFO where PUBLICNUMBERACCOUNT=#{account} and `PASSWORD`=#{psd}
+   </select>
+   
+    <!-- ILNIQ -->
+    <select id="queryAllSYSPublicNumberInfo" resultType="com.icbc.rel.hefei.entity.SysPublicNumberInfo">
+		SELECT *  from SYS_PUBLICNUMBERINFO
+	</select>
+		
+	<delete id="deleteSYSPublicNumberInfo">
+	  DELETE  from SYS_PUBLICNUMBERINFO
+	</delete>
+	
+	<insert id="addSYSPublicNumberInfo" parameterType="com.icbc.rel.hefei.entity.SysPublicNumberInfo">			
+		INSERT INTO SYS_PUBLICNUMBERINFO(
+		PUBLICNUMBERNAME,
+		PUBLICNUMBERID,
+		PUBLICNUMBERACCOUNT,
+		`PASSWORD`,
+		`TYPE`,
+		ICBCFLAG,
+		CREATETIME)
+		VALUES(
+		#{PublicNumberName},
+		#{PublicNumberId},
+		#{PublicNumberAccount},
+		#{Password},
+		#{Type},
+		#{IcbcFlag},
+		#{CreateTime})
+		ON DUPLICATE KEY UPDATE PUBLICNUMBERNAME=#{PublicNumberName} ,	ICBCFLAG=#{IcbcFlag}
+	</insert>
+    
+    
+    <select id="getPublicNumberInfoByMpid" resultType="com.icbc.rel.hefei.entity.SysPublicNumberInfo">
+      select * from SYS_PUBLICNUMBERINFO where PUBLICNUMBERID=#{mpid}
+   </select>
+</mapper>

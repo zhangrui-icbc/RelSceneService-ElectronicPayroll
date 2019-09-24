@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.SysMessageInfoDao">
+	<select id="queryInfo" resultType="com.icbc.rel.hefei.entity.SysMessageInfo">
+		SELECT *  from SYS_MESSAGEINFO where ACTIVITYUID=#{activityUid} order by iid desc LIMIT #{start},#{limit}
+	</select>
+	<select id="queryInfoNum" resultType="Integer">
+		SELECT count(iid)  from SYS_MESSAGEINFO where ACTIVITYUID=#{activityUid} 
+	</select>	
+	
+	<insert id="insert" parameterType="com.icbc.rel.hefei.entity.SysMessageInfo">	
+		INSERT  INTO  SYS_MESSAGEINFO(
+			PUBLICNUMBERID,
+			ACTIVITYUID,
+			IMUSERID,
+			MESSAGECONTENT,
+			SENDSTATUS,
+			RETURNMSG,
+			SENDTIME)
+			VALUES(
+			#{publicNumberId},
+			#{activityUid},
+			#{imUserId},
+			#{messageContent},
+			#{sendStatus},
+			#{returnMsg},
+			#{sendTime}
+			)	   		
+	</insert>
+
+
+</mapper>

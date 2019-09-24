@@ -1,0 +1,64 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta content="yes" name="apple-mobile-web-app-capable" />
+    	<meta content="yes" name="apple-touch-fullscreen" />
+    	<meta name="data-spm" content="a215s" />
+    	<meta content="telephone=no,email=no" name="format-detection" />
+    	<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<title>电子工资单查询</title>
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/todo/client/common.css">
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/todo/client/detail.css">
+	</head>
+	<body>
+	<input type="hidden" id="contextPath" name="contextPath"  value="${pageContext.request.contextPath}"/>
+	<input type="hidden" id="salaryId" name="salaryId"  value="${salaryId}">
+	<input type="hidden" id="issueTime" name="issueTime"  value="${issueTime}">
+	<input id="jumpUrl" type="hidden" value="${session.currentUrl}" />
+	<input type="hidden" id="userId" name="userId"  value="${userId}">
+		<h2 class="title">工资单明细</h2>
+		<img src="${pageContext.request.contextPath}/image/todo/client/home.png" class="home-btn" />
+		<p class="tit">单位：元</p>
+		<div class="total">
+			<table>
+				<tr>
+					<td style="color: orange;">实发合计</td>
+					<td style="color: orange;">收入合计</td>
+					<td style="color: orange;">支出合计</td>
+				</tr>
+				<tr class="total_list">
+					<td id="real_income">0.00</td>
+					<td id="total_income">0.00</td>
+					<td id="total_expenditure">0.00</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div class="list">
+			<div class="list-box">
+			</div>
+			<div class="list-box">
+			</div>
+			<div class="list-box">
+			</div>
+			<div class="list-box">
+			</div>
+			<div class="list-box desc">
+			</div>
+		</div>
+	</body>
+	<script src="${pageContext.request.contextPath}/js/jquery-3.2.1.min.js"></script>
+	<script src="${pageContext.request.contextPath}/js/todo/client/detail.js"  ></script>
+	<script type="text/javascript" th:inline="javascript" > 
+//			var ctx = [[@{/}]],page=[[${page}]],website=[[${website}]];
+//		var s=$(window).height();//是滚动条高度
+//		var h=$(".company-msg").height();//是标签高度
+//		var t=$(".list").offset().top;
+//		console.log(s);
+//		console.log(t);
+	//	$(".list").height(s-t-30);
+		//console.log(s-t-50); 
+	</script>
+</html>

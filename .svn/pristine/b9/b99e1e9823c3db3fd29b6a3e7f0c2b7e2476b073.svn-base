@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.todo.salary.SalaryMapper">
+    <resultMap id="salaryResultMap" type="com.icbc.rel.hefei.entity.todo.salary.Salary">
+        <id column="id" property="id"/>
+        <result column="import_time" property="importTime"/>
+        <result column="issue_time" property="issueTime"/>
+         <result column="excel_name" property="excelName"/>
+        <collection property="importList" ofType="com.icbc.rel.hefei.entity.todo.salary.SalaryImport">
+            <id column="city_id" property="id"/>
+            <result column="salary_item_id" property="salaryItemId"/>
+            <result column="salary_id" property="salaryId"/>
+            <result column="template_id" property="templateId"/>
+            <result column="template_col_type" property="templateColType"/>
+            <result column="template_col_name" property="templateColName"/>
+            <result column="import_amount" property="importAmount"/>
+            <result column="user_id" property="userId"/>
+        </collection>
+    </resultMap>
+    <!-- 查询工资日志信息 -->
+    <select id="getUpLoadLog" resultMap="salaryResultMap">
+		SELECT a.id AS id ,a.import_time AS import_time,a.issue_time AS issue_time,a.excel_name AS excel_name, oai.salary_item_id AS salary_item_id , oai.salary_id AS salary_id, oai.col_index AS col_index,
+		oai.template_id AS template_id, oai.template_col_type AS template_col_type, oai.template_col_name AS template_col_name,  oai.import_amount AS import_amount, oai.user_id AS user_id,oai.category AS category 
+		FROM salary a LEFT JOIN  salary_import oai  ON a.`id`=oai.`salary_id` where oai.template_id =#{params.companyId}	order by a.import_time desc
+    </select>
+    <!-- 删除日志 -->
+    <delete id="delLog">
+    	  <![CDATA[DELETE FROM salary_import WHERE salary_id = #{salaryId};]]>
+    </delete>
+    <delete id="delLog1">
+     		<![CDATA[DELETE FROM salary WHERE id = #{salaryId};]]>
+    </delete>
+	<!-- 根据公司id查询模板信息 -->
+	<select id="getSalaryTemplate"  resultType = "com.icbc.rel.hefei.entity.todo.salary.SalaryCustomTemplate">
+		select id,company_id as companyId,type,name,col_index as colIndex ,category  from  salary_custom_template  where company_id =#{companyId} 
+	</select>
+	<!-- 共用模板信息 -->
+	<select id="getCommonTemplate"   resultType = "com.icbc.rel.hefei.entity.todo.salary.SalaryCommonTemplate">
+		select id,company_id as companyId,type,name,col_index as colIndex   from  salary_common_template  
+	</select>
+	
+	
+	
+	
+	<!-- 保存工资信息 -->
+	<insert id="insertOaSalary" useGeneratedKeys="true" keyProperty="id"  parameterType = "com.icbc.rel.hefei.entity.todo.salary.Salary">
+		insert into salary (id,import_time,issue_time,excel_name) values (#{id},#{importTime},#{issueTime},#{excelName})
+	</insert>
+    
+    
+	<!-- 插入自定义项 -->
+	<insert id="insertOaSalaryImport"   parameterType = "com.icbc.rel.hefei.entity.todo.salary.Salary">
+		insert into salary_import (salary_item_id , salary_id , template_id , template_col_type , template_col_name , import_amount , user_id, col_index , category) values
+			<foreach collection="importList" item="item"  separator="," >
+				(#{item.salaryItemId} , #{id} , #{item.templateId} , #{item.templateColType} , #{item.templateColName} , #{item.importAmount} , #{item.userId}, #{item.colIndex}, #{item.category} )
+   			</foreach>
+   	</insert>
+   	<!-- 插入员工信息 -->
+	<insert id="insertStaffInfo"   parameterType = "java.util.List">
+		insert into salary_user (mobile , company_id , name) values
+			<foreach collection="List" item="item"  separator="," >
+				(#{item.mobile} , #{item.companyId} , #{item.name} )
+			</foreach>
+   	</insert>
+   	<!-- 修改员工登录密码 -->
+   	<update id="updatePwd">
+   		update salary_user set password = '300386' where mobile = #{userName} and company_id =#{companyId}
+   	</update>
+   	<!-- 删除员工账号 -->
+   	<delete id="delStaff">
+   		delete from salary_user where mobile = #{userName} and company_id =#{companyId}
+   	</delete>
+   	<!-- 更换员工账号 -->
+   	<update id="updateMobile">
+   	<![CDATA[
+   		update salary_user set mobile = #{newUserName} where mobile = #{userName} and company_id =#{companyId}
+   		]]>
+   	</update>
+   	
+		<!-- 根据公司id查询模板信息 -->
+	<select id="getMobile"   resultType = "java.lang.Integer">
+		select count(1) from salary_user where mobile = #{userName}
+	</select>
+	
+	<select id="getMobileList" resultType="com.icbc.rel.hefei.entity.todo.salary.SalaryStaff">
+		select id, mobile, password, company_id as companyId, name, openId  from  salary_user 
+	</select>
+	<select id="getStaffInfo" resultType="com.icbc.rel.hefei.entity.todo.salary.SalaryStaff">
+		select id, mobile, password, company_id as companyId, name, openId  from  salary_user  where company_id =#{companyId}  and mobile = #{userName}
+	</select>
+</mapper>
