@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.icbc.rel.hefei.TO.Msg;
+import com.icbc.rel.hefei.entity.SceneSwitch;
 import com.icbc.rel.hefei.entity.SysActivityInfo;
 import com.icbc.rel.hefei.entity.order.DinnerInfo;
 import com.icbc.rel.hefei.entity.order.OrdImportPicInfo;
@@ -33,6 +34,7 @@ import com.icbc.rel.hefei.service.order.ParaService;
 import com.icbc.rel.hefei.service.order.ShoppingCarService;
 import com.icbc.rel.hefei.service.rel.MessageHelper;
 import com.icbc.rel.hefei.service.rel.MessageService;
+import com.icbc.rel.hefei.service.sys.SceneSwitchService;
 import com.icbc.rel.hefei.service.sys.SysActivityService;
 import com.icbc.rel.hefei.service.sys.SysService;
 import com.icbc.rel.hefei.util.CommonUtil;
@@ -57,12 +59,19 @@ public class orderController {
 	private SysService  sysService;
 	@Autowired
 	private SysActivityService sysActivityService;
+	@Autowired
+	private SceneSwitchService sceneService;
 	/*
 	 * Ô¤¶©Ò³Ãæ
 	 */
 	@RequestMapping(value="/order")
 	public ModelAndView analysis(String activityUid) {
 		ModelAndView mav = new ModelAndView();
+		SceneSwitch sceneSwitch = sceneService.selectByScene("order");
+        if (sceneSwitch.getStatus() == -1) {
+        	mav.setViewName("empty");
+			return mav;
+		}
 		SysActivityInfo sysActivityInfo = sysActivityService.getSceneByUid(activityUid);
 		if (sysActivityInfo.getStatus() == -1) {
 			mav.setViewName("empty");

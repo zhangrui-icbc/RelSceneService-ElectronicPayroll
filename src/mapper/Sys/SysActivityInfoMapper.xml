@@ -45,10 +45,10 @@
   </select> -->
    
    <select id="getMyScene" resultType="com.icbc.rel.hefei.entity.SysActivityInfo">
-     select  * from SYS_ACTIVITYINFO where mpId=#{mpId} and Status=0
+     select  a.* from SYS_ACTIVITYINFO a left join scene_switch b on a.RELSCENEUID = b.SCENE where b.Status = 1 and a.mpId=#{mpId} and a.Status=0
      
      <if test="activityName !=null and activityName != ''">
-		and activityName = #{activityName}
+		and a.activityName = #{activityName}
 	    </if>
        order by iid desc 
    </select>
@@ -59,17 +59,17 @@
 
     
     <select id="getActivityByRelScenUid" resultType="com.icbc.rel.hefei.entity.SysActivityInfo">
-    select * from  SYS_ACTIVITYINFO where Status=0
+    select a.* from  SYS_ACTIVITYINFO a left join scene_switch b on a.RELSCENEUID = b.SCENE where b.Status = 1 and a.Status=0
     <if test="RelScenUid !=null and RelScenUid != ''">
-     and RELSCENEUID= #{RelScenUid} 
+     and a.RELSCENEUID= #{RelScenUid} 
     </if>
-     order by BeginTime desc LIMIT #{start},#{limit}
+     order by a.BeginTime desc LIMIT #{start},#{limit}
   </select>
   
     <select id="getcountByRelScenUid" resultType="Integer">
-        select  count(iid) from SYS_ACTIVITYINFO  where Status=0
+        select  count(a.iid) from SYS_ACTIVITYINFO a left join scene_switch b on a.RELSCENEUID = b.SCENE where b.Status = 1 and a.Status=0
     <if test="RelScenUid !=null and RelScenUid != ''">
-   and RELSCENEUID= #{RelScenUid}
+   and a.RELSCENEUID= #{RelScenUid}
     </if>
     </select>
     

@@ -7,41 +7,63 @@ $(".header_mp").html('<div class="header1"><div class="logo">场景服务共享�
 );
 
 if($(".content").length>0){
-	$(".content").prepend('<div class="title">'
-			+'<ul class="title_list">'
-			+'<li class="title_listb"><div style="cursor:pointer;"><span class="iid" style="display:none">000</span><img class="y1" src="../image/com/a0.png" width="30" height="30"onclick="" /><span class="y2" style="color:#ffffff">全部</span></div><div class="clear"></div></li>'
-/*			+'<li class="title_listb"><div style="cursor:pointer;"><span class="iid" style="display:none">lottery</span><img class="y1" src="../image/com/a1.png" width="30" height="30"onclick="" /><span class="y2" style="color:#ffffff">转盘抽奖</span></div><div class="clear"></div></li>'*/
-			+'<li class="title_listb"><div style="cursor:pointer;"><span class="iid" style="display:none">order</span><img class="y1" src="../image/com/a2.png" width="30" height="30"onclick="" /><span class="y2" style="color:#ffffff">线上点餐</span></div><div class="clear"></div></li>'
-/*			+'<li class="title_listb"><div style="cursor:pointer;"><span class="iid" style="display:none">meeting</span><img class="y1" src="../image/com/a4.png" width="30" height="30"onclick="" /><span class="y2" style="color:#ffffff">会议助手</span></div><div class="clear"></div></li>'
-			+'<li class="title_listb"><div style="cursor:pointer;"><span class="iid" style="display:none">asks</span><img class="y1" src="../image/com/a3.png" width="30" height="30"onclick="" /><span class="y2" style="color:#ffffff">考勤管理</span></div><div class="clear"></div></li>'*/
-			
-			/*+'<li class="title_listb"><div style="cursor:pointer;"><span class="iid" style="display:none">003</span><img class="y1" src="../image/com/a3.png" width="30" height="30"onclick="" /><span class="y2" style="color:#ffffff">线上投票</span></div><div class="clear"></div></li>'
-			+'<li class="title_listb"><div style="cursor:pointer;"><span class="iid" style="display:none">004</span><img class="y1" src="../image/com/a4.png" width="30" height="30"onclick="" /><span class="y2" style="color:#ffffff">线上报名</span></div><div class="clear"></div></li>'
-			+'<li class="title_listb"><div style="cursor:pointer;"><span class="iid" style="display:none">005</span><img class="y1" src="../image/com/a5.png" width="30" height="30"onclick="" /><span class="y2" style="color:#ffffff">问卷调研</span></div><div class="clear"></div></li>'
-			+'<li class="title_listb"><div style="cursor:pointer;"><span class="iid" style="display:none">006</span><img class="y1" src="../image/com/a6.png" width="30" height="30"onclick="" /><span class="y2" style="color:#ffffff">活动签到</span></div><div class="clear"></div></li>'
-			+'<li class="title_listb"><div style="cursor:pointer;"><span class="iid" style="display:none">007</span><img class="y1" src="../image/com/a7.png" width="30" height="30"onclick="" /><span class="y2" style="color:#ffffff">公车申请</span></div><div class="clear"></div></li>'
-			+'<li class="title_listb"><div style="cursor:pointer;"><span class="iid" style="display:none">008</span><img class="y1" src="../image/com/a8.png" width="30" height="30"onclick="" /><span class="y2" style="color:#ffffff">线上请假</span></div><div class="clear"></div></li>'	    
-			*/+'</ul>'
-		    +'</div>');
+	var sceneStatus;
+	$.ajax({
+		type : "POST",
+		url : "./getSceneStatus",
+		contentType:"application/json;charset=utf-8",
+		async : false,
+		success : function(data) {
+			sceneStatus = data.data;
+		}
+	});
+	var htmlstyle = '<div class="title">'
+		+'<ul class="title_list">'
+		+'<li class="title_listb"><div style="cursor:pointer;"><span class="iid" style="display:none">000</span><img class="y1" src="../image/com/a0.png" width="30" height="30"onclick="" /><span class="y2" style="color:#ffffff">全部</span></div><div class="clear"></div></li>';
+	
+	if (sceneStatus[0].status == 1) {
+		htmlstyle = htmlstyle +'<li class="title_listb"><div style="cursor:pointer;"><span class="iid" style="display:none">order</span><img class="y1" src="../image/com/a2.png" width="30" height="30"onclick="" /><span class="y2" style="color:#ffffff">线上点餐</span></div><div class="clear"></div></li>';
+	}
+	
+	htmlstyle = htmlstyle
+		+'</ul>'
+	    +'</div>';
+	console.log(htmlstyle);
+	$(".content").prepend(htmlstyle);
+		
 }else if($(".content2").length>0){
-	$(".content2").prepend('<ul class="title_list">	'		
-			+'<div class="subNav1"  style="color:#F5FFFA;" onclick="myscene()">我的场景</div>	'
-			+'<div class="subNav currentDd" style="color:#F5FFFA;line-height:30px;">新增场景</div>'
-			+'	<ul class="navContent">'
-	/*		+'		<li><a href="./lotterycfg"  style="color:#F5FFFA;">转盘抽奖</a></li>'*/
-			+'		<li><a href="./ordercfg" style="color:#F5FFFA;">线上点餐</a></li>	'
-			+'		<li><a href="./salReim" style="color:#F5FFFA;">工资报销管理</a></li>	'
-/*			+'		<li><a href="./salConfig" style="color:#F5FFFA;">工资报销配置</a></li>	'*/
-/*			+'		<li><a href="./meetingCfg"  style="color:#F5FFFA;">会议助手</a></li>'
-			+'		<li><a href="./asksCfg" style="color:#F5FFFA;">考勤管理</a></li>	'*/
-			+'	</ul>	'	
-			+'</ul>');
+	var sceneStatus;
+	$.ajax({
+		type : "POST",
+		url : "./getAllSceneStatus",
+		contentType:"application/json;charset=utf-8",
+		async : false,
+		success : function(data) {
+			sceneStatus = data.data;
+		}
+	});
+	var htmlstyle = '<ul class="title_list">	'		
+	+'<div class="subNav1"  style="color:#F5FFFA;" onclick="myscene()">我的场景</div>	'
+	+'<div class="subNav currentDd" style="color:#F5FFFA;line-height:30px;">新增场景</div>'
+	+'	<ul class="navContent">';
+	
+	if (sceneStatus[0].status == 1) {
+		htmlstyle = htmlstyle +'		<li><a href="./ordercfg" style="color:#F5FFFA;">线上点餐</a></li>	';
+		htmlstyle = htmlstyle +'		<li><a href="./salReim" style="color:#F5FFFA;">工资报销管理</a></li>	';
+	}
+	
+	htmlstyle = htmlstyle 
+		+ '	</ul>	'	
+		+'</ul>';
+	console.log(htmlstyle);
+	$(".content2").prepend(htmlstyle);
 }
 if($(".content3").length>0){
 	$(".content3").prepend('<div class="title">'
 	+'<ul class="title_list">'
 	+'<li class="title_listb"><div style="cursor:pointer;"><span class="iid" style="display:none">007</span><img class="y1" src="../image/com/a7.png" width="30" height="30" /><span class="y2" style="color:#ffffff" onclick="mgLogger()">日志管理</span></div><div class="clear"></div></li>'
 	+'<li class="title_listb"><div style="cursor:pointer;"><span class="iid" style="display:none">008</span><img class="y1" src="../image/com/a8.png" width="30" height="30" /><span class="y2" style="color:#ffffff" onclick="mgPara()">参数管理</span></div><div class="clear"></div></li>'
+	+'<li class="title_listb"><div style="cursor:pointer;"><span class="iid" style="display:none">008</span><img class="y1" src="../image/com/a8.png" width="30" height="30" /><span class="y2" style="color:#ffffff" onclick="sceneSwitch()">场景开关</span></div><div class="clear"></div></li>'
 	+'</ul>'
     +'</div>');
 }
@@ -73,6 +95,10 @@ function mgLogger(){
 
 function mgPara(){
 	window.location.href="./parameter";
+}
+
+function sceneSwitch(){
+	window.location.href="./sceneSwitch";
 }
 
 Date.prototype.format = function (format) {

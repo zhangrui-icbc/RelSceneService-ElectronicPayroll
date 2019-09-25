@@ -10,13 +10,16 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.alibaba.fastjson.JSON;
 import com.icbc.rel.hefei.TO.Msg;
+import com.icbc.rel.hefei.entity.SceneSwitch;
 import com.icbc.rel.hefei.entity.SysActivityInfo;
 import com.icbc.rel.hefei.entity.SysPublicNumberInfo;
+import com.icbc.rel.hefei.service.sys.SceneSwitchService;
 import com.icbc.rel.hefei.service.sys.SysActivityService;
 import com.icbc.rel.hefei.service.sys.SysLogInfoService;
 import com.icbc.rel.hefei.service.sys.SysPublicNumberInfoService;
@@ -42,6 +45,8 @@ public class addSenceneController {
 	@Autowired
 	private SysLogInfoService logService;
 
+	@Autowired
+	private SceneSwitchService service;
 
 	/*
 	 * 进入我的场景页面 demo:
@@ -173,4 +178,14 @@ public class addSenceneController {
 		return mav;
 	}
 
+	/*
+	 * 查询全部场景状态
+	 */
+	@RequestMapping(value="/getAllSceneStatus",method=RequestMethod.POST)
+	public @ResponseBody Msg getAllSceneStatus() {
+		Msg msg = new Msg();
+		List<SceneSwitch> results = service.select();
+		msg.setData(results);
+		return msg;
+	}
 }
