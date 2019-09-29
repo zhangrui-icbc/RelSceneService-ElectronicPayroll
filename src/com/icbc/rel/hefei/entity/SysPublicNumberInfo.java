@@ -13,6 +13,8 @@ public class SysPublicNumberInfo {
 	private String Password;// 密码
 	private Integer Type;// 类型 2：标识由公众号管理平台进入；1：注册管理员
 	private Integer IcbcFlag;
+	private String Stru_ID;
+		
 
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Date CreateTime;
@@ -81,4 +83,13 @@ public class SysPublicNumberInfo {
 		IcbcFlag = icbcFlag;
 	}
 
+	public String getStru_ID() {
+		return Stru_ID;
+	}
+
+	public void setStru_ID(String stru_ID) {
+		Stru_ID = stru_ID;
+	}
+	
+	
 }

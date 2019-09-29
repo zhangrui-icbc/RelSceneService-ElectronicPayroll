@@ -85,7 +85,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="getMobileList" resultType="com.icbc.rel.hefei.entity.todo.salary.SalaryStaff">
-		select id, mobile, password, company_id as companyId, name, openId  from  salary_user 
+		select id, mobile, password, company_id as companyId, name, openId  from  salary_user where company_id =#{companyId}
 	</select>
 	<select id="getStaffInfo" resultType="com.icbc.rel.hefei.entity.todo.salary.SalaryStaff">
 		select id, mobile, password, company_id as companyId, name, openId  from  salary_user  where company_id =#{companyId}  and mobile = #{userName}

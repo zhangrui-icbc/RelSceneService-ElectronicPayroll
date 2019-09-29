@@ -5,7 +5,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.icbc.rel.hefei.dao.todo.client.SalaryWebUserMapper">
 				  
 	<select id="login"    resultType="com.icbc.rel.hefei.entity.todo.client.SalaryUser">
-		select id,mobile,password,company_id as companyId, openId as openId from  salary_user where mobile = #{username} and password =#{password} 
+		select id,mobile,password,company_id as companyId, openId as openId from  salary_user where mobile = #{username} and password =#{password} and company_id =#{companyId}
  	</select>
  	
 	<update id="resetPassword">
@@ -15,7 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select id,mobile,password,company_id as companyId , openId as openId from  salary_user where openId = #{openId} 
  	</select>
  	<update id="saveUserKey">
- 		UPDATE salary_user SET openId = #{userKey} WHERE mobile=#{username}
+ 		UPDATE salary_user SET openId = #{userKey} WHERE mobile=#{username}  and company_id =#{companyId}
  	</update>
  	<select id="getUserByName"    resultType="com.icbc.rel.hefei.entity.todo.client.SalaryUser">
 		select id,mobile,password,company_id as companyId , openId as openId from  salary_user where mobile = #{username}
@@ -24,4 +24,5 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  	<select id="getSalaryByOpenId" resultType="com.icbc.rel.hefei.entity.todo.client.SalaryUser">
  		select id,mobile,password,company_id as companyId, openId as openId from  salary_user where openId = #{openId} 
  	</select>
+ 
 </mapper>

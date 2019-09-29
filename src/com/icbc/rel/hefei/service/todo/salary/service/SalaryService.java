@@ -48,8 +48,9 @@ public interface SalaryService {
 	 /**
 	  * 保存员工信息
 	  * @param staffList
+	 * @param companyId 
 	  */
-	 AjaxResult insertStaffInfo(List<SalaryStaff> staffList);
+	 AjaxResult insertStaffInfo(List<SalaryStaff> staffList, String companyId);
 	/**
 	 * 修改员工密码
 	 * @param userName

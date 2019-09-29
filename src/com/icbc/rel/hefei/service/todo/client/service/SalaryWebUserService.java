@@ -8,9 +8,11 @@ public interface SalaryWebUserService {
 	 * 用户登录
 	 * @param username
 	 * @param password
+	 * @param companyId 
+	 * @param iMUserId 
 	 * @param openId 
 	 */
-	AjaxResult login(String username, String password, String openId);
+	AjaxResult login(String username, String password, String companyId, String iMUserId);
 	/**
 	 * 
 	 * @param username
@@ -23,7 +25,7 @@ public interface SalaryWebUserService {
 	 * @param username
 	 * @param userKey
 	 */
-	void saveUserKey(String username, String userKey);
+//	void saveUserKey(String username, String userKey);
 	/**
 	 * 根据openId获得用户信息
 	 * @param openId

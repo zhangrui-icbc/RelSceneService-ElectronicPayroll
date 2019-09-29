@@ -130,7 +130,7 @@ public class SalaryController {
 		File file = new File(fileName);
 		list.get(0).write(file);
 		List<SalaryStaff> staffList=  salaryService.uploadStaff(file,companyId);
-    	AjaxResult  ajaxResult = salaryService.insertStaffInfo(staffList);
+    	AjaxResult  ajaxResult = salaryService.insertStaffInfo(staffList,companyId);
         return ajaxResult;
     }
     

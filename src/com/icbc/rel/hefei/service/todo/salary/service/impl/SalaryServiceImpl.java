@@ -156,8 +156,8 @@ public class SalaryServiceImpl implements SalaryService {
 	  * 保存员工信息
 	  */
 	 	@Override
-	 	public AjaxResult insertStaffInfo(List<SalaryStaff> staffList) {
-	 		List<SalaryStaff> mobileList = salaryMapper.getMobileList();
+	 	public AjaxResult insertStaffInfo(List<SalaryStaff> staffList, String companyId) {
+	 		List<SalaryStaff> mobileList = salaryMapper.getMobileList(companyId);
 	 		for (int i = 0; i < mobileList.size(); i++) {
 				for (int j = 0; j < staffList.size(); j++) {
 					if(mobileList.get(i).getMobile().equals(staffList.get(j).getMobile())) {

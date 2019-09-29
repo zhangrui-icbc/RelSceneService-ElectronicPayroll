@@ -10,12 +10,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.icbc.rel.hefei.entity.SceneSwitch;
+import com.icbc.rel.hefei.entity.SysActivityInfo;
+import com.icbc.rel.hefei.entity.SysPublicNumberInfo;
 import com.icbc.rel.hefei.entity.UserDetailInfo;
 import com.icbc.rel.hefei.entity.todo.client.SalaryUser;
 import com.icbc.rel.hefei.entity.todo.salary.AjaxResult;
 import com.icbc.rel.hefei.service.rel.ImUserService;
+import com.icbc.rel.hefei.service.sys.SceneSwitchService;
+import com.icbc.rel.hefei.service.sys.SysActivityService;
+import com.icbc.rel.hefei.service.sys.SysPublicNumberInfoService;
 import com.icbc.rel.hefei.service.todo.client.service.SalaryWebUserService;
 import com.icbc.rel.hefei.service.todo.salary.service.SalaryUserService;
+import com.icbc.rel.hefei.util.EnumUtil;
 import com.icbc.rel.hefei.util.PasswordCheck;
 import com.icbc.rel.hefei.util.SessionParamConstant;
 import com.icbc.rel.hefei.util.SessionUtil;
@@ -35,6 +42,13 @@ public class SalaryWebUserController {
 	@Autowired
 	private SalaryUserService salaryUserService;
 	
+	@Autowired
+	private SysActivityService sysActivityService;
+	@Autowired
+	private SysPublicNumberInfoService sysPublicNumberInfoService;
+	@Autowired
+	private SceneSwitchService sceneSwitchService;
+	
 	/**
 	 * 跳转工资条登录页面
 	 * @return
@@ -42,10 +56,23 @@ public class SalaryWebUserController {
 	@RequestMapping("/jumpLogin")
 	public String jumpSalary(HttpServletRequest request)
 	{
-		String openId = (String) request.getSession().getAttribute(SessionParamConstant.SESSION_PARAM_USERKEY);
-		SalaryUser user = salaryWebUserService.getUserByOpenId(openId);
-		request.getSession().setAttribute("user", user);
-	    return  "todo/client/login";
+		//TODO 增加地区判断 
+		/*客户端得通过活动链接里的activityuid获取对应的mpid然后通过syspublicnumberinfo那张表找到该公众号的机构号，如果这张表里还没有机构号这个数据，就再走一次拉取公众号信息的接口来获取机构号(个人判断不会没有机构号,因为pc端已经判断好了)*/
+		String activityUid = request.getParameter("activityUid");
+		request.getSession().setAttribute(SessionParamConstant.SESSION_PARAM_COMPANYID, activityUid);
+		SysActivityInfo sysActivityInfo = sysActivityService.getSceneByUid(activityUid);
+		SysPublicNumberInfo  sysPublicNumberInfo = sysPublicNumberInfoService.getPublicNumberInfoByMpid(sysActivityInfo.getMpId());
+		SceneSwitch sceneSwitch =  sceneSwitchService.selectByScene("salary");
+		String  visibleareas = sceneSwitch.getVisibleAreas();
+//		if(!visibleareas.contains(sysPublicNumberInfo.getStru_ID())) {
+//			return  "empty";
+//		}else {
+			String openId = (String) request.getSession().getAttribute(SessionParamConstant.SESSION_PARAM_USERKEY);
+			SalaryUser user = salaryWebUserService.getUserByOpenId(openId);
+			request.getSession().setAttribute("user", user);
+		    return  "todo/client/login";	
+//		}
+
 	}
 	
 	/**
@@ -121,23 +148,23 @@ public class SalaryWebUserController {
     @RequestMapping(value="/login",method = RequestMethod.POST)
     @ResponseBody
     public AjaxResult login(HttpServletRequest request, String password){
-//    	String IMUserId=SessionUtil.getImUserId(request.getSession());
+//    	String IMUserId=SessionUtil.getImUserId(request.getSession()); //正确的获取openid方式
     	String IMUserId="123";
 		//拉取用户详情
 		UserDetailInfo userinfo=ImUserService.FetchUserInfo(IMUserId);
 		String username = userinfo.getMobileNo();
-		String  companyId = salaryUserService.getCompanyIdByMobile(username);
-		request.getSession().setAttribute(SessionParamConstant.SESSION_PARAM_COMPANYID, companyId);
+		//TODO 这步骤不对,万一场景删除了不存在了,就有问题了,待改
+		String  companyId = (String) request.getSession().getAttribute(SessionParamConstant.SESSION_PARAM_COMPANYID);
     	if(StringUtils.isEmpty(password)) {
     		return AjaxResult.error("密码为空,请检查后重新输入");
     	}else {
-    		AjaxResult ajaxResult = salaryWebUserService.login(username,password,IMUserId);
+    		//TODO IMUserId即openid问题  是否要加一个公司id参数(场景id)
+    		AjaxResult ajaxResult = salaryWebUserService.login(username,password,companyId,IMUserId);
     		int code = (int) ajaxResult.get("code");
     		if(code!=0) {
     			return ajaxResult;
     		}else {
     			request.getSession().setAttribute(SessionParamConstant.SESSION_PARAM_USERKEY, IMUserId);
-    			salaryWebUserService.saveUserKey(username,IMUserId);
     			request.getSession().setAttribute("user", ajaxResult.get("data"));
     			return ajaxResult;
     		}

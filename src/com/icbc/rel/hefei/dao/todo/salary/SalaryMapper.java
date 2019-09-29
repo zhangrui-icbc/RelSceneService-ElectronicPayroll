@@ -62,10 +62,11 @@ public interface SalaryMapper{
 	
 	/**
 	 * 查询该公司旗下手机号码
+	 * @param companyId 
 	 * @param companyId
 	 * @return
 	 */
-	List<SalaryStaff> getMobileList();
+	List<SalaryStaff> getMobileList(@Param("companyId")String companyId);
 	
 	SalaryStaff getStaffInfo(@Param("userName")String userName,  @Param("companyId")String companyId);
 	
