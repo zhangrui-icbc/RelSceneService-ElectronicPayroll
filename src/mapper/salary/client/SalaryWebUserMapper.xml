@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.salary.client.SalaryWebUserMapper">
+				  
+	<select id="login"    resultType="com.icbc.rel.hefei.entity.salary.client.SalaryUser">
+		select id,mobile,password,company_id as companyId, openId as openId from  salary_user where mobile = #{username} and password =#{password} and company_id =#{companyId}
+ 	</select>
+ 	
+	<update id="resetPassword">
+		update salary_user set password =#{password1}  where mobile = #{username}
+	</update>
+	<select id="getUserByOpenId"    resultType="com.icbc.rel.hefei.entity.salary.client.SalaryUser">
+		select id,mobile,password,company_id as companyId , openId as openId from  salary_user where openId = #{openId} and company_id =#{companyId}
+ 	</select>
+ 	<update id="saveUserKey">
+ 		UPDATE salary_user SET openId = #{userKey} WHERE mobile=#{username}  and company_id =#{companyId}
+ 	</update>
+ 	<select id="getUserByName"    resultType="com.icbc.rel.hefei.entity.salary.client.SalaryUser">
+		select id,mobile,password,company_id as companyId , openId as openId from  salary_user where mobile = #{username}
+ 	</select>
+ 	
+ 
+</mapper>

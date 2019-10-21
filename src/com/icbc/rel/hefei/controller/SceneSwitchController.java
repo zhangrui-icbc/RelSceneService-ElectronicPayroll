@@ -16,7 +16,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.icbc.rel.hefei.TO.Msg;
 import com.icbc.rel.hefei.entity.SceneSwitch;
+import com.icbc.rel.hefei.entity.SysBankOrgInfo;
 import com.icbc.rel.hefei.service.sys.SceneSwitchService;
+import com.icbc.rel.hefei.service.sys.SysBankOrgInfoService;
 
 @Controller
 @RequestMapping(value="/ad")
@@ -25,6 +27,8 @@ public class SceneSwitchController {
 	
 	@Autowired
 	private SceneSwitchService service;
+	@Autowired
+	private SysBankOrgInfoService sysBankOrgInfoService;
 	
 	@RequestMapping(value="/sceneSwitch")
 	public ModelAndView sceneSwitch() {
@@ -68,5 +72,15 @@ public class SceneSwitchController {
 		Msg msg = new Msg(1,"修改成功");
 		logger.info("修改场景 "+info.getSceneName()+" 状态为"+info.getStatus()+"成功");
 		return msg;
+	}
+	
+	/**
+	 * 所有地区
+	 */
+	@RequestMapping(value="/bankorginfo")
+	@ResponseBody
+	public List<SysBankOrgInfo>  bankorginfo(HttpServletRequest request) {
+		List<SysBankOrgInfo> list = sysBankOrgInfoService.getBankorginfo();
+		return list;
 	}
 }

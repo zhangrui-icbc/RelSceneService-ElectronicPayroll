@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.salary.SalaryAlternativeMapper">
+	<!-- 查询备选信息 -->
+	<select id="getAlternativeInfo"    resultType="com.icbc.rel.hefei.entity.salary.SalaryTemplateAlternative">
+		select * from salary_template_alternative
+	</select>
+	
+	<!-- 插入备选字段 -->
+	<insert id="addAlternative"   useGeneratedKeys="true" keyProperty="id" parameterType = "com.icbc.rel.hefei.entity.salary.SalaryTemplateAlternative">
+		insert into salary_template_alternative ( name , category ) values  (#{name},#{category})
+	</insert>
+	
+	<!-- 删除备选字段 -->
+	<insert id="delAlternative"    parameterType = "java.lang.Integer">
+		delete from  salary_template_alternative where id = #{id}
+	</insert>
+	
+	<!-- 修改备选字段 -->
+	<update id="updateAlternative"    parameterType = "com.icbc.rel.hefei.entity.salary.SalaryTemplateAlternative">
+		update  salary_template_alternative set name = #{name}, category =#{category}  where id =#{id}
+	</update>
+	
+	<!-- 是否存在 -->
+	<select id="judge"   resultType="com.icbc.rel.hefei.entity.salary.SalaryTemplateAlternative">
+		select * from salary_template_alternative where  name = #{name}
+	</select>
+	<!-- 查询备选字段 -->
+	<select id="getAlternativeInfoAlone" resultType="com.icbc.rel.hefei.entity.salary.SalaryTemplateAlternative">
+		select * from salary_template_alternative where id= #{id}
+	</select>
+</mapper>

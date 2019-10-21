@@ -49,7 +49,9 @@ if($(".content").length>0){
 	
 	if (sceneStatus[0].status == 1) {
 		htmlstyle = htmlstyle +'		<li><a href="./ordercfg" style="color:#F5FFFA;">线上点餐</a></li>	';
-		htmlstyle = htmlstyle +'		<li><a href="./salReim" style="color:#F5FFFA;">工资报销管理</a></li>	';
+	}
+	if (sceneStatus[1].status == 1||sceneStatus[1].status == 0) {
+		htmlstyle = htmlstyle +'		<li><a href="./salConfig" style="color:#F5FFFA;">工资报销管理</a></li>	';
 	}
 	
 	htmlstyle = htmlstyle 

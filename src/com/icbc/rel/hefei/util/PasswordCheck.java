@@ -13,7 +13,7 @@ public class PasswordCheck {
 	 */
 	public static String checkPassword(String passwordStr) {
 	    if (passwordStr != null && !"".equals(passwordStr) && (passwordStr.length() < 6 || passwordStr.length() > 12)) {
-	        return "密码为 6-12 位字母、数字或英文字符!";
+	        return "密码为不含符号，不连续的6–12位数字或字母组合";
 	    }
 	    // Z = 字母       S = 数字           T = 特殊字符
 	    String regexZ = "[A-Za-z]+";

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.SysBankOrgInfoDao">
+	<select id="getBankorginfo"  resultType="com.icbc.rel.hefei.entity.SysBankOrgInfo">
+		select * from sys_bankorginfo 
+	</select>
+	
+	<select  id="getOrgId"  resultType="java.lang.String">
+		select orgId from sys_bankorginfo where orgId like #{orgId}"%"
+	</select>
+</mapper>

@@ -13,19 +13,20 @@ import org.apache.log4j.Logger;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.icbc.rel.hefei.entity.SysPublicNumberInfo;
 import com.icbc.rel.hefei.entity.UserDetailInfo;
 import com.icbc.rel.hefei.util.SystemConfigUtil;
 
 /*
- * »ñÈ¡ÈÚeÁªÓÃ»§ÏêÇéĞÅÏ¢
+ * è·å–èeè”ç”¨æˆ·è¯¦æƒ…ä¿¡æ¯
  */
 public class ImUserService {
 	private static final Logger logger = Logger.getLogger(ImUserService.class);
 
 	/*
-	 * »ñÈ¡ÓÃ»§ĞÅÏ¢ return:êÇ³Æ¡¢Ê¡³ÇÊĞ¡¢×¢²áÊ±¼ä¡¢ĞÇ¼¶¡¢ÊÖ»úºÅ¡¢ÊÇ·ñÊµÃûµÈĞÅÏ¢ 1.ÇëÇóÊı¾İÖĞ²»ÒªÓĞ¶àÓàµÄ¿Õ¸ñ¡£ 2.ÒªÇóÊ¹ÓÃ×Ö·û¼¯UTF-8¡£
-	 * 3.×¢ÒâÇëÇóµØÖ·ÒÔhttp¿ªÍ·£¬¶ø²»ÊÇhttps¡£ 4.ÇëÇóÊı¾İµÄÖµÒª×öURL±àÂë´¦Àí£¬·ñÔò¶ÔÓÚÒ»Ğ©ÌØÊâ×Ö·û¿ÉÄÜ»áÔÚURL½âÂëÊ±·¢Éú´íÎó¡£
-	 * 5.·µ»ØµÄÊı¾İÒª×öURL½âÂë´¦Àí¡£
+	 * è·å–ç”¨æˆ·ä¿¡æ¯ return:æ˜µç§°ã€çœåŸå¸‚ã€æ³¨å†Œæ—¶é—´ã€æ˜Ÿçº§ã€æ‰‹æœºå·ã€æ˜¯å¦å®åç­‰ä¿¡æ¯ 1.è¯·æ±‚æ•°æ®ä¸­ä¸è¦æœ‰å¤šä½™çš„ç©ºæ ¼ã€‚ 2.è¦æ±‚ä½¿ç”¨å­—ç¬¦é›†UTF-8ã€‚
+	 * 3.æ³¨æ„è¯·æ±‚åœ°å€ä»¥httpå¼€å¤´ï¼Œè€Œä¸æ˜¯httpsã€‚ 4.è¯·æ±‚æ•°æ®çš„å€¼è¦åšURLç¼–ç å¤„ç†ï¼Œå¦åˆ™å¯¹äºä¸€äº›ç‰¹æ®Šå­—ç¬¦å¯èƒ½ä¼šåœ¨URLè§£ç æ—¶å‘ç”Ÿé”™è¯¯ã€‚
+	 * 5.è¿”å›çš„æ•°æ®è¦åšURLè§£ç å¤„ç†ã€‚
 	 */
 	public static UserDetailInfo FetchUserInfo(String imUserId) {
 		UserDetailInfo userDetail = new UserDetailInfo();
@@ -42,13 +43,13 @@ public class ImUserService {
 			}
 			return userDetail;
 		}
-		String returnstr = null;// ·µ»Ø½á¹ûµÄ×Ö·û´®
+		String returnstr = null;// è¿”å›ç»“æœçš„å­—ç¬¦ä¸²
 		try {
 
 			String apiUrl = SystemConfigUtil.apiUrl;
 			String url = apiUrl + "IMServiceServer/servlet/ThirdPartyServlet?Channel=IM&fCode=HF001&userid="
 					+ URLEncoder.encode(imUserId, "utf-8");
-			logger.info("»ñÈ¡ÓÃ»§ĞÅÏ¢url" + url);
+			logger.info("è·å–ç”¨æˆ·ä¿¡æ¯url" + url);
 			HttpGet httpget = new HttpGet(url);
 			HttpClient client = new DefaultHttpClient();
 			HttpResponse result = client.execute(httpget);
@@ -62,7 +63,7 @@ public class ImUserService {
 			JSONObject jsonret = JSONObject.parseObject(returnstr);
 			JSONObject err = jsonret.getJSONObject("PUBLIC");
 			JSONObject data = jsonret.getJSONObject("PRIVATE");
-			// errcode·µ»ØÖµ0±íÊ¾³É¹¦£¬ÆäÓà¾ùÎªÊ§°Ü
+			// errcodeè¿”å›å€¼0è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä½™å‡ä¸ºå¤±è´¥
 			if (err.getString("errcode").trim().equals("0")) {
 				userDetail.setCisno(data.getString("cisno"));
 				userDetail.setCity(data.getString("city"));
@@ -85,9 +86,76 @@ public class ImUserService {
 			}
 
 		} catch (Exception e) {
-			logger.error("À­È¡ÓÃ»§ĞÅÏ¢±¨´í", e);
+			logger.error("æ‹‰å–ç”¨æˆ·ä¿¡æ¯æŠ¥é”™", e);
 			return null;
 		}
 	}
+	
+	/*
+	 * 	å…¬ä¼—å·ä¿¡æ¯æŸ¥è¯¢
+	 */
+	public static SysPublicNumberInfo FetchPubAddrInfo(SysPublicNumberInfo publicNumberInfo) {
+		if (SystemConfigUtil.isDebug) {
+			if (publicNumberInfo.getPublicNumberId().equals("10090076")) {
+				publicNumberInfo.setStruName("åŒ—äº¬åˆ†è¡Œ");
+				publicNumberInfo.setOrgName("åŒ—äº¬æ´‹æ´‹å›å®‰ç‰©ä¸šç®¡ç†æœ‰é™å…¬å¸");
+				publicNumberInfo.setStru_ID("0020000000");
+				publicNumberInfo.setUserType("1");
+				publicNumberInfo.setMpSubFlag("1");
+			}
+			return publicNumberInfo;
+		}
+		String xml = "<?xml version=\"1.0\" encoding=\"GBK\"?>\r\n" + 
+				"<APPROOT>\r\n" + 
+				"ã€€ã€€<PUBLIC>\r\n" + 
+				"<fcode>Y0001</fcode>\r\n" + 
+				"<server_ip>äº¤æ˜“å‘èµ·ç»ˆç«¯å·ï¼ˆåº”ç”¨æœåŠ¡å™¨IPï¼‰</server_ip>\r\n" + 
+				"<dt>æ—¥æœŸï¼ˆæ ¼å¼ï¼šyyyy-mm-ddï¼‰</dt>\r\n" + 
+				"<tm>å‰ç«¯å¼€å§‹æ—¶é—´ï¼ˆæ ¼å¼ä¸ºæ—¶åˆ†ç§’ï¼Œå¦‚ï¼š083033ï¼‰</tm>\r\n" + 
+				"Â Â Â Â Â Â Â Â <channelIdentifier></channelIdentifier>\r\n" + 
+				"Â Â Â Â Â Â Â Â <channeLcODE>æ¸ é“ä»£ç ï¼ˆF-MIMSï¼‰</channeLcODE>\r\n" + 
+				"</PUBLIC>\r\n" + 
+				"<PRIVATE>\r\n" + 
+				"Â Â Â <MPId>"+publicNumberInfo.getPublicNumberId()+"</MpId>\r\n" + 
+				"Â Â Â </PRIVATE>";
+		String returnstr = null;// è¿”å›ç»“æœçš„å­—ç¬¦ä¸²
+		try {
 
+			String apiUrl = SystemConfigUtil.apiUrl;
+			String url = apiUrl + "IMServiceServer/servlet/ThirdPartyServlet?Channel=IM&fCode=HF006&xmlString="
+					+ URLEncoder.encode(xml, "GBK");
+			logger.info("è·å–å…¬ä¼—å·ä¿¡æ¯url" + url);
+			HttpGet httpget = new HttpGet(url);
+			HttpClient client = new DefaultHttpClient();
+			HttpResponse result = client.execute(httpget);
+			byte[] returnByte = IOUtils.toByteArray(result.getEntity().getContent());
+			returnstr = new String(returnByte, "utf-8");
+			logger.info("return:" + returnstr);
+			if (returnstr == null || returnstr.equals("")) {
+				return null;
+			}
+			returnstr = URLDecoder.decode(returnstr, "utf-8");
+			JSONObject jsonret = JSONObject.parseObject(returnstr);
+			JSONObject err = jsonret.getJSONObject("PUBLIC");
+			JSONObject data = jsonret.getJSONObject("PRIVATE");
+			// errcodeè¿”å›å€¼0è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä½™å‡ä¸ºå¤±è´¥
+			if (err.getString("errcode").trim().equals("0")) {
+				publicNumberInfo.setStruName(data.getString("struName"));
+				publicNumberInfo.setOrgName(data.getString("orgName"));
+				publicNumberInfo.setStru_ID(data.getString("Stru_ID"));
+				publicNumberInfo.setUserType(data.getString("userType"));
+				publicNumberInfo.setMpSubFlag(data.getString("mpSubFlag"));
+				logger.info(JSON.toJSON(publicNumberInfo));
+				return publicNumberInfo;
+			} else {
+				return null;
+			}
+
+		} catch (Exception e) {
+			logger.error("æ‹‰å–ç”¨æˆ·ä¿¡æ¯æŠ¥é”™", e);
+			return null;
+		}
+	}
+	
+	
 }

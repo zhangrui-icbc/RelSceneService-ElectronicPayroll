@@ -22,7 +22,12 @@
 		`PASSWORD`,
 		`TYPE`,
 		ICBCFLAG,
-		CREATETIME)
+		CREATETIME,
+		STRU_ID,
+		ORGNAME,
+		STRUNAME,
+		MPSUBFLAG,
+		USERTYPE)
 		VALUES(
 		#{PublicNumberName},
 		#{PublicNumberId},
@@ -30,8 +35,13 @@
 		#{Password},
 		#{Type},
 		#{IcbcFlag},
-		#{CreateTime})
-		ON DUPLICATE KEY UPDATE PUBLICNUMBERNAME=#{PublicNumberName} ,	ICBCFLAG=#{IcbcFlag}
+		#{CreateTime},
+		#{Stru_ID},
+		#{StruName},
+		#{OrgName},
+		#{UserType},
+		#{MpSubFlag})
+		ON DUPLICATE KEY UPDATE PUBLICNUMBERNAME=#{PublicNumberName} ,	ICBCFLAG=#{IcbcFlag} ,STRU_ID = #{Stru_ID}, ORGNAME = #{OrgName} , STRUNAME=#{StruName} ,MPSUBFLAG=#{MpSubFlag} ,USERTYPE=#{UserType}
 	</insert>
     
     

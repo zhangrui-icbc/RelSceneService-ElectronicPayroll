@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.icbc.rel.hefei.dao.salary.SalaryUserMapper">
+	<select id="login" resultType = "java.lang.Integer">
+		select count(1) from  salary_user where mobile = #{username} and password =#{password} 
+ 	</select>
+	<update id="resetPassword">
+		update salary_user set password =#{password1}  where mobile = #{username}
+	</update>
+	<select id="getCompanyIdByMobile"  resultType = "java.lang.String">
+		select company_id from  salary_user where mobile = #{username}
+	</select>
+</mapper>

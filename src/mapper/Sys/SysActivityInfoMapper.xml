@@ -45,7 +45,7 @@
   </select> -->
    
    <select id="getMyScene" resultType="com.icbc.rel.hefei.entity.SysActivityInfo">
-     select  a.* from SYS_ACTIVITYINFO a left join scene_switch b on a.RELSCENEUID = b.SCENE where b.Status = 1 and a.mpId=#{mpId} and a.Status=0
+     select  a.* from SYS_ACTIVITYINFO a left join scene_switch b on a.RELSCENEUID = b.SCENE where (b.Status = 1 or b.Status = 0) and a.mpId=#{mpId} and a.Status=0
      
      <if test="activityName !=null and activityName != ''">
 		and a.activityName = #{activityName}

@@ -9,4 +9,5 @@ public class SessionParamConstant {
     public static final String SESSION_PARAM_USER = "user";//user
     public static final String SESSION_PARAM_COMPANYID = "companyId";//user
     public static final String PC_SESSION_PARAM_COMPANYID = "pcCompanyId";//user
+    public static final String DISPLAY_OR_NOT = "displayOrNot";//是否显示工资单,0不显示;1显示
 }

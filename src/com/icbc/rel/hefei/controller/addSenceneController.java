@@ -19,12 +19,15 @@ import com.icbc.rel.hefei.TO.Msg;
 import com.icbc.rel.hefei.entity.SceneSwitch;
 import com.icbc.rel.hefei.entity.SysActivityInfo;
 import com.icbc.rel.hefei.entity.SysPublicNumberInfo;
+import com.icbc.rel.hefei.service.rel.ImUserService;
 import com.icbc.rel.hefei.service.sys.SceneSwitchService;
 import com.icbc.rel.hefei.service.sys.SysActivityService;
+import com.icbc.rel.hefei.service.sys.SysBankOrgInfoService;
 import com.icbc.rel.hefei.service.sys.SysLogInfoService;
 import com.icbc.rel.hefei.service.sys.SysPublicNumberInfoService;
 import com.icbc.rel.hefei.util.CommonUtil;
 import com.icbc.rel.hefei.util.EnumUtil;
+import com.icbc.rel.hefei.util.SessionParamConstant;
 import com.icbc.rel.hefei.util.SessionUtil;
 import com.icbc.rel.hefei.util.RSA.DecryptMpInfo;
 
@@ -47,6 +50,9 @@ public class addSenceneController {
 
 	@Autowired
 	private SceneSwitchService service;
+	@Autowired
+	private SysBankOrgInfoService bankOrgInfoService;
+	
 
 	/*
 	 * 进入我的场景页面 demo:
@@ -92,7 +98,6 @@ public class addSenceneController {
 				if (paralist.length == 5) {
 					username += "&" + paralist[4];
 				}
-
 				SysPublicNumberInfo info = new SysPublicNumberInfo();
 				info.setPublicNumberId(mpid);
 				info.setPublicNumberAccount(loginid);
@@ -101,6 +106,8 @@ public class addSenceneController {
 				info.setType(2);
 				info.setIcbcFlag(icbcflag);
 				info.setCreateTime(new Date());
+				//拉取公众号信息并保存
+			    info = ImUserService.FetchPubAddrInfo(info);
 				mpService.insert(info);
 				logger.info("解密上送参数获得公众号mpid:" + mpid + ";公众号名称:" + username);
 				SessionUtil.setMpSession(request.getSession(), mpid, username);
@@ -132,7 +139,22 @@ public class addSenceneController {
 		List<SysActivityInfo> result1 =new ArrayList<SysActivityInfo>();
 		result = sysActivityService.getMyScene(mpId, activityName);
 		logger.info("处理前的"+JSON.toJSONString(result));
-		
+		//在此判断地区是否应该显示.参数只有openid
+		SysPublicNumberInfo info = new SysPublicNumberInfo();
+		info.setPublicNumberId(mpId);
+		info = ImUserService.FetchPubAddrInfo(info);
+		String  paramStruId =  info.getStru_ID();//机构代码
+		String orgId = bankOrgInfoService.getOrgId(paramStruId.substring(0, 3));
+		SceneSwitch  sceneSwitch = service.selectByScene("salary");
+		request.getSession().setAttribute(SessionParamConstant.DISPLAY_OR_NOT,"1");
+		if(!sceneSwitch.getVisibleAreas().contains(orgId)) {
+			for (int i = 0; i < result.size(); i++) {
+				if(result.get(i).getRelSceneUid().equals("salary")) {
+					result.remove(i);
+					request.getSession().setAttribute(SessionParamConstant.DISPLAY_OR_NOT,"0");
+				}
+			}
+		}
 		/*//关闭存量转盘抽奖的数据：ILNIQ
 		for(int i=0;i<result.size();i++) {
 			if(!(result.get(i).getRelSceneUid().equals("lottery"))) {				
@@ -140,7 +162,7 @@ public class addSenceneController {
 			}
 		}*/
 		logger.info("处理后的"+JSON.toJSONString(result1));
-
+		
 		Msg msg = new Msg(0, "查询成功");
 		msg.setData(result);
 		return msg;
@@ -159,7 +181,7 @@ public class addSenceneController {
 		activity.setStatus(-1);
 		
 		logService.transforlog(activity, oldactivity, 2, oldactivity.getRelSceneName(), activity.getMpName(),
-				activity.getActivityName(), "更新配置");
+		activity.getActivityName(), "更新配置");
 		Msg msg = new Msg(0, "删除成功");
 		return msg;
 

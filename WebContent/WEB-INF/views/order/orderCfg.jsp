@@ -68,7 +68,6 @@
 		  </div>
 		 </div></div>
 	      </div> 
-
 	        <div id="param-panel">
 	         <div class="layui-card">
 	             <div class="layui-card-header">参数配置</div>
