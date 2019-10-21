@@ -44,6 +44,7 @@ function  detail(){
 			 	          }
 //			 	      备注
 			 	      if(category==55){
+			 	       txt="<p><span>"+list.templateColName+"</span>&nbsp;<span>"+list.importAmount+"</span></p>";
 			 	       $(".list-box").eq(4).prepend(txt);
 			 	       
 			 	          }

@@ -8,7 +8,7 @@ $(function() {
 	
 function  detail(){
 	$.ajax({
-	    url : ctx+"/mp/reimbursement/getReDetail",// 获取自己系统后台用户信息接口
+	    url : ctx+"/com/reimbursement/getReDetail",// 获取自己系统后台用户信息接口
 	    data :{"salaryId":salaryId,"issueTime":issueTime,"userId":userId},
 	    type : "POST",
 	    dataType: "json",
