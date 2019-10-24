@@ -147,7 +147,7 @@ public class SalConfigController {
 				String activityUid=sysService.generateSn("activity_",new Date(),null);
 				request.getSession().setAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID, activityUid);
 				activity.setActivityName(info.getActivityName());
-				url=SystemConfigUtil.domainName+"RelSceneService/mp/salaryWebUser/jumpLogin?activityUid="+activityUid+"&67f977b1ad597511737fff13a2909c1614c41391=0";
+				url=SystemConfigUtil.domainName+"RelSceneService/com/salaryWebUser/jumpLogin?activityUid="+activityUid+"&67f977b1ad597511737fff13a2909c1614c41391=0";
 				activity.setActivityUid(activityUid);
 				activity.setCreateTime(new Date());
 				activity.setModifyTime(new Date());

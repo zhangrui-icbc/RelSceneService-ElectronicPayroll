@@ -57,6 +57,9 @@ public class SceneSwitchController {
 		Msg msg = new Msg();
 		logger.info(scene);
 		SceneSwitch result = service.selectByScene(scene);
+		if(result.getStatus()==0) {
+			result.setStatus(1);
+		}
 		msg.setData(result);
 		return msg;
 	}

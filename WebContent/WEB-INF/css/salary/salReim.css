@@ -91,7 +91,7 @@ html{
     width: 100%;
     background: white;
     height: 100%;
-    background: rgba(0,0,0,.2);
+    background: rgba(0, 0, 0, 0.47);
     top: 0;
     padding: 0 0;
     overflow: scroll;

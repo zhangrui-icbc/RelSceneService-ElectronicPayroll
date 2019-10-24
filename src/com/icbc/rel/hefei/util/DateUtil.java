@@ -24,6 +24,14 @@ public class DateUtil {
         String ftime = sdf.format(d);
         return ftime;
     }
+    
+    public static String getFMtime() {
+        Calendar now = Calendar.getInstance();
+        Date d = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("HHmmss");
+        String ftime = sdf.format(d);
+        return ftime;
+    }
 
     public static String getRectime() {
 
@@ -55,5 +63,26 @@ public class DateUtil {
         }
         return rectime;
     }
+    
+    public static String getYDate() {
+    	Calendar cal=Calendar.getInstance();
+        cal.add(Calendar.DATE,-1);
+        Date d=cal.getTime();
+	    SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+	    String yDate=sdf.format(d);//获取昨天日期
+		return yDate;
+    }
+    
+   public static String dateToStr(Date date) {
+	   SimpleDateFormat myFmt=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	   String dateStr=myFmt.format(date);
+	   return dateStr;
+   }
+   
+   public static String tmToStr(Date date) {
+	   SimpleDateFormat myFmt=new SimpleDateFormat("HHmmss");
+	   String dateStr=myFmt.format(date);
+	   return dateStr;
+   }
 }
 

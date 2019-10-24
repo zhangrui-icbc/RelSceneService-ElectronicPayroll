@@ -20,6 +20,7 @@ import com.icbc.rel.hefei.entity.SceneSwitch;
 import com.icbc.rel.hefei.entity.SysActivityInfo;
 import com.icbc.rel.hefei.entity.SysPublicNumberInfo;
 import com.icbc.rel.hefei.service.rel.ImUserService;
+import com.icbc.rel.hefei.service.rel.PublicNumberInfoService;
 import com.icbc.rel.hefei.service.sys.SceneSwitchService;
 import com.icbc.rel.hefei.service.sys.SysActivityService;
 import com.icbc.rel.hefei.service.sys.SysBankOrgInfoService;
@@ -107,7 +108,7 @@ public class addSenceneController {
 				info.setIcbcFlag(icbcflag);
 				info.setCreateTime(new Date());
 				//拉取公众号信息并保存
-			    info = ImUserService.FetchPubAddrInfo(info);
+			    info = PublicNumberInfoService.FetchPubAddrInfo(info);
 				mpService.insert(info);
 				logger.info("解密上送参数获得公众号mpid:" + mpid + ";公众号名称:" + username);
 				SessionUtil.setMpSession(request.getSession(), mpid, username);
@@ -142,7 +143,7 @@ public class addSenceneController {
 		//在此判断地区是否应该显示.参数只有openid
 		SysPublicNumberInfo info = new SysPublicNumberInfo();
 		info.setPublicNumberId(mpId);
-		info = ImUserService.FetchPubAddrInfo(info);
+		info = PublicNumberInfoService.FetchPubAddrInfo(info);
 		String  paramStruId =  info.getStru_ID();//机构代码
 		String orgId = bankOrgInfoService.getOrgId(paramStruId.substring(0, 3));
 		SceneSwitch  sceneSwitch = service.selectByScene("salary");

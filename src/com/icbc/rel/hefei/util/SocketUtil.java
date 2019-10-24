@@ -91,7 +91,7 @@ public class SocketUtil {
     /*
      * 获取本机ip地址
      */
-    private static String getLocalIp() {
+    public static String getLocalIp() {
 		String net = null;
 		String local = null;
 		try {
