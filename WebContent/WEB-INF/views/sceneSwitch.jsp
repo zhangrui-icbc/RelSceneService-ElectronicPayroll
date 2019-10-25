@@ -242,23 +242,23 @@ function para(key,name,value){
 			if(info.scene=="salary"){
 				var jsonArea=visibleAreas;
 				var  size = jsonArea.length;
-				if(info.status!=-1){
 					if(jsonArea.length==0){
 						info.visibleAreas ="none"; 	
 						info.status = 0;
 					}else {
-					for(var i=0;i<jsonArea.length;i++){
-						delete  jsonArea[i].XM_PID_VALUE;
-						delete  jsonArea[i].innerHTML;
-						delete  jsonArea[i].disabled;
-						}
-					info.visibleAreas =JSON.stringify(jsonArea);
-						info.status = 0;
-						if(jsonArea.length==38){
-							info.status = 1;
-						}
+						for(var i=0;i<jsonArea.length;i++){
+							delete  jsonArea[i].XM_PID_VALUE;
+							delete  jsonArea[i].innerHTML;
+							delete  jsonArea[i].disabled;
+							}
+						info.visibleAreas =JSON.stringify(jsonArea);
+							if(info.status !=-1){
+								info.status = 0;
+							}
+							if(jsonArea.length==38){
+								info.status = 1;
+							}
 					}
-				}
 
 			}
 			$.ajax({

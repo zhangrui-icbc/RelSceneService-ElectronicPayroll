@@ -176,11 +176,14 @@ public class SalaryController {
     @RequestMapping("/salary/updatePwd")
     @ResponseBody
     public AjaxResult updatePwd(HttpServletRequest request){
+    	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
+    	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
+    		return AjaxResult.error("活动失效!");
+    	}
     	String userName = request.getParameter("userName");
     	if(StringUtils.isEmpty(userName)) {
     		return AjaxResult.error("手机号不能为空!");
     	}
-    	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	SalaryStaff salaryStaff = salaryService.getStaffInfo(userName,companyId);
     	if(salaryStaff==null) {
     		return AjaxResult.error("该账号不存在!");
@@ -197,11 +200,14 @@ public class SalaryController {
     @RequestMapping("/salary/delStaff")
     @ResponseBody
     public AjaxResult delStaff(HttpServletRequest request){
+    	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
+    	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
+    		return AjaxResult.error("活动失效!");
+    	}
     	String userName = request.getParameter("userName");
     	if(StringUtils.isEmpty(userName)) {
     		return AjaxResult.error("手机号不能为空!");
     	}
-    	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	SalaryStaff salaryStaff = salaryService.getStaffInfo(userName,companyId);
     	if(salaryStaff==null) {
     		return AjaxResult.error("该账号不存在!");
@@ -217,6 +223,10 @@ public class SalaryController {
     @RequestMapping("/salary/exchangeMobile")
     @ResponseBody
     public AjaxResult exchangeMobile(HttpServletRequest request){
+    	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
+    	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
+    		return AjaxResult.error("活动失效!");
+    	}
     	String userName = request.getParameter("userName");
     	String newUserName = request.getParameter("newUserName");
     	String newUserName1 = request.getParameter("newUserName1");
@@ -231,7 +241,6 @@ public class SalaryController {
     	if(flag>0) {
     		return AjaxResult.error("新手机号已存在!");
     	}
-    	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	SalaryStaff salaryStaff = salaryService.getStaffInfo(userName,companyId);
     	if(salaryStaff==null) {
     		return AjaxResult.error("该账号不存在!");

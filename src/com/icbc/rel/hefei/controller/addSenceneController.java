@@ -147,12 +147,10 @@ public class addSenceneController {
 		String  paramStruId =  info.getStru_ID();//»ú¹¹´úÂë
 		String orgId = bankOrgInfoService.getOrgId(paramStruId.substring(0, 3));
 		SceneSwitch  sceneSwitch = service.selectByScene("salary");
-		request.getSession().setAttribute(SessionParamConstant.DISPLAY_OR_NOT,"1");
 		if(!sceneSwitch.getVisibleAreas().contains(orgId)) {
 			for (int i = 0; i < result.size(); i++) {
 				if(result.get(i).getRelSceneUid().equals("salary")) {
 					result.remove(i);
-					request.getSession().setAttribute(SessionParamConstant.DISPLAY_OR_NOT,"0");
 				}
 			}
 		}

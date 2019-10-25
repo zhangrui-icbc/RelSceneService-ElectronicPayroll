@@ -18,11 +18,15 @@ import com.alibaba.druid.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.icbc.rel.hefei.TO.Msg;
+import com.icbc.rel.hefei.entity.SceneSwitch;
 import com.icbc.rel.hefei.entity.SysActivityInfo;
 import com.icbc.rel.hefei.entity.SysBankOrgInfo;
+import com.icbc.rel.hefei.entity.SysPublicNumberInfo;
 import com.icbc.rel.hefei.entity.order.OrdParaInfo;
 import com.icbc.rel.hefei.entity.salary.SalParaInfo;
 import com.icbc.rel.hefei.service.order.ParaService;
+import com.icbc.rel.hefei.service.rel.PublicNumberInfoService;
+import com.icbc.rel.hefei.service.sys.SceneSwitchService;
 import com.icbc.rel.hefei.service.sys.SysActivityService;
 import com.icbc.rel.hefei.service.sys.SysBankOrgInfoService;
 import com.icbc.rel.hefei.service.sys.SysLogInfoService;
@@ -42,7 +46,10 @@ public class SalConfigController {
 	private SysService  sysService;
 	@Autowired
 	private SysLogInfoService logService;
-
+	@Autowired
+	private SysBankOrgInfoService bankOrgInfoService;
+	@Autowired
+	private SceneSwitchService service;
 	/**
 	 * 工资单页面	
 	 */
@@ -62,31 +69,6 @@ public class SalConfigController {
 		mav.setViewName("salary/reimbursement");
 		return mav;
 	}
-	
-	/**
-	 * 工资单页面	
-	 */
-//	@RequestMapping(value="/salReim")
-//	public ModelAndView salReim(HttpServletRequest request) {
-//		String mpId=SessionUtil.getMpId(request.getSession());
-//		SysActivityInfo activity=activityService.getMyActivity(mpId,EnumUtil.sceneType.salary.name());
-//		ModelAndView mav = new ModelAndView();
-//		/*	int flag=0;//0：新增  1：编辑  
-//					if(activity!=null) {
-//			request.getSession().setAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID, activity.getActivityUid());
-//			mav.setViewName("salary/salReim");
-//		}else {
-//			mav.addObject("flag", flag);
-//			mav.addObject("activityUid","\""+null+"\"");
-//			mav.addObject("data","\"\"");
-//			mav.setViewName("salary/salaryCfg");
-//		}*/
-//			if(activity!=null) {
-//				request.getSession().setAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID, activity.getActivityUid());
-//			}
-//			mav.setViewName("salary/salReim");
-//		return mav;
-//	}
 	
 	
 	/**
@@ -118,7 +100,15 @@ public class SalConfigController {
 				mav.addObject("data", "\"\"");
 			}
 		}
-		if(request.getSession().getAttribute(SessionParamConstant.DISPLAY_OR_NOT).equals("0")) {
+		
+		
+		SysPublicNumberInfo info = new SysPublicNumberInfo();
+		info.setPublicNumberId(mpId);
+		info = PublicNumberInfoService.FetchPubAddrInfo(info);
+		String  paramStruId =  info.getStru_ID();//机构代码
+		String orgId = bankOrgInfoService.getOrgId(paramStruId.substring(0, 3));
+		SceneSwitch  sceneSwitch = service.selectByScene("salary");
+		if(!sceneSwitch.getVisibleAreas().contains(orgId)) {
 			mav.setViewName("notOpen");
 		}else {
 			mav.addObject("flag", flag);

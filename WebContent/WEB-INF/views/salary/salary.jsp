@@ -115,6 +115,10 @@
                 <div class="tab tab3" id="mytab_03_1">
                 	<div class="alternative">
                 	</div>
+                  <div id="notes" class="notes"  style="margin-top:50px;">
+	                	<h2>温馨提示：实际收入、收入合计、支出合计为必选项,否则会导致上传数据异常。
+                	鼠标点击单个明细类型，可前后挪动更改明细类型前后位置顺序。</h2>
+                	</div>
                 	<div class="add">
                 		<div class="fixed_field">
                 		</div>
@@ -124,11 +128,6 @@
                 	<div class="tab3_btnBox">
                 		<div class="sunmit-btn">提交</div>
                 		<div class="clear">清除</div>
-                	</div>
-                	<div id="notes" class="notes"  style="margin-top:50px;">
-	                	<h2>温馨提示：实际收入、收入合计、支出合计为必选项,否则会导致模板上传失败。<br>
-                	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                	鼠标点击单个明细类型，可前后挪动更改明细类型前后位置顺序。</h2>
                 	</div>
                 </div>
                 
