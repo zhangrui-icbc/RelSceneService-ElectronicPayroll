@@ -19,9 +19,5 @@ public class SysBankOrgInfoService {
 		return dao.getBankorginfo();
 	}
 
-	public String getOrgId(String orgId) {
-		// TODO Auto-generated method stub
-		return dao.getOrgId(orgId);
-	}
 	
 }

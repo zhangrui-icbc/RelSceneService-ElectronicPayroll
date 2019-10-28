@@ -5,7 +5,4 @@
 		select * from sys_bankorginfo 
 	</select>
 	
-	<select  id="getOrgId"  resultType="java.lang.String">
-		select orgId from sys_bankorginfo where orgId like #{orgId}"%"
-	</select>
 </mapper>

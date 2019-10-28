@@ -51,8 +51,6 @@ public class addSenceneController {
 
 	@Autowired
 	private SceneSwitchService service;
-	@Autowired
-	private SysBankOrgInfoService bankOrgInfoService;
 	
 
 	/*
@@ -145,9 +143,8 @@ public class addSenceneController {
 		info.setPublicNumberId(mpId);
 		info = PublicNumberInfoService.FetchPubAddrInfo(info);
 		String  paramStruId =  info.getStru_ID();//机构代码
-		String orgId = bankOrgInfoService.getOrgId(paramStruId.substring(0, 3));
 		SceneSwitch  sceneSwitch = service.selectByScene("salary");
-		if(!sceneSwitch.getVisibleAreas().contains(orgId)) {
+		if(!sceneSwitch.getVisibleAreas().contains(paramStruId)) {
 			for (int i = 0; i < result.size(); i++) {
 				if(result.get(i).getRelSceneUid().equals("salary")) {
 					result.remove(i);
@@ -183,7 +180,6 @@ public class addSenceneController {
 		activity.getActivityName(), "更新配置");
 		Msg msg = new Msg(0, "删除成功");
 		return msg;
-
 	}
 
 	/*

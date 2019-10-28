@@ -10,6 +10,5 @@ public interface SysBankOrgInfoDao {
 
 	List<SysBankOrgInfo> getBankorginfo();
 
-	String getOrgId(@Param("orgId") String orgId);
 	
 }

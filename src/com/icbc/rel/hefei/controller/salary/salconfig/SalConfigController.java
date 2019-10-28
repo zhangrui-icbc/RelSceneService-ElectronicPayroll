@@ -106,9 +106,8 @@ public class SalConfigController {
 		info.setPublicNumberId(mpId);
 		info = PublicNumberInfoService.FetchPubAddrInfo(info);
 		String  paramStruId =  info.getStru_ID();//»ú¹¹´úÂë
-		String orgId = bankOrgInfoService.getOrgId(paramStruId.substring(0, 3));
 		SceneSwitch  sceneSwitch = service.selectByScene("salary");
-		if(!sceneSwitch.getVisibleAreas().contains(orgId)) {
+		if(!sceneSwitch.getVisibleAreas().contains(paramStruId)) {
 			mav.setViewName("notOpen");
 		}else {
 			mav.addObject("flag", flag);
