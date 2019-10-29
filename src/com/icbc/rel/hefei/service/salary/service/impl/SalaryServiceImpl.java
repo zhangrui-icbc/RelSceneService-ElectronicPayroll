@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -344,7 +345,7 @@ public class SalaryServiceImpl implements SalaryService {
 	 * 模板导出
 	 */
 	@Override
-	public void export(HttpServletResponse response,String companyId) {
+	public void export(HttpServletRequest request,HttpServletResponse response,String companyId) {
 		// TODO Auto-generated method stub
 		List<SalaryCustomTemplate> oaSalaryImportTemplates =salaryMapper.getSalaryTemplate(companyId);
 		List<SalaryCommonTemplate>  salaryCommonTemplate=salaryCommonMapper.getCommonTemplate();
@@ -353,9 +354,18 @@ public class SalaryServiceImpl implements SalaryService {
 		ServletOutputStream os = null;
 		try {
 			String name="工资条模板"+DateUtils.parseDateToStr("yyyyMMddHHmmss",new Date())+".xls";
+			String userAgent = request.getHeader("user-agent").toLowerCase();  
+			  
+			if (userAgent.contains("msie") || userAgent.contains("like gecko") ) {  
+			        // win10 ie edge 浏览器 和其他系统的ie  
+				name = URLEncoder.encode(name, "UTF-8");  
+			} else {  
+			        // fe  
+				name = new String(name.getBytes("UTF-8"), "iso-8859-1");  
+			}
 			 response.setContentType("text/html;charset=UTF-8");
 			 response.addHeader("content-type", "application/x-msdownload");
-			 response.addHeader("Content-Disposition", "attachment;filename="+ new String(name.getBytes(), "iso-8859-1"));
+			 response.addHeader("Content-Disposition", "attachment;filename="+ name);
 			os = response.getOutputStream();
 			createWorkbook(salaryCommonTemplate,oaSalaryImportTemplates).write(os);
 		} catch (IOException e) {
@@ -423,7 +433,7 @@ public class SalaryServiceImpl implements SalaryService {
 	 * 员工信息模板
 	 */
 	@Override
-	public void staffExport(HttpServletResponse response) {
+	public void staffExport(HttpServletRequest request,HttpServletResponse response) {
 		HSSFWorkbook workBook = new HSSFWorkbook();
 		List<String> fieldName=new ArrayList<String>();  //excel数据标题
 		fieldName.add("姓名 ");
@@ -461,9 +471,19 @@ public class SalaryServiceImpl implements SalaryService {
 			ServletOutputStream os;
 			try {
 				String name="人员导入模板"+DateUtils.parseDateToStr("yyyyMMddHHmmss",new Date())+".xls";
+				String userAgent = request.getHeader("user-agent").toLowerCase();  
+				  
+				if (userAgent.contains("msie") || userAgent.contains("like gecko") ) {  
+				        // win10 ie edge 浏览器 和其他系统的ie  
+					name = URLEncoder.encode(name, "UTF-8");  
+				} else {  
+				        // fe  
+					name = new String(name.getBytes("UTF-8"), "iso-8859-1");  
+				}
+				
 				 response.setContentType("text/html;charset=UTF-8");
 				 response.addHeader("content-type", "application/x-msdownload");
-				 response.addHeader("Content-Disposition", "attachment;filename="+ new String(name.getBytes(), "iso-8859-1"));
+				 response.addHeader("Content-Disposition", "attachment;filename="+ name);
 				os = response.getOutputStream();
 				workBook.write(os);
 			} catch (IOException e) {

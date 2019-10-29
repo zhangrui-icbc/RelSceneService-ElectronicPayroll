@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
 import com.icbc.rel.hefei.entity.salary.reimbursement.Reimbursement;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 public interface ReService {
 	/**
@@ -28,9 +29,10 @@ public interface ReService {
 	void insertReimbursement(Reimbursement reimbursement);
 	/**
 	 * 导出模板
+	 * @param request 
 	 * @param companyId
 	 */
-	void export(HttpServletResponse response,String companyId);
+	void export(HttpServletRequest request, HttpServletResponse response,String companyId);
 	
 	/**
 	 * 获取工资上传日志

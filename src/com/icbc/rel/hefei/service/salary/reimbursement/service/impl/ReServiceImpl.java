@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.ibatis.annotations.Case;
@@ -266,7 +268,7 @@ public class ReServiceImpl implements ReService {
 	 * 模板导出
 	 */
 	@Override
-	public void export(HttpServletResponse response,String companyId) {
+	public void export(HttpServletRequest request,HttpServletResponse response,String companyId) {
 		List<ReCustomTemplate> reImportTemplates =reMapper.getReTemplate(companyId);
 		List<ReCommonTemplate>  reCommonTemplate=reCommonMapper.getCommonTemplate();
 		sort(reImportTemplates);
@@ -274,9 +276,18 @@ public class ReServiceImpl implements ReService {
 		ServletOutputStream os = null;
 		try {
 			String name="报销单模板"+DateUtils.parseDateToStr("yyyyMMddHHmmss",new Date())+".xls";
+			String userAgent = request.getHeader("user-agent").toLowerCase();  
+			  
+			if (userAgent.contains("msie") || userAgent.contains("like gecko") ) {  
+			        // win10 ie edge 浏览器 和其他系统的ie  
+				name = URLEncoder.encode(name, "UTF-8");  
+			} else {  
+			        // fe  
+				name = new String(name.getBytes("UTF-8"), "iso-8859-1");  
+			}
 			 response.setContentType("text/html;charset=UTF-8");
 			 response.addHeader("content-type", "application/x-msdownload");
-			 response.addHeader("Content-Disposition", "attachment;filename="+ new String(name.getBytes(), "iso-8859-1"));
+			 response.addHeader("Content-Disposition", "attachment;filename="+ name);
 			os = response.getOutputStream();
 			createWorkbook(reCommonTemplate,reImportTemplates).write(os);
 		} catch (IOException e) {

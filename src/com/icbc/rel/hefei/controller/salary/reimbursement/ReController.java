@@ -106,7 +106,7 @@ public class ReController {
     @RequestMapping("/reimbursement/export")
     public void export(HttpServletRequest request,HttpServletResponse response){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
-    	reService.export(response,companyId);
+    	reService.export(request,response,companyId);
     }
     /**
      * 查询报销单上传日志

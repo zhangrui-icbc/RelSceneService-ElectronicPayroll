@@ -4,6 +4,7 @@ package com.icbc.rel.hefei.controller.salary;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -39,7 +40,9 @@ import com.icbc.rel.hefei.service.salary.service.SalaryImportService;
 import com.icbc.rel.hefei.service.salary.service.SalaryService;
 import com.icbc.rel.hefei.util.FileUploadUtil;
 import com.icbc.rel.hefei.util.SessionParamConstant;
+import com.icbc.rel.hefei.util.SessionUtil;
 import com.icbc.rel.hefei.util.SystemConfigUtil;
+import com.icbc.rel.hefei.util.anaylsisXmlUtil;
 
 /**
  * 
@@ -99,7 +102,13 @@ public class SalaryController {
 		list.get(0).write(file);
     	AjaxResult ajaxResult;
 		try {
-			ajaxResult = salaryService.uploadSalary(/*request,*/file,companyId);
+			ajaxResult = salaryService.uploadSalary(file,companyId);
+			
+			String mpId=SessionUtil.getMpId(request.getSession());
+			anaylsisXmlUtil t=new anaylsisXmlUtil(); 
+			String content = URLEncoder.encode("您有一笔工资已发放,到账可能会有延迟,请注意查收.","utf-8");
+			String fanalXmlStr = t.makeXmlByHf005(mpId, "1", "0", "", "raw", content);
+			
 			return ajaxResult;
 		} catch (NullPointerException e) {
 			e.printStackTrace();
@@ -158,7 +167,7 @@ public class SalaryController {
     @RequestMapping("/salary/export")
     public void export(HttpServletRequest request,HttpServletResponse response){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
-    	salaryService.export(response,companyId);
+    	salaryService.export(request,response,companyId);
     }
     
     /**
@@ -167,8 +176,8 @@ public class SalaryController {
      * @param companyId
      */
     @RequestMapping("/salary/staffExport")
-    public void staffExport(HttpServletResponse response){
-    	salaryService.staffExport(response);
+    public void staffExport(HttpServletRequest request,HttpServletResponse response){
+    	salaryService.staffExport(request,response);
     }
     /**
      * 修改员工密码

@@ -32,13 +32,14 @@ public interface SalaryService {
 	 * 导出模板
 	 * @param companyId
 	 */
-	void export(HttpServletResponse response,String companyId);
+	void export(HttpServletRequest request,HttpServletResponse response,String companyId);
 	/**
 	 * 员工模板
+	 * @param request 
 	 * @param response
 	 * @param companyId
 	 */
-	void staffExport(HttpServletResponse response);
+	void staffExport(HttpServletRequest request, HttpServletResponse response);
 	/**
 	 * 上传员工信息
 	 * @param file

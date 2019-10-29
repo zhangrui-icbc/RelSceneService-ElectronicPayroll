@@ -77,7 +77,7 @@ public class SceneSwitchController {
 		return msg;
 	}
 	
-	/**
+	/*
 	 * 所有地区
 	 */
 	@RequestMapping(value="/bankorginfo")
