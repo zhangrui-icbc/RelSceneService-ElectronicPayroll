@@ -17,6 +17,7 @@ import com.icbc.rel.hefei.entity.UserDetailInfo;
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
 import com.icbc.rel.hefei.entity.salary.client.SalaryUser;
 import com.icbc.rel.hefei.service.rel.ImUserService;
+import com.icbc.rel.hefei.service.rel.PublicNumberInfoService;
 import com.icbc.rel.hefei.service.salary.client.service.SalaryWebUserService;
 import com.icbc.rel.hefei.service.salary.service.SalaryUserService;
 import com.icbc.rel.hefei.service.sys.SceneSwitchService;
@@ -60,18 +61,33 @@ public class SalaryWebUserController {
 		/*客户端得通过活动链接里的activityuid获取对应的mpid然后通过syspublicnumberinfo那张表找到该公众号的机构号，如果这张表里还没有机构号这个数据，就再走一次拉取公众号信息的接口来获取机构号(个人判断不会没有机构号,因为pc端已经判断好了)*/
 		String activityUid = request.getParameter("activityUid");
 		request.getSession().setAttribute(SessionParamConstant.SESSION_PARAM_COMPANYID, activityUid);
-		SysActivityInfo sysActivityInfo = sysActivityService.getSceneByUid(activityUid);
-		SysPublicNumberInfo  sysPublicNumberInfo = sysPublicNumberInfoService.getPublicNumberInfoByMpid(sysActivityInfo.getMpId());
+//		SysActivityInfo sysActivityInfo = sysActivityService.getSceneByUid(activityUid);
+//		SysPublicNumberInfo  sysPublicNumberInfo = sysPublicNumberInfoService.getPublicNumberInfoByMpid(sysActivityInfo.getMpId());
+    	String IMUserId=SessionUtil.getImUserId(request.getSession()); //正确的获取openid方式
+//    	String IMUserId="123";
+		//拉取用户详情
+		UserDetailInfo userinfo=ImUserService.FetchUserInfo(IMUserId);
+		SysPublicNumberInfo info = new SysPublicNumberInfo();
+		info.setPublicNumberId(userinfo.getMpId());
+		info = PublicNumberInfoService.FetchPubAddrInfo(info);
+		
+		
 		SceneSwitch sceneSwitch =  sceneSwitchService.selectByScene("salary");
-		String  visibleareas = sceneSwitch.getVisibleAreas();
-//		if(!visibleareas.contains(sysPublicNumberInfo.getStru_ID())) {
-//			return  "empty";
-//		}else {
+		if(sceneSwitch.getStatus()==1) {
 			String openId = (String) request.getSession().getAttribute(SessionParamConstant.SESSION_PARAM_USERKEY);
 			SalaryUser user = salaryWebUserService.getUserByOpenId(activityUid,openId);
 			request.getSession().setAttribute("user", user);
 		    return  "salary/client/login";	
-//		}
+		}else {
+			if(!sceneSwitch.getVisibleAreas().contains(info.getStru_ID())) {
+				return  "empty";
+			}else {
+				String openId = (String) request.getSession().getAttribute(SessionParamConstant.SESSION_PARAM_USERKEY);
+				SalaryUser user = salaryWebUserService.getUserByOpenId(activityUid,openId);
+				request.getSession().setAttribute("user", user);
+			    return  "salary/client/login";	
+			}
+		}
 
 	}
 	
@@ -148,8 +164,8 @@ public class SalaryWebUserController {
     @RequestMapping(value="/salaryWebUser/login",method = RequestMethod.POST)
     @ResponseBody
     public AjaxResult login(HttpServletRequest request, String password){
-//    	String IMUserId=SessionUtil.getImUserId(request.getSession()); //正确的获取openid方式
-    	String IMUserId="123";
+    	String IMUserId=SessionUtil.getImUserId(request.getSession()); //正确的获取openid方式
+//    	String IMUserId="123";
 		//拉取用户详情
 		UserDetailInfo userinfo=ImUserService.FetchUserInfo(IMUserId);
 		String username = userinfo.getMobileNo();
