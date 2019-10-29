@@ -101,21 +101,24 @@ public class SalConfigController {
 			}
 		}
 		
-		
 		SysPublicNumberInfo info = new SysPublicNumberInfo();
 		info.setPublicNumberId(mpId);
 		info = PublicNumberInfoService.FetchPubAddrInfo(info);
 		String  paramStruId =  info.getStru_ID();//»ú¹¹´úÂë
 		SceneSwitch  sceneSwitch = service.selectByScene("salary");
-		if(!sceneSwitch.getVisibleAreas().contains(paramStruId)) {
-			mav.setViewName("notOpen");
-		}else {
+		if(sceneSwitch.getStatus()==1) {
 			mav.addObject("flag", flag);
 			mav.addObject("activityUid","\""+activityUid+"\"");
 			mav.setViewName("salary/salReim");
+		}else {
+			if(!sceneSwitch.getVisibleAreas().contains(paramStruId)) {
+				mav.setViewName("notOpen");
+			}else {
+				mav.addObject("flag", flag);
+				mav.addObject("activityUid","\""+activityUid+"\"");
+				mav.setViewName("salary/salReim");
+			}
 		}
-
-		
 		return mav;
 	}
 	/*
