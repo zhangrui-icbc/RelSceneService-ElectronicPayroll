@@ -105,13 +105,14 @@
             	</div>
             	
                 <div class="tab tab3" id="mytab_03_1">
+                <h3 style="font-size:15px;padding-left:8%;font-weight:600;">备选明细类型:</h3>
                 	<div class="alternative">
                 	</div>
-                	<div class="notes"  style="margin-top:50px;">
-    	            	<h2>注:报销合计为必选项,否则会导致上传数据异常。
-	                	鼠标点击单个明细类型，可前后挪动更改明细类型前后位置顺序。</h2>
+                	<div class="notes"  style="margin: 2% 0% 2% 10%;">
+    	            	<h2 class="descp"><span style="color:#c00000">温馨提示：</span>报销合计为必选，否则将导致上传数据异常。点击上方备选明细类型选择所需报销单明细类型，点击下方单个已选明细类型，前后挪动可更改明细类型展示的先后顺序。</h2>
+    	            	
                 	</div>
-                	
+                <h3 style="font-size:15px;padding-left:8%;font-weight:600;">已选明细类型:</h3>
                 	<div class="add">
                 		<div class="fixed_field">
                 		</div>

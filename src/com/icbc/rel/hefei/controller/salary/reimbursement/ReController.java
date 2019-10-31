@@ -3,6 +3,7 @@ package com.icbc.rel.hefei.controller.salary.reimbursement;
 
 
 import java.io.File;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -15,16 +16,24 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSONObject;
+import com.icbc.rel.hefei.controller.salary.SalaryController;
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
 import com.icbc.rel.hefei.entity.salary.reimbursement.Reimbursement;
+import com.icbc.rel.hefei.service.rel.MessageHelper;
+import com.icbc.rel.hefei.service.rel.MessageService;
 import com.icbc.rel.hefei.service.salary.reimbursement.service.ReImportService;
 import com.icbc.rel.hefei.service.salary.reimbursement.service.ReService;
 import com.icbc.rel.hefei.util.SessionParamConstant;
+import com.icbc.rel.hefei.util.SessionUtil;
+import com.icbc.rel.hefei.util.SystemConfigUtil;
+import com.icbc.rel.hefei.util.anaylsisXmlUtil;
 
 /**
  * 
@@ -35,6 +44,7 @@ import com.icbc.rel.hefei.util.SessionParamConstant;
 @RequestMapping("/mp")
 @Controller
 public class ReController {
+	private static final Logger logger = Logger.getLogger(ReController.class);
 	@Autowired
 	private ReService reService;
 	@Autowired
@@ -85,6 +95,34 @@ public class ReController {
     	AjaxResult ajaxResult;
 		try {
 			ajaxResult = reService.uploadSalary(file,companyId);
+			
+/*			anaylsisXmlUtil t=new anaylsisXmlUtil(); 
+			logger.info("群发图文消息接口示例");
+			String content;//上送的消息内容，需要是string
+			String fanalXmlStr;
+			String domainUrl = SystemConfigUtil.domainName;
+			String title = "报销消息";//图文消息显示的标题
+			String picurl = domainUrl + "RelSceneService/image/order/supper.jpg";//图文消息的图片地址
+			String url = domainUrl + "RelSceneService/com/myOrderDetail?activityUid=";//图文消息的正文链接
+			JSONObject picMessage = MessageHelper.getPicArticles(title, picurl, url);
+			content = URLEncoder.encode(picMessage.toString(),"utf-8");
+			//fanalXmlStr = t.makeXmlByHf005("12345678", "0", "3", "18100000014", "raw", content);
+			fanalXmlStr = t.makeXmlByHf005("12345678", "1", "0","", "raw", content);
+			logger.info("上送得xml字符");
+			logger.info(fanalXmlStr);
+            int i=0;
+			while(i<5) {
+				Boolean isSend=MessageService.sendRtfByHf500(fanalXmlStr);
+				if(isSend) {
+					i=5;
+					logger.info("------------推送消息成功!-------------");
+					break;
+				}else {
+					logger.info("推送消息失败重试中----------------第"+(i+1)+"次");
+					i++;
+				}
+			}*/
+			
 			return ajaxResult;
 		} catch (NullPointerException e) {
 			e.printStackTrace();

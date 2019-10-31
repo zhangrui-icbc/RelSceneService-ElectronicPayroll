@@ -45,20 +45,12 @@
 			</div>
 			<div class="list-box">
 			</div>
+			<div class="list-box">
+			</div>
 			<div class="list-box desc">
 			</div>
 		</div>
 	</body>
 	<script src="${pageContext.request.contextPath}/js/jquery-3.2.1.min.js"></script>
 	<script src="${pageContext.request.contextPath}/js/salary/client/detail.js"  ></script>
-	<script type="text/javascript" th:inline="javascript" > 
-//			var ctx = [[@{/}]],page=[[${page}]],website=[[${website}]];
-//		var s=$(window).height();//是滚动条高度
-//		var h=$(".company-msg").height();//是标签高度
-//		var t=$(".list").offset().top;
-//		console.log(s);
-//		console.log(t);
-	//	$(".list").height(s-t-30);
-		//console.log(s-t-50); 
-	</script>
 </html>

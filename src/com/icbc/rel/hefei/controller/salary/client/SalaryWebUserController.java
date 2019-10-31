@@ -61,17 +61,11 @@ public class SalaryWebUserController {
 		/*客户端得通过活动链接里的activityuid获取对应的mpid然后通过syspublicnumberinfo那张表找到该公众号的机构号，如果这张表里还没有机构号这个数据，就再走一次拉取公众号信息的接口来获取机构号(个人判断不会没有机构号,因为pc端已经判断好了)*/
 		String activityUid = request.getParameter("activityUid");
 		request.getSession().setAttribute(SessionParamConstant.SESSION_PARAM_COMPANYID, activityUid);
-//		SysActivityInfo sysActivityInfo = sysActivityService.getSceneByUid(activityUid);
-//		SysPublicNumberInfo  sysPublicNumberInfo = sysPublicNumberInfoService.getPublicNumberInfoByMpid(sysActivityInfo.getMpId());
-    	String IMUserId=SessionUtil.getImUserId(request.getSession()); //正确的获取openid方式
-//    	String IMUserId="123";
+		SysActivityInfo sysActivityInfo = sysActivityService.getSceneByUid(activityUid);
 		//拉取用户详情
-		UserDetailInfo userinfo=ImUserService.FetchUserInfo(IMUserId);
 		SysPublicNumberInfo info = new SysPublicNumberInfo();
-		info.setPublicNumberId(userinfo.getMpId());
+		info.setPublicNumberId(sysActivityInfo.getMpId());
 		info = PublicNumberInfoService.FetchPubAddrInfo(info);
-		
-		
 		SceneSwitch sceneSwitch =  sceneSwitchService.selectByScene("salary");
 		if(sceneSwitch.getStatus()==1) {
 			String openId = (String) request.getSession().getAttribute(SessionParamConstant.SESSION_PARAM_USERKEY);

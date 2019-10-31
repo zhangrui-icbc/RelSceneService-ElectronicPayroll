@@ -44,6 +44,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 工资明细 -->
     <select id="getSalaryDetail" resultType="com.icbc.rel.hefei.entity.salary.client.SalaryImportVO">
     	select  si.salary_item_id as salaryItemId , si.salary_id as salaryId, si.template_id as templateId , si.template_col_name as templateColName, si.import_amount as importAmount , si.user_id as userId, si.col_index as colIndex, si.category as category 
-    	from salary_import si left join salary s on si.salary_id = s.id  where si.user_id =#{params.userId}  and si.salary_id =#{params.salaryId} and DATE_FORMAT(s.issue_time,'%Y%m%d') =#{params.issueTime} order by si.col_index asc
+    	from salary_import si left join salary s on si.salary_id = s.id  where si.user_id =#{params.userId}  and si.salary_id =#{params.salaryId} and DATE_FORMAT(s.issue_time,'%Y%m%d') =#{params.issueTime} order by si.category desc
     </select>
 </mapper>

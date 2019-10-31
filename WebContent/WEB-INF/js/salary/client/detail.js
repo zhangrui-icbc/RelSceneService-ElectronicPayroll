@@ -42,13 +42,19 @@ function  detail(){
 			 	      if(category==44){
 			 	       $(".list-box").eq(3).prepend(txt);
 			 	          }
+//			 	     专项附加扣除
+			 	      if(category==66){
+			 	    	  $(".list-box").eq(4).prepend(txt);
+			 	      }
 //			 	      备注
 			 	      if(category==55){
 			 	       txt="<p><span>"+list.templateColName+"</span>&nbsp;<span>"+list.importAmount+"</span></p>";
-			 	       $(".list-box").eq(4).prepend(txt);
+			 	       $(".list-box").eq(5).prepend(txt);
 			 	       
 			 	          }
+			 	      
 			 	     var str = $(".list-box").eq(3).children().length;
+			 	    
 			 	      if(category==1){
 			 	       $(".list-box").eq(1).append(txt); 
 			 	      }
@@ -62,18 +68,28 @@ function  detail(){
 			 	    	  $(".list-box").eq(3).append(txt)
 			 	      }
 			 	    if(category==5){
+			 	    	  $(".list-box").eq(5).append(txt)
+			 	      }
+			 	    var str2 = $(".list-box").eq(4).children().length;
+			 	    if(category==6){
+			    		if(str2==0){
+			    			$(".list-box").eq(4).hide();
+			    		}
 			 	    	  $(".list-box").eq(4).append(txt)
 			 	      }
-			 	      
 					}
 		        
-		        	
+		        	//循环外
 		    		if(str==0){
 		    			$(".list-box").eq(3).hide();
 		    		}
-		        	var str1 = $(".list-box").eq(4).children().length;
-		    		if(str1==0){
+		    		if(str2==0){
 		    			$(".list-box").eq(4).hide();
+		    		}
+		    		
+		        	var str1 = $(".list-box").eq(5).children().length;
+		    		if(str1==0){
+		    			$(".list-box").eq(5).hide();
 		    		}
 		        } else {
 		            return false;

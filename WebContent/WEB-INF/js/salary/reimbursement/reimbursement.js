@@ -237,7 +237,7 @@ function comRowElim(but) {  //Elimina la fila actual
     delCom(id);
 }
 /**
- * 共用字段删除行
+ * 备用字段删除行
  * @param but
  * @returns
  */
@@ -247,12 +247,34 @@ function alterRowElim(but) {  //Elimina la fila actual
     IterarCamposEdit($cols, function($td) {  //itera por la columnas
         var cont = $td.html();
     });
-    params.onBeforeDelete($row);
-    $row.remove();
-    params.onDelete();
   //获取到了id
     var id =$cols[0].innerText;
-    delAlter(id);
+    layer.open({
+        content: "确定删除吗?"
+        ,btn: ['确认', '取消']
+        ,yes: function(index){
+    		$.ajax({
+    		    url : ctx+"/mp/reAlternative/delAlternative?id="+id,// 获取自己系统后台用户信息接口
+    		    success : function(res) {
+    		    	if(res.code=="0"){
+    		    		params.onBeforeDelete($row);
+    		        	$row.remove();
+    		        	params.onDelete();
+    		    		layerMsg(res.msg);
+    		    	}else if(res.code=="500"){
+    		    		layerMsg(res.msg);
+    		    	}else{
+    		    		 layerMsg("访问失败!");
+    		    	}
+    		      },
+    		      error : function(data){
+    		    	  layerMsg("访问失败");
+    		      }
+    		  });
+        }
+    })
+    
+    
 }
 
 function comRowAddNew(tabId) {  //Agrega fila a la tabla indicada.
@@ -416,24 +438,30 @@ $(document).on('click', '#bElim1', function () {
     var arr = content.find('td'); 
   //获取到了id
     var id =arr[0].innerText;
-$.ajax({
-    url : ctx+"/mp/reimbursement/delLog",// 获取自己系统后台用户信息接口
-    type : "POST",
-    data:{"reId":id},
-    success : function(res) {
-    	if(res.code=="0"){
-    		$("#mytab_04").click();
-    		layerMsg(res.msg);
-    	}else if(res.code=="500"){
-    		layerMsg(res.msg);
-    	}else{
-    		 layerMsg("访问失败!");
-    	}
-      },
-      error : function(data){
-    	  layerMsg("访问失败")
-      }
-  });
+    layer.open({
+        content: "确定删除吗?"
+        ,btn: ['确认', '取消']
+        ,yes: function(index){
+        	$.ajax({
+        	    url : ctx+"/mp/reimbursement/delLog",// 获取自己系统后台用户信息接口
+        	    type : "POST",
+        	    data:{"reId":id},
+        	    success : function(res) {
+        	    	if(res.code=="0"){
+        	    		$("#mytab_04").click();
+        	    		layerMsg(res.msg);
+        	    	}else if(res.code=="500"){
+        	    		layerMsg(res.msg);
+        	    	}else{
+        	    		 layerMsg("访问失败!");
+        	    	}
+        	      },
+        	      error : function(data){
+        	    	  layerMsg("访问失败")
+        	      }
+        	  });
+        }
+    })
 })
 
 
@@ -533,29 +561,6 @@ function delCom(id){
 	      }
 	  });
 }
-/**
- * 删除备选行
- */
-function delAlter(id){
-	
-	$.ajax({
-    url : ctx+"/mp/reAlternative/delAlternative?id="+id,// 获取自己系统后台用户信息接口
-    success : function(res) {
-    	if(res.code=="0"){
-    		layerMsg(res.msg);
-    	}else if(res.code=="500"){
-    		layerMsg(res.msg);
-    	}else{
-    		 layerMsg("访问失败!");
-    	}
-      },
-      error : function(data){
-    	  layerMsg("访问失败");
-      }
-  });
-}
-
-
 
 /**
  * 查询出备选模板字段

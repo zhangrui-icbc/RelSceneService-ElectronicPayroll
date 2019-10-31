@@ -89,12 +89,23 @@
 	            	<div class="input-box">
 	            		<span class="input-name">类型名称：</span><input class="add-input column_b" type="text" placeholder="请输入类型名称" /><br />
 	            		<span class="input-name">收支类型：</span>
-	            		<select class="add-input column_num_b select">
-	            			<option value="1">收入</option>
-	            			<option value="2">支出</option>
-	            			<option value="4">单位支出</option>
-	            			<option value="5">备注</option>
-	            		</select>
+	            		
+	            		<div id="selector">
+					        <select class="hd-selector add-input column_num_b select">
+					            <option value="1">收入</option>
+					            <option value="2">支出</option>
+					            <option value="4">单位支出</option>
+					            <option value="6">专项附加扣除</option>
+					        </select>
+					        <span class="mr-selector">收入</span>
+					        <span class="arrow"></span>
+					        <ul class="li_select">
+					            <li>收入</li>
+					            <li>支出</li>
+					            <li>单位支出</li>
+					            <li>专项附加扣除</li>
+					        </ul>
+					    </div>
 	            		<a href="##" class="add-btn btn2">确定提交</a>
 	            	</div>
             		<table class="table table-bordered table-striped" id="mytable2" style="margin-top:45px">
@@ -113,12 +124,13 @@
             	
             	<!--模板调整--> 
                 <div class="tab tab3" id="mytab_03_1">
+                	<h3 style="font-size:15px;padding-left:8%;font-weight:600;">备选明细类型:</h3>
                 	<div class="alternative">
                 	</div>
-                  <div id="notes" class="notes"  style="margin-top:50px;">
-	                	<h2>温馨提示：实际收入、收入合计、支出合计为必选项,否则会导致上传数据异常。
-                	鼠标点击单个明细类型，可前后挪动更改明细类型前后位置顺序。</h2>
+                  <div id="notes" class="notes"  style="margin: 2% 0% 2% 10%;">
+	                	<h2 class="descp"><span style="color:#c00000">温馨提示：</span>实际收入、收入合计、支出合计为必选项，否则将导致上传数据异常。点击上方备选明细类型选择所需工资单明细类型，点击下方单个已选明细类型，前后挪动可更改明细类型展示的先后顺序。</h2>
                 	</div>
+                	<h3 style="font-size:15px;padding-left:8%;font-weight:600;">已选明细类型:</h3>
                 	<div class="add">
                 		<div class="fixed_field">
                 		</div>

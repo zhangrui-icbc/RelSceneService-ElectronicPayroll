@@ -1,3 +1,34 @@
+        (function(){
+            var selector = $("#selector");
+            var li_select = $("#selector .li_select");  //模拟select的ul选项
+            var mrSelector = $("#selector .mr-selector");
+            var li = $("#selector .li_select li"); //li选项
+
+            selector.click(function(eve){
+                eve.stopPropagation();   //阻止冒泡避免点击后消失    
+            });
+
+            mrSelector.click(function(){
+                li_select.toggle();
+            });
+
+            li.click(function(eve){
+                var index = $(this).index();
+                console.log(index);
+                var text = $(this).text();  //获取当前点击li文本
+                mrSelector.text(text);      //赋值默认选项文本
+                console.log($("#selector .hd-selector option"));
+                selector.find(".hd-selector option").eq(index)
+                    .attr("selected","selected").siblings().removeAttr("selected");
+                $(this).parent().hide();
+
+            });
+
+            $("body").click(function(){
+                li_select.hide();
+            });
+
+        }());
 var ctx = $("#contextPath").val().trim();	
 $(".btn1").bind("click", function(){ 
 		 	var field=$(".field").val();
@@ -237,7 +268,7 @@ function comRowElim(but) {  //Elimina la fila actual
     delCom(id);
 }
 /**
- * 共用字段删除行
+ * 备用字段删除行
  * @param but
  * @returns
  */
@@ -247,12 +278,33 @@ function alterRowElim(but) {  //Elimina la fila actual
     IterarCamposEdit($cols, function($td) {  //itera por la columnas
         var cont = $td.html();
     });
-    params.onBeforeDelete($row);
-    $row.remove();
-    params.onDelete();
-  //获取到了id
+    //获取到了id
     var id =$cols[0].innerText;
-    delAlter(id);
+    layer.open({
+        content: "确定删除吗?"
+        ,btn: ['确认', '取消']
+        ,yes: function(index){
+    		$.ajax({
+    		    url : ctx+"/mp/alternative/delAlternative?id="+id,// 获取自己系统后台用户信息接口
+    		    success : function(res) {
+    		    	if(res.code=="0"){
+    		    		params.onBeforeDelete($row);
+    		        	$row.remove();
+    		        	params.onDelete();
+    		    		layerMsg(res.msg);
+    		    	}else if(res.code=="500"){
+    		    		layerMsg(res.msg);
+    		    	}else{
+    		    		 layerMsg("访问失败!");
+    		    	}
+    		      },
+    		      error : function(data){
+    		    	  layerMsg("访问失败");
+    		      }
+    		  });
+        }
+    })
+    
 }
 
 function comRowAddNew(tabId) {  //Agrega fila a la tabla indicada.
@@ -414,24 +466,30 @@ $(document).on('click', '#bElim1', function () {
     var arr = content.find('td'); 
   //获取到了id
     var id =arr[0].innerText;
-$.ajax({
-    url : ctx+"/mp/salary/delLog",// 获取自己系统后台用户信息接口
-    type : "POST",
-    data:{"salaryId":id},
-    success : function(res) {
-    	if(res.code=="0"){
-    		$("#mytab_04").click();
-    		layerMsg(res.msg);
-    	}else if(res.code=="500"){
-    		layerMsg(res.msg);
-    	}else{
-    		 layerMsg("访问失败!");
-    	}
-      },
-      error : function(data){
-    	  layerMsg("访问失败")
-      }
-  });
+    layer.open({
+        content: "确定删除吗?"
+        ,btn: ['确认', '取消']
+        ,yes: function(index){
+        	$.ajax({
+        	    url : ctx+"/mp/salary/delLog",// 获取自己系统后台用户信息接口
+        	    type : "POST",
+        	    data:{"salaryId":id},
+        	    success : function(res) {
+        	    	if(res.code=="0"){
+        	    		$("#mytab_04").click();
+        	    		layerMsg(res.msg);
+        	    	}else if(res.code=="500"){
+        	    		layerMsg(res.msg);
+        	    	}else{
+        	    		 layerMsg("访问失败!");
+        	    	}
+        	      },
+        	      error : function(data){
+        	    	  layerMsg("访问失败")
+        	      }
+        	  });
+        }
+    })
 })
 
 //上传日志详情
@@ -564,45 +622,29 @@ function  getCustom(){
  * @returns
  */
 function delCom(id){
+	if(confirm("确定删除吗")){
 		$.ajax({
-	    url : ctx+"/mp/common/delCommonTemplate?id="+id,// 获取自己系统后台用户信息接口
-	    success : function(res) {
-	    	if(res.code==0){
-	    		if(res.code=="0"){
-	        		layerMsg(res.msg);
-	        	}else if(res.code=="500"){
-	        		layerMsg(res.msg);
-	        	}else{
-	        		 layerMsg("删除失败!");
-	        	}
-	    	}else{
-	    	}
-	      },
-	      error : function(data){
-	    	  layerMsg("访问失败");
-	      }
-	  });
-}
-/**
- * 删除备选行
- */
-function delAlter(id){
-	
-	$.ajax({
-    url : ctx+"/mp/alternative/delAlternative?id="+id,// 获取自己系统后台用户信息接口
-    success : function(res) {
-    	if(res.code=="0"){
-    		layerMsg(res.msg);
-    	}else if(res.code=="500"){
-    		layerMsg(res.msg);
-    	}else{
-    		 layerMsg("访问失败!");
-    	}
-      },
-      error : function(data){
-    	  layerMsg("访问失败");
-      }
-  });
+		    url : ctx+"/mp/common/delCommonTemplate?id="+id,// 获取自己系统后台用户信息接口
+		    success : function(res) {
+		    	if(res.code==0){
+		    		if(res.code=="0"){
+		        		layerMsg(res.msg);
+		        	}else if(res.code=="500"){
+		        		layerMsg(res.msg);
+		        	}else{
+		        		 layerMsg("删除失败!");
+		        	}
+		    	}else{
+		    	}
+		      },
+		      error : function(data){
+		    	  layerMsg("访问失败");
+		      }
+		  });
+	}else{
+		layerMsg("已取消");
+	}
+
 }
 
 
@@ -858,6 +900,8 @@ function salType(type){
           break;
     case 5:
         return	"备注"
+    case 6:
+        return	"专项附加扣除"
           break;
     default:
     return  "汇总项";

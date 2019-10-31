@@ -19,6 +19,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
@@ -30,14 +31,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ibm.btt.base.LinkedList;
 import com.ibm.nws.ffdc.FFDC;
+import com.icbc.rel.hefei.TO.Msg;
 import com.icbc.rel.hefei.TO.TwoTupleTO;
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
 import com.icbc.rel.hefei.entity.salary.Salary;
 import com.icbc.rel.hefei.entity.salary.SalaryStaff;
+import com.icbc.rel.hefei.service.rel.MessageHelper;
+import com.icbc.rel.hefei.service.rel.MessageService;
 import com.icbc.rel.hefei.service.salary.service.SalaryImportService;
 import com.icbc.rel.hefei.service.salary.service.SalaryService;
+import com.icbc.rel.hefei.test.testController;
 import com.icbc.rel.hefei.util.FileUploadUtil;
 import com.icbc.rel.hefei.util.SessionParamConstant;
 import com.icbc.rel.hefei.util.SessionUtil;
@@ -53,6 +59,7 @@ import com.icbc.rel.hefei.util.anaylsisXmlUtil;
 @RequestMapping("/mp")
 @Controller
 public class SalaryController {
+	private static final Logger logger = Logger.getLogger(SalaryController.class);
 	@Autowired
 	private SalaryService salaryService;
 	
@@ -104,10 +111,33 @@ public class SalaryController {
 		try {
 			ajaxResult = salaryService.uploadSalary(file,companyId);
 			
-			String mpId=SessionUtil.getMpId(request.getSession());
-			anaylsisXmlUtil t=new anaylsisXmlUtil(); 
-			String content = URLEncoder.encode("您有一笔工资已发放,到账可能会有延迟,请注意查收.","utf-8");
-			String fanalXmlStr = t.makeXmlByHf005(mpId, "1", "0", "", "raw", content);
+/*			anaylsisXmlUtil t=new anaylsisXmlUtil(); 
+			logger.info("群发图文消息接口示例");
+			String content;//上送的消息内容，需要是string
+			String fanalXmlStr;
+			String domainUrl = SystemConfigUtil.domainName;
+			String title = "薪资消息";//图文消息显示的标题
+			String picurl = domainUrl + "RelSceneService/image/order/supper.jpg";//图文消息的图片地址
+			String url = domainUrl + "RelSceneService/com/myOrderDetail?activityUid=";//图文消息的正文链接
+			JSONObject picMessage = MessageHelper.getPicArticles(title, picurl, url);
+			content = URLEncoder.encode(picMessage.toString(),"utf-8");
+			//fanalXmlStr = t.makeXmlByHf005("12345678", "0", "3", "18100000014", "raw", content);
+			fanalXmlStr = t.makeXmlByHf005("12345678", "1", "0","", "raw", content);
+			logger.info("上送得xml字符");
+			logger.info(fanalXmlStr);
+            int i=0;
+			while(i<5) {
+				Boolean isSend=MessageService.sendRtfByHf500(fanalXmlStr);
+				if(isSend) {
+					i=5;
+					logger.info("------------推送消息成功!-------------");
+					break;
+				}else {
+					logger.info("推送消息失败重试中----------------第"+(i+1)+"次");
+					i++;
+				}
+			}*/
+			
 			
 			return ajaxResult;
 		} catch (NullPointerException e) {
