@@ -1,5 +1,3 @@
 /com/
+/config/
 /mapper/
-/properties/
-/quartz.properties
-/quartz_jobs.xml

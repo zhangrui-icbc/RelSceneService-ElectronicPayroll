@@ -96,13 +96,13 @@ public class ReController {
 		try {
 			ajaxResult = reService.uploadSalary(file,companyId);
 			
-/*			anaylsisXmlUtil t=new anaylsisXmlUtil(); 
+			anaylsisXmlUtil t=new anaylsisXmlUtil(); 
 			logger.info("群发图文消息接口示例");
 			String content;//上送的消息内容，需要是string
 			String fanalXmlStr;
 			String domainUrl = SystemConfigUtil.domainName;
 			String title = "报销消息";//图文消息显示的标题
-			String picurl = domainUrl + "RelSceneService/image/order/supper.jpg";//图文消息的图片地址
+			String picurl = domainUrl + "RelSceneService/image/reimbursement/reimbursement.png";//图文消息的图片地址
 			String url = domainUrl + "RelSceneService/com/myOrderDetail?activityUid=";//图文消息的正文链接
 			JSONObject picMessage = MessageHelper.getPicArticles(title, picurl, url);
 			content = URLEncoder.encode(picMessage.toString(),"utf-8");
@@ -121,7 +121,7 @@ public class ReController {
 					logger.info("推送消息失败重试中----------------第"+(i+1)+"次");
 					i++;
 				}
-			}*/
+			}
 			
 			return ajaxResult;
 		} catch (NullPointerException e) {
