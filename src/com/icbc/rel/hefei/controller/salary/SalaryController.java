@@ -110,19 +110,18 @@ public class SalaryController {
     	AjaxResult ajaxResult;
 		try {
 			ajaxResult = salaryService.uploadSalary(file,companyId);
-			
+			String mpId=SessionUtil.getMpId(request.getSession());
 			anaylsisXmlUtil t=new anaylsisXmlUtil(); 
-			logger.info("群发图文消息接口示例");
+			logger.info("群发图文消息接口------------");
 			String content;//上送的消息内容，需要是string
 			String fanalXmlStr;
 			String domainUrl = SystemConfigUtil.domainName;
 			String title = "薪资消息";//图文消息显示的标题
 			String picurl = domainUrl + "RelSceneService/image/salary/salary.png";//图文消息的图片地址
-			String url = domainUrl + "RelSceneService/com/myOrderDetail?activityUid=";//图文消息的正文链接
+			String url = domainUrl + "RelSceneService/com/salaryWebUser/jumpLogin?activityUid="+companyId+"&67f977b1ad597511737fff13a2909c1614c41391=0";//图文消息的正文链接
 			JSONObject picMessage = MessageHelper.getPicArticles(title, picurl, url);
 			content = URLEncoder.encode(picMessage.toString(),"utf-8");
-			//fanalXmlStr = t.makeXmlByHf005("12345678", "0", "3", "18100000014", "raw", content);
-			fanalXmlStr = t.makeXmlByHf005("12345678", "1", "0","", "raw", content);
+			fanalXmlStr = t.makeXmlByHf005(mpId, "1","","", "raw", content);
 			logger.info("上送得xml字符");
 			logger.info(fanalXmlStr);
             int i=0;
@@ -210,7 +209,7 @@ public class SalaryController {
     	salaryService.staffExport(request,response);
     }
     /**
-     * 修改员工密码
+     * 员工密码初始化
      */
     @RequestMapping("/salary/updatePwd")
     @ResponseBody
@@ -219,22 +218,13 @@ public class SalaryController {
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("活动失效!");
     	}
-    	String userName = request.getParameter("userName");
-    	if(StringUtils.isEmpty(userName)) {
-    		return AjaxResult.error("手机号不能为空!");
-    	}
-    	SalaryStaff salaryStaff = salaryService.getStaffInfo(userName,companyId);
-    	if(salaryStaff==null) {
-    		return AjaxResult.error("该账号不存在!");
-    	}else {
-    		salaryService.updatePwd(userName, companyId);
-    		return AjaxResult.success("密码初始化成功!");
-    	}
-    	
+    	String id = request.getParameter("id");
+    	salaryService.updatePwd(Integer.valueOf(id));
+    	return AjaxResult.success("密码初始化成功!");
     }  
     
     /**
-     * 员工作废手机号码
+     * 删除员工手机号码
      */
     @RequestMapping("/salary/delStaff")
     @ResponseBody
@@ -243,50 +233,23 @@ public class SalaryController {
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("活动失效!");
     	}
-    	String userName = request.getParameter("userName");
-    	if(StringUtils.isEmpty(userName)) {
-    		return AjaxResult.error("手机号不能为空!");
-    	}
-    	SalaryStaff salaryStaff = salaryService.getStaffInfo(userName,companyId);
-    	if(salaryStaff==null) {
-    		return AjaxResult.error("该账号不存在!");
-    	}else {
-    		salaryService.delStaff(userName, companyId);
-    			return AjaxResult.success("员工账号"+userName+"移除成功!");
-    	}
+    	String id = request.getParameter("id");
+    	salaryService.delStaff(Integer.valueOf(id));
+    	return AjaxResult.success("删除成功!");
     }  
     
     /**
-     * 员工更换手机号码
+     * 新增/更换手机号码
      */
     @RequestMapping("/salary/exchangeMobile")
     @ResponseBody
-    public AjaxResult exchangeMobile(HttpServletRequest request){
+    public AjaxResult exchangeMobile(HttpServletRequest request,SalaryStaff salaryStaff){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("活动失效!");
     	}
-    	String userName = request.getParameter("userName");
-    	String newUserName = request.getParameter("newUserName");
-    	String newUserName1 = request.getParameter("newUserName1");
-    	if(StringUtils.isEmpty(userName)||StringUtils.isEmpty(newUserName)||StringUtils.isEmpty(newUserName1)) {
-    		return AjaxResult.error("手机号不能为空!");
-    	}else if(userName.equals(newUserName)) {
-    		return AjaxResult.error("新旧手机号不能一致!");
-    	} else if(!newUserName.equals(newUserName1)){
-    		return AjaxResult.error("新手机号两次输入不一致!");
-    	}
-    	int flag = salaryService.getMobile(newUserName1);
-    	if(flag>0) {
-    		return AjaxResult.error("新手机号已存在!");
-    	}
-    	SalaryStaff salaryStaff = salaryService.getStaffInfo(userName,companyId);
-    	if(salaryStaff==null) {
-    		return AjaxResult.error("该账号不存在!");
-    	}else {
-    			salaryService.updateMobile(userName,newUserName, companyId);
-    			return AjaxResult.success("更换成功!");
-    	}
+    	salaryService.updateAddStaffInfo(salaryStaff);
+    	return AjaxResult.success("操作成功!");
     	
     } 
     
@@ -311,32 +274,29 @@ public class SalaryController {
     /**
      * 查询工资单上传详情
      */
-    @RequestMapping("/salary/upLoadDetail")
-    @ResponseBody
-    public AjaxResult upLoadDetail(HttpServletRequest request){
-    	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
-    	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("活动失效!");
-    	}
-    	String salaryId = request.getParameter("salaryId");
-    	String date = request.getParameter("date");
-    	//1.根据批次号查询出该批次的一个用户id
-    	//2.根据用户id查询出表头
-		List<String> titleList =  new ArrayList<String>();
-    	titleList = salaryImportService.getTitleList(salaryId);
-    	//3.根据表头拼接行转列sql
-    	StringBuilder  sql = new StringBuilder("SELECT user_id AS 员工手机号,'"+date+"' AS 发放日期 ,") ;
-    	for (int i = 0; i < titleList.size(); i++) {
-    		sql.append("MAX(CASE template_col_name WHEN '"+titleList.get(i)+"' THEN import_amount ELSE 0 END) AS "+titleList.get(i)+",");
-		}
-    	sql.deleteCharAt(sql.length()-1);
-    	sql.append(" FROM salary_import  WHERE salary_id = '"+salaryId+"' GROUP BY salary_id,user_id");
-    	List<LinkedHashMap<String,Object>> resultList = salaryImportService.getUpLoadDetail(sql.toString());
-    	return AjaxResult.success("成功",resultList);
-    }  
-    
-    
-    
+//    @RequestMapping("/salary/upLoadDetail")
+//    @ResponseBody
+//    public AjaxResult upLoadDetail(HttpServletRequest request){
+//    	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
+//    	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
+//    		return AjaxResult.error("活动失效!");
+//    	}
+//    	String salaryId = request.getParameter("salaryId");
+//    	String date = request.getParameter("date");
+//    	//1.根据批次号查询出该批次的一个用户id
+//    	//2.根据用户id查询出表头
+//		List<String> titleList =  new ArrayList<String>();
+//    	titleList = salaryImportService.getTitleList(salaryId);
+//    	//3.根据表头拼接行转列sql
+//    	StringBuilder  sql = new StringBuilder("SELECT user_id AS 员工手机号,'"+date+"' AS 发放日期 ,") ;
+//    	for (int i = 0; i < titleList.size(); i++) {
+//    		sql.append("MAX(CASE template_col_name WHEN '"+titleList.get(i)+"' THEN import_amount ELSE 0 END) AS "+titleList.get(i)+",");
+//		}
+//    	sql.deleteCharAt(sql.length()-1);
+//    	sql.append(" FROM salary_import  WHERE salary_id = '"+salaryId+"' GROUP BY salary_id,user_id");
+//    	List<LinkedHashMap<String,Object>> resultList = salaryImportService.getUpLoadDetail(sql.toString());
+//    	return AjaxResult.success("成功",resultList);
+//    }  
     
     /**
      * 删除工资单上传日志
@@ -353,8 +313,20 @@ public class SalaryController {
     	return AjaxResult.success("删除成功!");
     }
     
-    
-    
-    
+    /**
+     * 查询公司员工信息
+     */
+    @RequestMapping("/salary/getAllStaff")
+    @ResponseBody
+    public AjaxResult getAllStaff(HttpServletRequest request){
+    	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
+    	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
+    		return AjaxResult.error("活动失效!");
+    	}
+    	int pageNo =Integer.valueOf(request.getParameter("pageNo"));//页码
+    	int rows =Integer.valueOf(request.getParameter("rows"));//行数
+    	List<SalaryStaff> staffList = salaryService.getStaffInfo(companyId,pageNo,rows);
+    	return AjaxResult.success("成功", staffList);
+    }  
     
 }

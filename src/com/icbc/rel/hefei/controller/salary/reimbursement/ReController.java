@@ -53,7 +53,6 @@ public class ReController {
 	 * 跳转报销页面
 	 * @return
 	 */
-//	@RequiresPermissions("reimbursement:jumpReimbursement:view")
 	@RequestMapping("/reimbursement/jumpReimbursement")
 	public String jumpReimbursement()
 	{
@@ -95,7 +94,7 @@ public class ReController {
     	AjaxResult ajaxResult;
 		try {
 			ajaxResult = reService.uploadSalary(file,companyId);
-			
+			String mpId=SessionUtil.getMpId(request.getSession());
 			anaylsisXmlUtil t=new anaylsisXmlUtil(); 
 			logger.info("群发图文消息接口示例");
 			String content;//上送的消息内容，需要是string
@@ -103,11 +102,10 @@ public class ReController {
 			String domainUrl = SystemConfigUtil.domainName;
 			String title = "报销消息";//图文消息显示的标题
 			String picurl = domainUrl + "RelSceneService/image/reimbursement/reimbursement.png";//图文消息的图片地址
-			String url = domainUrl + "RelSceneService/com/myOrderDetail?activityUid=";//图文消息的正文链接
+			String url = domainUrl + "RelSceneService/com/salaryWebUser/jumpLogin?activityUid="+companyId+"&67f977b1ad597511737fff13a2909c1614c41391=0";//图文消息的正文链接
 			JSONObject picMessage = MessageHelper.getPicArticles(title, picurl, url);
 			content = URLEncoder.encode(picMessage.toString(),"utf-8");
-			//fanalXmlStr = t.makeXmlByHf005("12345678", "0", "3", "18100000014", "raw", content);
-			fanalXmlStr = t.makeXmlByHf005("12345678", "1", "0","", "raw", content);
+			fanalXmlStr = t.makeXmlByHf005(mpId, "1", "","", "raw", content);
 			logger.info("上送得xml字符");
 			logger.info(fanalXmlStr);
             int i=0;
