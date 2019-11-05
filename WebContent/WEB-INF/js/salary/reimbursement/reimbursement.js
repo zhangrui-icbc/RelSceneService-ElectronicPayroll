@@ -15,7 +15,7 @@ $(".btn1").bind("click", function(){
 				
 			$("input").val("");
 	   }); 
-	   
+		//新增备选模板字段
 	   $(".btn2").bind("click", function(){ 
 	 	var field_b=$(".field_b").val();
 	   	var column_b=$(".column_b").val();
@@ -25,8 +25,42 @@ $(".btn1").bind("click", function(){
 	 		layerMsg("信息不能为空")
 	   		return;
 	   }else{
-	 		addAlter();
-	 		$("#mytable2").append("<tr>"+"<td>"+column_b+"</td><td>"+column_num_b+"</td>"+alterColEdicHtml+"</tr>");
+			  var type=$(".field_b").val();
+			   var name=$(".column_b").val();
+			   if(name.length>10){
+				   layerMsg("类型名称长度超出字数限制!");
+				   return ;
+			   }
+			   var category=$(".column_num_b").val();
+			   var temp ={"type":type,"name":name,"category":category}
+				$.ajax({
+			    url : ctx+"/mp/reAlternative/addAlternative",// 获取自己系统后台用户信息接口
+			    type : "POST",
+			    data:JSON.stringify(temp),
+			    contentType:"application/json",
+			    dataType: "json",
+			    success : function(res) {
+			    	if(res.code=="0"){
+			    		$("#mytab_02").click();
+			    		layerMsg(res.msg);
+			    		$("#mytable2").append("<tr>"+"<td>"+column_b+"</td><td>"+column_num_b+"</td>"+alterColEdicHtml+"</tr>");
+			    	}else if(res.code=="500"){
+			    		layerMsg(res.msg);
+			    	}else{
+			    		 layerMsg("访问失败!");
+			    	}
+			      },
+			      error : function(data){
+			    	  layerMsg("访问失败")
+			      }
+			  });	 		
+	 		
+	 		
+	 		
+	 		
+	 		
+	 		
+	 		
 	 	}
 		$("input").val("");	
 	   }); 
@@ -63,20 +97,19 @@ $(".btn1").bind("click", function(){
 	'</div>';
   var comColEdicHtml = '<td name="buttons">'+comNewColHtml+'</td>'; 
   var alterColEdicHtml = '<td name="buttons">'+alterNewColHtml+'</td>';
- // $("#mytable tbody tr").append(comColEdicHtml);
-   $("#mytable2 tbody tr").append(alterColEdicHtml);
+ 
+  $("#mytable2 tbody tr").append(alterColEdicHtml);
   $.fn.SetEditable = function (options) {
     var defaults = {
-        columnsEd: null,         //Index to editable columns. If null all td editables. Ex.: "1,2,3,4,5"
-        $addButton: null,        //Jquery object of "Add" button
-        onEdit: function() {},   //Called after edition
-		onBeforeDelete: function() {}, //Called before deletion
-        onDelete: function() {}, //Called after deletion
-        onAdd: function() {}     //Called when added a new row
-    };
+        columnsEd: null,         
+        $addButton: null,        
+        onEdit: function() {},   
+		onBeforeDelete: function() {}, 
+        onDelete: function() {}, 
+        onAdd: function() {}  };
     params = $.extend(defaults, options);
     this.find('tbody tr').append(comColEdicHtml);
-	var $tabedi = this;   //Read reference to the current table, to resolve "this" here.
+	var $tabedi = this;   
     if (params.$addButton != null) {
         params.$addButton.click(function() {
             rowAddNew($tabedi.attr("id"));
@@ -90,19 +123,19 @@ function IterarCamposEdit($cols, tarea) {
     var n = 0;
     $cols.each(function() {
         n++;
-        if ($(this).attr('name')=='buttons') return;  //excluye columna de botones
-        if (!EsEditable(n-1)) return;   //noe s campo editable
+        if ($(this).attr('name')=='buttons') return; 
+        if (!EsEditable(n-1)) return;   
         tarea($(this));
     });
     
     function EsEditable(idx) {
-        if (colsEdi==null) {  //no se definió
-            return true;  //todas son editable
-        } else {  //hay filtro de campos
+        if (colsEdi==null) {  
+            return true; 
+        } else {  
             for (var i = 0; i < colsEdi.length; i++) {
               if (idx == colsEdi[i]) return true;
             }
-            return false;  //no se encontró
+            return false;  
         }
     }
 }
@@ -250,7 +283,7 @@ function alterRowElim(but) {  //Elimina la fila actual
   //获取到了id
     var id =$cols[0].innerText;
     layer.open({
-        content: "确定删除吗?"
+        content: "确定删除\""+$cols[1].innerText+"\"吗?"
         ,btn: ['确认', '取消']
         ,yes: function(index){
     		$.ajax({
@@ -416,9 +449,9 @@ $("#mytab_04").click(function(){
 	    		var list = res.data;
 	    		str+="<thead><tr><th>导入时间</th><th>报销时间</th><th>excel文件</th><th>操作</th></tr></thead><tbody>"
 	    		for(var i=0;i<list.length;i++){
-	    			var delHtml = '<button id="bElim1" type="button" class="iconfont icon-shanchu btn btn-sm btn-default">' +
+	    			var delHtml = '<button id="bElim1" style="margin-right: 16%;" type="button" class="iconfont icon-shanchu btn btn-sm btn-default">' +
 	    			'<span class="glyphicon glyphicon-trash" > </span></button>';
-	    			str+="<tr><td class='hid'>" + list[i].id + "</td><td>"+list[i].importTime+"</td><td>"+list[i].issueTime+"</td><td>"+list[i].excelName+"</td><td class='delLog' name='buttons' style='padding-left: 38px;'><span class='listDetail'>详情</span>"+delHtml+"</td></tr>";
+	    			str+="<tr><td class='hid'>" + list[i].id + "</td><td>"+list[i].importTime+"</td><td>"+list[i].issueTime+"</td><td>"+list[i].excelName+"</td><td class='delLog' name='buttons' style='padding-left: 38px;'>"+delHtml+"</td></tr>";
 	    		}
 	    		str+="</body>";
 	    		$(".sal_log").html(str);
@@ -439,7 +472,7 @@ $(document).on('click', '#bElim1', function () {
   //获取到了id
     var id =arr[0].innerText;
     layer.open({
-        content: "确定删除吗?"
+        content: "确定删除\""+arr[3].innerText+"\"吗?"
         ,btn: ['确认', '取消']
         ,yes: function(index){
         	$.ajax({
@@ -598,36 +631,7 @@ $(".alter").click(function(){
 	  });
 })
 
-/**
- * 新增备选模板字段
- * @returns
- */
-function addAlter(){
-		var type=$(".field_b").val();
-	   var name=$(".column_b").val();
-	   var category=$(".column_num_b").val();
-	   var temp ={"type":type,"name":name,"category":category}
-		$.ajax({
-	    url : ctx+"/mp/reAlternative/addAlternative",// 获取自己系统后台用户信息接口
-	    type : "POST",
-	    data:JSON.stringify(temp),
-	    contentType:"application/json",
-	    dataType: "json",
-	    success : function(res) {
-	    	if(res.code=="0"){
-	    		$("#mytab_02").click();
-	    		layerMsg(res.msg);
-	    	}else if(res.code=="500"){
-	    		layerMsg(res.msg);
-	    	}else{
-	    		 layerMsg("访问失败!");
-	    	}
-	      },
-	      error : function(data){
-	    	  layerMsg("访问失败")
-	      }
-	  });
-}
+
 /**
  * 修改备选模板字段
  * @returns

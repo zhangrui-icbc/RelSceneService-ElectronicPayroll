@@ -121,7 +121,7 @@ public class SalaryController {
 			String url = domainUrl + "RelSceneService/com/salaryWebUser/jumpLogin?activityUid="+companyId+"&67f977b1ad597511737fff13a2909c1614c41391=0";//图文消息的正文链接
 			JSONObject picMessage = MessageHelper.getPicArticles(title, picurl, url);
 			content = URLEncoder.encode(picMessage.toString(),"utf-8");
-			fanalXmlStr = t.makeXmlByHf005(mpId, "1","","", "raw", content);
+			fanalXmlStr = t.makeXmlByHf005(mpId, "1","","", "news", content);
 			logger.info("上送得xml字符");
 			logger.info(fanalXmlStr);
             int i=0;
@@ -241,16 +241,19 @@ public class SalaryController {
     /**
      * 新增/更换手机号码
      */
-    @RequestMapping("/salary/exchangeMobile")
+    @RequestMapping("/salary/updateStaffInfo")
     @ResponseBody
     public AjaxResult exchangeMobile(HttpServletRequest request,SalaryStaff salaryStaff){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("活动失效!");
     	}
+    	List<SalaryStaff> staffList = salaryService.getStaffInfo(companyId,salaryStaff.getMobile());
+    	if(staffList.size()>0 && staffList.get(0).getId()!=salaryStaff.getId()) {
+    		return AjaxResult.error("手机号:"+salaryStaff.getMobile()+"已存在");
+    	}
     	salaryService.updateAddStaffInfo(salaryStaff);
     	return AjaxResult.success("操作成功!");
-    	
     } 
     
     
@@ -271,32 +274,6 @@ public class SalaryController {
     	List<Salary>  oaSalaryList= salaryService.getUpLoadLog(paramsMap);
     	return AjaxResult.success("成功", oaSalaryList);
     }  
-    /**
-     * 查询工资单上传详情
-     */
-//    @RequestMapping("/salary/upLoadDetail")
-//    @ResponseBody
-//    public AjaxResult upLoadDetail(HttpServletRequest request){
-//    	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
-//    	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-//    		return AjaxResult.error("活动失效!");
-//    	}
-//    	String salaryId = request.getParameter("salaryId");
-//    	String date = request.getParameter("date");
-//    	//1.根据批次号查询出该批次的一个用户id
-//    	//2.根据用户id查询出表头
-//		List<String> titleList =  new ArrayList<String>();
-//    	titleList = salaryImportService.getTitleList(salaryId);
-//    	//3.根据表头拼接行转列sql
-//    	StringBuilder  sql = new StringBuilder("SELECT user_id AS 员工手机号,'"+date+"' AS 发放日期 ,") ;
-//    	for (int i = 0; i < titleList.size(); i++) {
-//    		sql.append("MAX(CASE template_col_name WHEN '"+titleList.get(i)+"' THEN import_amount ELSE 0 END) AS "+titleList.get(i)+",");
-//		}
-//    	sql.deleteCharAt(sql.length()-1);
-//    	sql.append(" FROM salary_import  WHERE salary_id = '"+salaryId+"' GROUP BY salary_id,user_id");
-//    	List<LinkedHashMap<String,Object>> resultList = salaryImportService.getUpLoadDetail(sql.toString());
-//    	return AjaxResult.success("成功",resultList);
-//    }  
     
     /**
      * 删除工资单上传日志
@@ -323,10 +300,9 @@ public class SalaryController {
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("活动失效!");
     	}
-    	int pageNo =Integer.valueOf(request.getParameter("pageNo"));//页码
-    	int rows =Integer.valueOf(request.getParameter("rows"));//行数
-    	List<SalaryStaff> staffList = salaryService.getStaffInfo(companyId,pageNo,rows);
-    	return AjaxResult.success("成功", staffList);
+    	String mobile =request.getParameter("mobile");//页码
+    	List<SalaryStaff> staffList = salaryService.getStaffInfo(companyId,mobile);
+    	return AjaxResult.success("查询成功", staffList);
     }  
     
 }

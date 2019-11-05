@@ -55,10 +55,10 @@
                 	<span>员工信息</span>
                 	<img src="../image/salary/salary/icon4.png" />
                 </li>
-                <li class="stitle" id="mytab_06"  onclick="nTabs('mytab_06');window.open='#mytab_06'">
+<!--                 <li class="stitle" id="mytab_06"  onclick="nTabs('mytab_06');window.open='#mytab_06'">
                		<span>员工登录密码初始化</span>
                 	<img src="../image/salary/salary/icon5.png"/>
-                </li>              
+                </li>   -->            
             </ul>
             <div class="tab-content">
             	
@@ -87,8 +87,8 @@
                 <!--通用工资类型-->
             	<div class="tab tab2" id="mytab_02_1" >
 	            	<div class="input-box">
-	            		<span class="input-name">类型名称：</span><input class="add-input column_b" type="text" placeholder="请输入类型名称" /><br />
-	            		<span class="input-name">收支类型：</span>
+	            		<span class="input-name" style="align-self: center;">类型名称：</span><input class="add-input column_b" type="text" placeholder="请输入类型名称" /><br />
+	            		<span class="input-name" style="align-self: center;">收支类型：</span>
 	            		
 	            		<div id="selector">
 					        <select class="hd-selector add-input column_num_b select">
@@ -162,7 +162,7 @@
 				</div>
 				<div th:include="include :: footer"></div>	
            		<!--员工信息-->
-           		<div class="tab tab5" id="mytab_05_1">
+<!--            		<div class="tab tab5" id="mytab_05_1">
 						<div class="download-bg">
 							<div class="down-div">
 								<button type="button" class="yg-download">员工信息模板下载</button>
@@ -187,19 +187,34 @@
 	       					<input type="button" value="删除" id="del_mbl" class="phone-btn sub-ph" onclick="delMb()"/>
 	       				</div>
 	       			</div>	
-           		</div>
-           		
+           		</div> -->
+	<div class="tab tab5"  id="mytab_05_1">
+		<div class="download-bg">
+			<div class="down-div">
+           <label style="line-height: 30px;">手机号：</label>
+           <input  type="number"  class="mobile-input"/>
+           <button id="ygMsg-detail"  type="button">查询</button>
+		    	<button type="button" class="yg-download">员工信息模板下载</button>
+				<button class="sub" lay-event="uploadSta" id="sta_sub"><i class="layui-icon"></i>上传员工信息</button>
+			</div>
+		</div>	
+		<div class="ygMsg" id="ygMsg">
+			<table id="ygMsg_tab" cellspacing="0">
+				
+				<thead><th>姓名</th><th>手机号</th><th>操作</th></thead>
+				<tbody id="ygMsg_tbody"></tbody>
+			</table>
+		</div>
+	</div>
            		
            		<!-- 密码重置 -->
-           		<div class="tab tab6" id="mytab_06_1">
+<!--            		<div class="tab tab6" id="mytab_06_1">
            			<div>
            				<input class="mobile" placeholder="请输入手机号" ></input>
            				<button class="pwd_up"  type="button">确定</button>
            			</div>
-           			
-           		</div>
+           		</div> -->
 		</div>
-        
     </div>
 	 </div>
 <script src="../js/common.js"></script>
@@ -326,6 +341,7 @@ layui.use(['element','laydate','table','form','upload'],function(){
 			if(data.code==1){
 				data.msg="上传成功";
 			}
+			$("#mytab_05").click();
 			layer.open({
 				title:'提示',
 				type:0,

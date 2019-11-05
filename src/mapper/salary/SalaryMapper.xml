@@ -40,9 +40,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select id,company_id as companyId,name,col_index as colIndex   from  salary_common_template  
 	</select>
 	
-	
-	
-	
 	<!-- 保存工资信息 -->
 	<insert id="insertOaSalary" useGeneratedKeys="true" keyProperty="id"  parameterType = "com.icbc.rel.hefei.entity.salary.Salary">
 		insert into salary (id,import_time,issue_time,excel_name) values (#{id},#{importTime},#{issueTime},#{excelName})
@@ -65,11 +62,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    	</insert>
    	<!-- 修改员工登录密码 -->
    	<update id="updatePwd">
-   		update salary_user set password = '0477d3da16cb08766b45682299b8a211' where mobile = #{userName} and company_id =#{companyId}
+   		update salary_user set password = '0477d3da16cb08766b45682299b8a211' where id =#{id}
    	</update>
    	<!-- 删除员工账号 -->
    	<delete id="delStaff">
-   		delete from salary_user where mobile = #{userName} and company_id =#{companyId}
+   		delete from salary_user where id = #{id} 
    	</delete>
    	<!-- 更换员工账号 -->
    	<update id="updateMobile">
@@ -87,6 +84,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		select id, mobile, password, company_id as companyId, name, openId  from  salary_user where company_id =#{companyId}
 	</select>
 	<select id="getStaffInfo" resultType="com.icbc.rel.hefei.entity.salary.SalaryStaff">
-		select id, mobile, password, company_id as companyId, name, openId  from  salary_user  where company_id =#{companyId}  and mobile = #{userName}
+		select id, mobile, company_id as companyId, name from  salary_user  where company_id =#{companyId}  
+		<if test="mobile != null and mobile != '' ">
+			and mobile =#{mobile}
+		</if>
+		order by id desc
 	</select>
+	
+	   	<!-- 插入员工信息 -->
+	<insert id="updateAddStaffInfo"   parameterType = "com.icbc.rel.hefei.entity.salary.SalaryStaff">
+		update salary_user  set mobile = #{mobile}, name =#{name} 	 where id=#{id}  
+   	</insert>
+	
+	
+	
 </mapper>

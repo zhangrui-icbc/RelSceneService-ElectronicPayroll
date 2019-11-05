@@ -55,14 +55,13 @@ public interface SalaryService {
 	 AjaxResult insertStaffInfo(List<SalaryStaff> staffList, String companyId);
 	/**
 	 * 修改员工密码
-	 * @param userName
-	 * @param companyId 
+	 * @param id
 	 */
-	void updatePwd(String userName, String companyId);
+	void updatePwd(int id);
 	
 	int getMobile(String userName);
 	
-	SalaryStaff getStaffInfo(String userName, String companyId);
+	List<SalaryStaff> getStaffInfo(String companyId, String mobile);
 	/**
 	 * 获取工资上传日志
 	 * @param paramsMap
@@ -70,7 +69,8 @@ public interface SalaryService {
 	 */
 	List<Salary> getUpLoadLog(Map<String, Object> paramsMap);
 	void delLog(String salaryId);
-	int delStaff(String userName, String companyId);
+	int delStaff(int id);
 	int updateMobile(String userName, String newUserName, String companyId);
+	void updateAddStaffInfo(SalaryStaff salaryStaff);
 	
 }

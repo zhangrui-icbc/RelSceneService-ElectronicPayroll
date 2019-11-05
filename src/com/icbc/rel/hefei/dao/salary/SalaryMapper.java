@@ -52,7 +52,7 @@ public interface SalaryMapper{
 	 * @param userName
 	 * @param companyId 
 	 */
-	void updatePwd(@Param("userName")String userName,@Param("companyId")String companyId);
+	void updatePwd(@Param("id")int id);
 	/**
 	 * 
 	 * @param userName
@@ -68,17 +68,18 @@ public interface SalaryMapper{
 	 */
 	List<SalaryStaff> getMobileList(@Param("companyId")String companyId);
 	
-	SalaryStaff getStaffInfo(@Param("userName")String userName,  @Param("companyId")String companyId);
+	List<SalaryStaff> getStaffInfo(@Param("companyId")String companyId,@Param("mobile") String mobile);
 	
 	List<Salary> getUpLoadLog(@Param("params")Map<String, Object> paramsMap);
 	
 	void delLog(@Param("salaryId")String salaryId);
 	
-	int delStaff(@Param("userName")String userName, @Param("companyId") String companyId);
+	int delStaff(@Param("id")int id);
 	
 	int updateMobile(@Param("userName")String userName,@Param("newUserName") String newUserName,@Param("companyId") String companyId);
 	
 	void delLog1(@Param("salaryId")String salaryId);
+	void updateAddStaffInfo(SalaryStaff salaryStaff);
 	
 
 	

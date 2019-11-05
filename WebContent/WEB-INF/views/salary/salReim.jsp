@@ -38,17 +38,26 @@
 	                         <input type="text" name="activityName" class="layui-input mouseover" ></input>
 	                         <input type="text" name="iID" class="layui-input  hide" ></input>
 	                     </div>
+	                     <label class="layui-form-label">活动描述<span class="red">*</span></label>
+	                     <div class="layui-input-inline">
+	                         <input type="text" name="activityDesc" class="layui-input mouseover" ></input>
+	                     </div>
+	             <div class="btngroup" style="position:absolute;margin-left:70%;">
+	                  <button class="layui-btn" type="button" id="btnsave" lay-filter="btnsave" lay-submit>保存</button>
+	                 <button class="layui-btn" type="button"  id="btnreturn" onclick="returnLast()">返回</button>
+	               </div>
 	                 </div>
-	                 <div class="layui-form-item">
+<!-- 	                 <div class="layui-form-item">
 	                     <label class="layui-form-label">活动描述<span class="red">*</span></label>
 	                     <div class="layui-input-inline" >
 	                         <textarea style="width:400px;min-height:60px;" maxlength="50" name="activityDesc" class="layui-textarea mouseover" ></textarea>
 	                     </div>
-	                 </div>
-	                 <div class="btngroup">
+	                 </div> -->
+<!-- 	                 <div class="btngroup">
 	                  <button class="layui-btn" type="button" id="btnsave" lay-filter="btnsave" lay-submit>保存</button>
 	                 <button class="layui-btn" type="button"  id="btnreturn" onclick="returnLast()">返回</button>
-	               </div></form>
+	               </div> -->
+	               </form>
 	             </div>
 	        </div>
      		 <div class="nav">
@@ -176,6 +185,10 @@
     		content="请填写活动名称！";
     	}else if(data.activityDesc==""){
     		content="请填写活动描述！";
+    	}else if(data.activityName.length>10){
+    		content="活动名称长度超出字数限制！";
+    	}else if(data.activityDesc.length>10){
+    		content="活动描述长度超出字数限制！";
     	}
     	if(content.length==0){
     		return true;

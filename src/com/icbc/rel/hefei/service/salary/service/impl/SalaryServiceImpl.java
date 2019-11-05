@@ -59,6 +59,7 @@ import com.icbc.rel.hefei.service.rel.MessageService;
 import com.icbc.rel.hefei.service.salary.service.SalaryService;
 import com.icbc.rel.hefei.service.sys.SysActivityService;
 import com.icbc.rel.hefei.util.DateUtils;
+import com.icbc.rel.hefei.util.MobileUtil;
 import com.icbc.rel.hefei.util.SessionParamConstant;
 import com.icbc.rel.hefei.util.SystemConfigUtil;
 import com.icbc.rel.hefei.util.UUIDUtils;
@@ -166,14 +167,6 @@ public class SalaryServiceImpl implements SalaryService {
 	}
 	
 	
-	/**
-	 * 保存工资信息
-	 */
-//	 @Override
-//	public void insertSalaryInfo(Salary oaSalary) {
-//		  salaryMapper.insertOaSalary(oaSalary);
-//		 salaryMapper.insertOaSalaryImport(oaSalary);
-//		}
 	
 	 /**
 	  * 保存员工信息
@@ -184,12 +177,25 @@ public class SalaryServiceImpl implements SalaryService {
 	 		for (int i = 0; i < mobileList.size(); i++) {
 				for (int j = 0; j < staffList.size(); j++) {
 					if(mobileList.get(i).getMobile().equals(staffList.get(j).getMobile())) {
-						return AjaxResult.warn("手机号:"+mobileList.get(i).getMobile()+"已经存在");
+//						return AjaxResult.warn("手机号:"+mobileList.get(i).getMobile()+"已经存在");
+						//去除已存在的员工手机号码
+						staffList.remove(j);
+						j--;
+						continue;
 					}
+					
+					//手机号码格式校验,过滤非手机号
+					if(!MobileUtil.checkChinaMobile(staffList.get(j).getMobile())) {
+						staffList.remove(j);
+						j--;
+					}
+					
 				}
 			}
-	 		salaryMapper.insertStaffInfo(staffList);
-	 		return AjaxResult.success("导入成功!",staffList);
+	 		if(staffList.size()>0) {
+	 			salaryMapper.insertStaffInfo(staffList);
+	 		}
+	 		return AjaxResult.success("上传成功！本次新增"+staffList.size()+"个员工手机号码。",staffList);
 	 	}
 	 	
 	
@@ -353,7 +359,7 @@ public class SalaryServiceImpl implements SalaryService {
 		sort1(salaryCommonTemplate);
 		ServletOutputStream os = null;
 		try {
-			String name="工资条模板"+DateUtils.parseDateToStr("yyyyMMddHHmmss",new Date())+".xls";
+			String name="工资信息导入模板"+DateUtils.parseDateToStr("yyyyMMddHHmmss",new Date())+".xls";
 			String userAgent = request.getHeader("user-agent").toLowerCase();  
 			  
 			if (userAgent.contains("msie") || userAgent.contains("like gecko") ) {  
@@ -470,7 +476,7 @@ public class SalaryServiceImpl implements SalaryService {
 			}
 			ServletOutputStream os;
 			try {
-				String name="人员导入模板"+DateUtils.parseDateToStr("yyyyMMddHHmmss",new Date())+".xls";
+				String name="员工信息导入模板"+DateUtils.parseDateToStr("yyyyMMddHHmmss",new Date())+".xls";
 				String userAgent = request.getHeader("user-agent").toLowerCase();  
 				  
 				if (userAgent.contains("msie") || userAgent.contains("like gecko") ) {  
@@ -538,9 +544,9 @@ public class SalaryServiceImpl implements SalaryService {
 
 
 	@Override
-	public void updatePwd(String userName, String companyId) {
+	public void updatePwd(int id) {
 		// TODO Auto-generated method stub
-		salaryMapper.updatePwd(userName,companyId);
+		salaryMapper.updatePwd(id);
 	}
 
 	@Override
@@ -564,8 +570,8 @@ public class SalaryServiceImpl implements SalaryService {
 	     }
 
 	@Override
-	public SalaryStaff getStaffInfo(String userName, String companyId) {
-		return salaryMapper.getStaffInfo(userName,companyId);
+	public List<SalaryStaff> getStaffInfo( String companyId,String mobile) {
+		return salaryMapper.getStaffInfo(companyId,mobile);
 	}
 
 	@Override
@@ -580,9 +586,9 @@ public class SalaryServiceImpl implements SalaryService {
 	}
 
 	@Override
-	public int delStaff(String userName, String companyId) {
+	public int delStaff(int id) {
 		// TODO Auto-generated method stub
-		return salaryMapper.delStaff(userName,companyId);
+		return salaryMapper.delStaff(id);
 	}
 
 	@Override
@@ -617,6 +623,12 @@ public class SalaryServiceImpl implements SalaryService {
 	        }
 	        return buffer;
 	    }
+
+	@Override
+	public void updateAddStaffInfo(SalaryStaff salaryStaff) {
+		// TODO Auto-generated method stub
+		salaryMapper.updateAddStaffInfo(salaryStaff);
+	}
 	  
 	  
 	  

@@ -11,7 +11,9 @@
             mrSelector.click(function(){
                 li_select.toggle();
             });
-
+            $(".arrow").click(function(){
+                li_select.toggle();
+            });
             li.click(function(eve){
                 var index = $(this).index();
                 console.log(index);
@@ -27,8 +29,48 @@
             $("body").click(function(){
                 li_select.hide();
             });
+            
+          //员工信息
+            $("#mytab_05").click(function(){
+            	$.ajax({
+            		 url : ctx+"/mp/salary/getAllStaff",
+                    type:'get',
+                    datatype:'json',
+                    data:{},
+                    error:function(){
+                    	alert("error")
+                    },
+                    success:function(res){
+                       var data=res.data;
+                       var totalRows=data.length;
+                       var perPage=20;  //每页显示条数
+                       var pagetotal=0;  //总页数
+                       if(totalRows%perPage==0){
+                       	  pagetotal=totalRows/perPage;
+                       }
+                       else{
+                       		pagetotal=Math.ceil(totalRows/perPage);
+                       }
+            	    	//将数据显示在页面上
+            	    	var btnHtml="<span class='change-btn' onclick='Edit(this)'>编辑</span>|<span class='delEmploy-btn' onclick='delStaff(this)'>删除</span>|<span class='initialPwd-btn' onclick='updatePwd(this)'>初始化密码</span>"
+            	     	
+            	     	//遍历数据
+            	     	var str="";
+            			for(var i in data){
+            				var dataList=data[i];
+            				var _num=Number(i)+1;
+            				str += "<tr><td class='hid'>"+data[i].id+"</td><td class='yg-name'>"+data[i].name+"</td><td class=''>"+data[i].mobile+"</td><td class='action-btns'>"+btnHtml+"</td>";
+            				
+            			}
+            			$('#ygMsg_tbody').html(str);
+            		}
+            	})
+            })
 
         }());
+        
+        
+        
 var ctx = $("#contextPath").val().trim();	
 $(".btn1").bind("click", function(){ 
 		 	var field=$(".field").val();
@@ -56,8 +98,36 @@ $(".btn1").bind("click", function(){
 	 		layerMsg("信息不能为空")
 	   		return;
 	   }else{
-	 		addAlter();
-	 		$("#mytable2").append("<tr>"+"<td>"+column_b+"</td><td>"+column_num_b+"</td>"+alterColEdicHtml+"</tr>");
+	 	//	明细类型增加
+			var type=$(".field_b").val();
+			   var name=$(".column_b").val();
+			   if(name.length>10){
+				   layerMsg("类型名称长度超出字数限制!");
+				   return ;
+			   }
+			   var category=$(".column_num_b").val();
+			   var temp ={"type":type,"name":name,"category":category}
+				$.ajax({
+			    url : ctx+"/mp/alternative/addAlternative",// 获取自己系统后台用户信息接口
+			    type : "POST",
+			    data:JSON.stringify(temp),
+			    contentType:"application/json",
+			    dataType: "json",
+			    success : function(res) {
+			    	if(res.code=="0"){
+			    		$("#mytab_02").click();
+			    		layerMsg(res.msg);
+			    		$("#mytable2").append("<tr>"+"<td>"+column_b+"</td><td>"+column_num_b+"</td>"+alterColEdicHtml+"</tr>");
+			    	}else if(res.code=="500"){
+			    		layerMsg(res.msg);
+			    	}else{
+			    		 layerMsg("访问失败!");
+			    	}
+			      },
+			      error : function(data){
+			    	  layerMsg("访问失败")
+			      }
+			  });
 	 	}
 		$("input").val("");	
 	   }); 
@@ -281,7 +351,7 @@ function alterRowElim(but) {  //Elimina la fila actual
     //获取到了id
     var id =$cols[0].innerText;
     layer.open({
-        content: "确定删除吗?"
+        content: "确定删除\""+$cols[1].innerText+"\"吗?"
         ,btn: ['确认', '取消']
         ,yes: function(index){
     		$.ajax({
@@ -445,9 +515,9 @@ $("#mytab_04").click(function(){
 	    		var str="";
 	    		var list = res.data;
 	    		for(var i=0;i<list.length;i++){
-	    			var delHtml = '<button id="bElim1" type="button" class="iconfont icon-shanchu btn btn-sm btn-default">' +
+	    			var delHtml = '<button id="bElim1" style="margin-right: 16%;" type="button" class="iconfont icon-shanchu btn btn-sm btn-default">' +
 	    			'<span class="glyphicon glyphicon-trash" ></span></button>';
-	    			str+="<tr><td class='hid'>" + list[i].id + "</td><td>"+list[i].importTime+"</td><td>"+list[i].issueTime+"</td><td>"+list[i].excelName+"</td><td class='delLog' name='buttons' style='padding-left: 38px;'><span class='listDetail'>详情</span>"+delHtml+"</td></tr>";
+	    			str+="<tr><td class='hid'>" + list[i].id + "</td><td>"+list[i].importTime+"</td><td>"+list[i].issueTime+"</td><td>"+list[i].excelName+"</td><td class='delLog' name='buttons' style='padding-left: 38px;'>"+delHtml+"</td></tr>";
 	    		}
 	    		$(".sal_log").html(str);
 	    	}else{
@@ -467,7 +537,7 @@ $(document).on('click', '#bElim1', function () {
   //获取到了id
     var id =arr[0].innerText;
     layer.open({
-        content: "确定删除吗?"
+        content: "确定删除\""+arr[3].innerText+"\"吗?"
         ,btn: ['确认', '取消']
         ,yes: function(index){
         	$.ajax({
@@ -692,6 +762,10 @@ $(".alter").click(function(){
 function addAlter(){
 		var type=$(".field_b").val();
 	   var name=$(".column_b").val();
+	   if(name.length>10){
+		   layerMsg("类型名称长度超出字数限制!");
+		   return ;
+	   }
 	   var category=$(".column_num_b").val();
 	   var temp ={"type":type,"name":name,"category":category}
 		$.ajax({
@@ -884,7 +958,6 @@ $(".pwd_up").click(function(){
 		//删除最上面
 		$(this).parent().remove();
 		$(".alternative").find("span[data-name='"+text+"']").removeClass("act");
-		
 	});
 
 function salType(type){
@@ -908,6 +981,78 @@ function salType(type){
 }
 }
 
+
+
+//根据id删除员工信息
+function delStaff(but){
+    var $row = $(but).parents('tr');  
+    var $cols = $row.find('td'); 
+    var id =$cols[0].innerText;
+    layer.open({
+        content: "确定删除\""+$cols[2].innerText+"\"吗?"
+        ,btn: ['确认', '取消']
+        ,yes: function(index){
+        	$.ajax({
+        	    url : ctx+"/mp/salary/delStaff",// 获取自己系统后台用户信息接口
+        	    type : "get",
+        	    async :true,
+        	    contentType:"application/json",
+        	    dataType: "json",
+        	    data:{"id":id},
+        	    success : function(res) {
+        	    	layerMsg(res.msg);
+        	    	$(but).parents("tr").remove();
+        	      },
+        	      error : function(data){
+        	    	  layerMsg("访问失败")
+        	      }
+        	  });
+        }
+    })
+}
+//编辑
+function Edit(a) {
+    	var tr = a.parentNode.parentNode,
+        toEdit = a.innerHTML == '编辑'; 
+    //	a.innerHTML = toEdit ? '保存' : '编辑';
+    	a.innerHTML = '保存';
+    	if (toEdit) {//编辑
+    		tr.cells[1].innerHTML = '<input type="text" value="' + tr.cells[1].innerHTML.replace(/"/g, '&quot;') + '"/>'
+    		tr.cells[2].innerHTML = '<input type="text" value="' + tr.cells[2].innerHTML.replace(/"/g, '&quot;') + '"/>'
+    	}
+    	else {//保存
+    	    var $row = $(a).parents('tr');  
+    	    var $cols = $row.find('td'); 
+    	    var id =$cols[0].innerText;
+    	    var name= tr.cells[1].firstChild.value;
+    	    var mobile=tr.cells[2].firstChild.value;
+    		if (!/^[1][356789][0-9]{9}$/.test(mobile)) {
+    			layerMsg("请输入正确的手机号码.");
+    			return;
+    		}
+        	$.ajax({
+        	    url : ctx+"/mp/salary/updateStaffInfo",// 获取自己系统后台用户信息接口
+        	    type : "get",
+        	    async :true,
+        	    contentType:"application/json",
+        	    dataType: "json",
+        	    data:{"id":id,"name":name,"mobile":mobile},
+        	    success : function(res) {
+        	    	layerMsg(res.msg);
+        	    	if(res.code==0){
+        	    		tr.cells[1].innerHTML = tr.cells[1].firstChild.value.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        	    		tr.cells[2].innerHTML = tr.cells[2].firstChild.value.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        	    		a.innerHTML = '编辑';
+        	    	}
+        	    },
+        	      error : function(data){
+        	    	  layerMsg("访问失败")
+        	      }
+        	  });
+    	}
+		}
+
+
 function nTabs(id) { 
 	$('.stitle').removeClass('active'); 
 	$('#'+id).addClass('active'); 
@@ -924,5 +1069,67 @@ function layerMsg(msg){
 		content:msg
 	   });
 }
-
+//根据手机号查询员工信息
+$("#ygMsg-detail").click(function(){
+	var mobile=$(".mobile-input").val();
+	$.ajax({
+	    url : ctx+"/mp/salary/getAllStaff",// 获取自己系统后台用户信息接口
+	    type : "get",
+	    async :true,
+	    contentType:"application/json",
+	    dataType: "json",
+	    data:{"mobile":mobile},
+	    success : function(res) {
+            var data=res.data;
+            var totalRows=data.length;
+            var perPage=20;  //每页显示条数
+            var pagetotal=0;  //总页数
+            if(totalRows%perPage==0){
+            	  pagetotal=totalRows/perPage;
+            }
+            else{
+            		pagetotal=Math.ceil(totalRows/perPage);
+            }
+ 	    	//将数据显示在页面上
+ 	    	var btnHtml="<span class='change-btn' onclick='Edit(this)'>编辑</span>|<span class='delEmploy-btn' onclick='delStaff(this)'>删除</span>|<span class='initialPwd-btn'  onclick='updatePwd(this)'>初始化密码</span>"
+ 	     	//遍历数据
+ 	     	var str="";
+ 			for(var i in data){
+ 				var dataList=data[i];
+ 				var _num=Number(i)+1;
+ 				str += "<tr><td class='hid'>"+data[i].id+"</td><td class='yg-name'>"+data[i].name+"</td><td class=''>"+data[i].mobile+"</td><td class='action-btns'>"+btnHtml+"</td>";
+ 			}
+ 			$('#ygMsg_tbody').html(str);
+	      },
+	      error : function(data){
+	    	  layerMsg("访问失败")
+	      }
+	  });
+})
+//初始化员工密码
+function updatePwd(but){
+    var $row = $(but).parents('tr');  
+    var $cols = $row.find('td'); 
+    var id =$cols[0].innerText;
+	$.ajax({
+	    url : ctx+"/mp/salary/updatePwd",// 获取自己系统后台用户信息接口
+	    type : "get",
+	    async :true,
+	    contentType:"application/json",
+	    dataType: "json",
+	    data:{"id":id},
+	    success : function(res) {
+	    	if(res.code=="0"){
+	    		layerMsg(res.msg);
+	    	}else if(res.code=="500"){
+	    		layerMsg(res.msg);
+	    	}else{
+	    		 layerMsg("访问失败!");
+	    	}
+	      },
+	      error : function(data){
+	    	  layerMsg("访问失败")
+	      }
+	  });
+}
 

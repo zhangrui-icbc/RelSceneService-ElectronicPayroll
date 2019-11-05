@@ -105,7 +105,7 @@ public class ReController {
 			String url = domainUrl + "RelSceneService/com/salaryWebUser/jumpLogin?activityUid="+companyId+"&67f977b1ad597511737fff13a2909c1614c41391=0";//图文消息的正文链接
 			JSONObject picMessage = MessageHelper.getPicArticles(title, picurl, url);
 			content = URLEncoder.encode(picMessage.toString(),"utf-8");
-			fanalXmlStr = t.makeXmlByHf005(mpId, "1", "","", "raw", content);
+			fanalXmlStr = t.makeXmlByHf005(mpId, "1", "","", "news", content);
 			logger.info("上送得xml字符");
 			logger.info(fanalXmlStr);
             int i=0;

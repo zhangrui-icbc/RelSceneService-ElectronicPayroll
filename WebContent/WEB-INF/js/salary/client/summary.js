@@ -36,6 +36,9 @@ $(function() {
 						$(".list-box").eq(i).hide();
 					}
 				}else{
+					for (var i=0;i<4;i++){
+						$(".list-box").eq(i).show();
+					}
 					for (var i in data){
 						console.log(data[i].importList);
 						var importList=data[i].importList;
@@ -78,6 +81,8 @@ $(function() {
 				 	     if(category==4){
 					    		if(str==0){
 					    			$(".list-box").eq(3).hide();
+					    		}else{
+					    			$(".list-box").eq(3).show();
 					    		}
 				 	    	  $(".list-box").eq(3).append(txt)
 				 	      }
@@ -86,6 +91,8 @@ $(function() {
 					var str = $(".list-box").eq(3).children().length;
 		    		if(str==0){
 		    			$(".list-box").eq(3).hide();
+		    		}else{
+		    			$(".list-box").eq(3).show();
 		    		}
 				}
 

@@ -1,10 +1,6 @@
 var ctx = $("#contextPath").val().trim();	  
 $( ".DIY" ).sortable();
    $( ".DIY" ).disableSelection();
-window.onload=function(){
-
-}
-
 /**
  * 自定义模板
  */
@@ -161,7 +157,7 @@ function uploadFile(){
 	}
 	
 }
-
+/*
 function uploadStaff(){
 	
 	var fileM=document.querySelector("#filePath1");
@@ -188,6 +184,7 @@ function uploadStaff(){
 	        	if(res.code=="0"){
 	        		var test = document.getElementById('filePath1');
 	        		test.value = ''; 
+	        		alert("1234");
 	        		layerMsg(res.msg);
 	        	}else if(res.code=="301"||res.code=="500"){
 	        		layerMsg(res.msg);
@@ -199,7 +196,7 @@ function uploadStaff(){
 		 	}
 	    });
 }
-}
+}*/
 /**
  * 更换员工手机号码
  * @returns
