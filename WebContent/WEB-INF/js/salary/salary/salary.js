@@ -83,9 +83,7 @@ $(".btn1").bind("click", function(){
 		   }
 		 	else{
 		 		defineCom();
-//		 		$("#mytable").append("<tr>"+"<td>"+column+"</td><td>"+column_num+"</td><td>"+note+"</td>"+comColEdicHtml+"</tr>");
 		 	}
-				
 			$("input").val("");
 	   }); 
 	   

@@ -69,7 +69,15 @@ public class SalConfigController {
 		mav.setViewName("salary/reimbursement");
 		return mav;
 	}
-	
+	/**
+	 * 平台使用说明
+	 */
+	@RequestMapping(value="/explain")
+	public ModelAndView explain(HttpServletRequest request) {
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("salary/explain");
+		return mav;
+	}
 	
 	/**
 	 * 配置页

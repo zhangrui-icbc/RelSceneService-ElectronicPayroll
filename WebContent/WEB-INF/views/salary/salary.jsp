@@ -33,16 +33,14 @@
 	 	<div class="main-tab">
         <div class="tab-box">
             <ul id="nav-ul">
-                <li class="stitle alter" id="mytab_02" onclick="nTabs('mytab_02');window.open='#mytab_02'">
+                <li class="stitle alter" id="mytab_05" onclick="nTabs('mytab_05');window.open='#mytab_05'">
+                	<span>员工信息</span>
+                	<img src="../image/salary/salary/icon4.png" />
+                </li>
+                <li class="stitle" id="mytab_02" onclick="nTabs('mytab_02');window.open='#mytab_02'">
                 	<span>工资单明细增加</span>
                 	<img src="../image/salary/salary/icon1.png" />
                 </li>
-                <!-- <span>工资单明细类型增加</span>
-                	<img th:src="@{/salary/img/icon1.png}"/>   ss -->
- <!--              	<li class="stitle com" id="mytab_01" onclick="nTabs('mytab_01');location.href='#mytab_01'">
-                	<span>通用工资类型</span>
-                	<img src="../image/salary/salary/icon6.png" />
-                </li> -->
                 <li class="stitle zdy alter1" style="width: 160px;"id="mytab_03" onclick="nTabs('mytab_03');window.open='#mytab_03'">
                 	<span>工资单模板调整</span>
                 	<img src="../image/salary/salary/icon2.png" />
@@ -51,17 +49,8 @@
                		<span>工资单上传</span>
                		<img src="../image/salary/salary/icon3.png" />
                	</li>
-                <li class="stitle" id="mytab_05" onclick="nTabs('mytab_05');window.open='#mytab_05'">
-                	<span>员工信息</span>
-                	<img src="../image/salary/salary/icon4.png" />
-                </li>
-<!--                 <li class="stitle" id="mytab_06"  onclick="nTabs('mytab_06');window.open='#mytab_06'">
-               		<span>员工登录密码初始化</span>
-                	<img src="../image/salary/salary/icon5.png"/>
-                </li>   -->            
             </ul>
             <div class="tab-content">
-            	
             	<!--工资单明细类型增加-->
                 <div class="tab active-txt" id="mytab_01_1"  shiro:hasRole="admin">
                 	<div class="input-box">
@@ -86,9 +75,9 @@
                 
                 <!--通用工资类型-->
             	<div class="tab tab2" id="mytab_02_1" >
-	            	<div class="input-box">
-	            		<span class="input-name" style="align-self: center;">类型名称：</span><input class="add-input column_b" type="text" placeholder="请输入类型名称" /><br />
-	            		<span class="input-name" style="align-self: center;">收支类型：</span>
+	            	<div class="input-box" style="padding: 17px 0;">
+	            		<span class="input-name" style="align-self: center;margin-right: 1%;">类型名称：</span><input class="add-input column_b" style="margin-right: 18%;" type="text" placeholder="请输入类型名称" /><br />
+	            		<span class="input-name" style="align-self: center;margin-right: 1%;">收支类型：</span>
 	            		
 	            		<div id="selector">
 					        <select class="hd-selector add-input column_num_b select">
@@ -97,7 +86,7 @@
 					            <option value="4">单位支出</option>
 					            <option value="6">专项附加扣除</option>
 					        </select>
-					        <span class="mr-selector">收入</span>
+					        <span class="mr-selector" style="margin-right: 10%;">收入</span>
 					        <span class="arrow"></span>
 					        <ul class="li_select">
 					            <li>收入</li>
@@ -106,14 +95,14 @@
 					            <li>专项附加扣除</li>
 					        </ul>
 					    </div>
-	            		<a href="##" class="add-btn btn2">确定提交</a>
+	            		<a href="##" class="add-btn btn2" style="margin-left: 4%;">确定提交</a>
 	            	</div>
-            		<table class="table table-bordered table-striped" id="mytable2" style="margin-top:45px">
+            		<table class="table table-bordered table-striped" id="mytable2" >
 						<thead>
 							<tr>
-								<td>类型名称</td>
+								<td style="width: 33%;">类型名称</td>
 								<td>收支类型</td>
-								<td style=" width: 123px;">操作</td>
+								<td style="width: 33%;">操作</td>
 							</tr>
 						</thead>
 						<tbody id="tab-com2">
@@ -147,13 +136,13 @@
 				<div class="tab tab4" id="mytab_04_1">
 								<div class="download-bg">
 									<div class="down-div">
-										<button type="button" class="gz-download">工资单模板下载</button>
+										<button type="button" class="gz-download" style="background: #2fafe6;">工资单模板下载</button>
 										<button class="sub" lay-event="uploadSal" id="sal_sub"><i class="layui-icon"></i>上传工资信息</button>
 									</div>
 								</div>
-								<table class="table table-bordered table-striped"  style="margin-top:45px">
+								<table class="table table-bordered table-striped" >
 									<thead>
-										<tr><th>导入时间</th><th>发放时间</th><th>excel文件</th><th>操作</th></tr>
+										<tr><th style="width: 25%;">导入时间</th><th style="width: 25%;">发放时间</th><th style="width: 25%;">excel文件</th><th style="width: 25%;">操作</th></tr>
 									</thead>
 									<tbody class="sal_log">
 									</tbody>
@@ -191,17 +180,17 @@
 	<div class="tab tab5"  id="mytab_05_1">
 		<div class="download-bg">
 			<div class="down-div">
-           <label style="line-height: 30px;">手机号：</label>
+           <label style="line-height:30px;">手机号：</label>
            <input  type="number"  class="mobile-input"/>
            <button id="ygMsg-detail"  type="button">查询</button>
-		    	<button type="button" class="yg-download">员工信息模板下载</button>
+		    	<button type="button" class="yg-download" style="background: #2fafe6;">员工信息模板下载</button>
 				<button class="sub" lay-event="uploadSta" id="sta_sub"><i class="layui-icon"></i>上传员工信息</button>
 			</div>
 		</div>	
 		<div class="ygMsg" id="ygMsg">
 			<table id="ygMsg_tab" cellspacing="0">
 				
-				<thead><th>姓名</th><th>手机号</th><th>操作</th></thead>
+				<thead><th style="width: 33%;">姓名</th><th style="width: 33%;">手机号</th><th style="width: 33%;">操作</th></thead>
 				<tbody id="ygMsg_tbody"></tbody>
 			</table>
 		</div>
@@ -493,9 +482,9 @@ if(hash){
 }
 else { 
 	$('.tab').hide(); 
-	$('#mytab_02').addClass('active'); 
+	$('#mytab_05').addClass('active'); 
 	$(".alter").click();
-	$('#mytab_02_1').show(); 
+	$('#mytab_05_1').show(); 
 } 
 
 </script>

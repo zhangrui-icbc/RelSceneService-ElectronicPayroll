@@ -28,5 +28,6 @@
 }
 
 .icon-shanchu:before {
-  content: "\e696";
+ /*  content: "\e696"; */
+ content: "删除";
 }

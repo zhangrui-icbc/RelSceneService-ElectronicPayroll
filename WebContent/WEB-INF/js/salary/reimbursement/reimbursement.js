@@ -447,7 +447,7 @@ $("#mytab_04").click(function(){
 	    	if(res.code==0){
 	    		var str;
 	    		var list = res.data;
-	    		str+="<thead><tr><th>导入时间</th><th>报销时间</th><th>excel文件</th><th>操作</th></tr></thead><tbody>"
+	    		str+="<thead><tr><th style='width: 25%;'>导入时间</th><th style='width: 25%;'>报销时间</th><th style='width: 25%;'>excel文件</th><th style='width: 25%;'>操作</th></tr></thead><tbody>"
 	    		for(var i=0;i<list.length;i++){
 	    			var delHtml = '<button id="bElim1" style="margin-right: 16%;" type="button" class="iconfont icon-shanchu btn btn-sm btn-default">' +
 	    			'<span class="glyphicon glyphicon-trash" > </span></button>';

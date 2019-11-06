@@ -42,7 +42,7 @@
 	                     <div class="layui-input-inline">
 	                         <input type="text" name="activityDesc" class="layui-input mouseover" ></input>
 	                     </div>
-	             <div class="btngroup" style="position:absolute;margin-left:70%;">
+	             <div class="btngroup" style="position:absolute;margin-left:84%;">
 	                  <button class="layui-btn" type="button" id="btnsave" lay-filter="btnsave" lay-submit>保存</button>
 	                 <button class="layui-btn" type="button"  id="btnreturn" onclick="returnLast()">返回</button>
 	               </div>
@@ -62,10 +62,12 @@
 	        </div>
      		 <div class="nav">
 		    	<span class="qiu">工资单管理</span>
-		    	<span>报销管理</span>
+		    	<span>报销单管理</span>
+		    	<span>平台使用说明</span>
 			</div>
 			<iframe id="ifream1" class="detail" src="./salary"  frameBorder=0 width="100%"></iframe>
 			<iframe id="ifream2" class="detail" src="./reimbursement" style="display: none;"></iframe>
+			<iframe id="ifream3" class="detail" src="./explain" style="display: none;"></iframe>
 		</div>
 		</div>
 </div>

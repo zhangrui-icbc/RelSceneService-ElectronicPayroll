@@ -101,7 +101,7 @@ public class ReController {
 			String fanalXmlStr;
 			String domainUrl = SystemConfigUtil.domainName;
 			String title = "报销消息";//图文消息显示的标题
-			String picurl = domainUrl + "RelSceneService/image/reimbursement/reimbursement.png";//图文消息的图片地址
+			String picurl = domainUrl + "RelSceneService/image/reimbursement/reimbursement/reimbursement.png";//图文消息的图片地址
 			String url = domainUrl + "RelSceneService/com/salaryWebUser/jumpLogin?activityUid="+companyId+"&67f977b1ad597511737fff13a2909c1614c41391=0";//图文消息的正文链接
 			JSONObject picMessage = MessageHelper.getPicArticles(title, picurl, url);
 			content = URLEncoder.encode(picMessage.toString(),"utf-8");

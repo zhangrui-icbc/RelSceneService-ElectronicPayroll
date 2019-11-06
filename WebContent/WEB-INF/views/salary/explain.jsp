@@ -15,6 +15,6 @@ p {
 </style>
 </head>
 <body>
-			<p>本次活动已被删除<br>敬请期待下次活动</p>
+			
 </body>
 </html>

@@ -44,7 +44,7 @@
         	<div class="tab-box">
             	<ul id="nav-ul">
                 	<li class="stitle alter" id="mytab_02" onclick="nTabs('mytab_02');window.open='#mytab_02'">
-                    	<sapn> 报销明细类型增加</span>
+                    	<sapn> 报销单明细类型增加</span>
                     	<img src="../image/salary/salary/icon1.png" />
                 	</li>
                 <!-- <span>报销明细类型增加</span>
@@ -55,7 +55,7 @@
                      <img src="../image/salary/salary/icon6.png" />
                 </li> -->
                 	<li class="stitle zdy alter1" style="width: 160px;"id="mytab_03" onclick="nTabs('mytab_03');window.open='#mytab_03'">
-                		<span> 报销模板调整</span>
+                		<span> 报销模板单调整</span>
                 		<img src="../image/salary/salary/icon2.png" />
                 	</li>
                		<li class="stitle sc" id="mytab_04" onclick="nTabs('mytab_04');window.open='#mytab_04'">
@@ -71,7 +71,7 @@
                 		<span class="input-name">备注：</span><input class="add-input note" type="text" placeholder="请输入备注" />
                 		<a href="##" class="add-btn btn1">添加</a>
                 	</div>
-                	<table class="table" id="mytable"  cellspacing="0" style="margin-top:45px">
+                	<table class="table" id="mytable"  cellspacing="0" >
 					<thead>
 					  <tr>
 						<th>项目名称</th>
@@ -86,16 +86,16 @@
                 </div>
                 <!--  报销明细类型增加 -->
             	<div class="tab tab2" id="mytab_02_1" >
-	            	<div class="input-box">
-	            		<span class="input-name" style="line-height:32px">类型名称：</span><input class="add-input column_b" type="text" placeholder="请输入类型名称" />
+	            	<div class="input-box" style="padding: 17px 0;">
+	            		<span class="input-name" style="line-height:32px;margin-right: 1%;">类型名称：</span><input class="add-input column_b" style="margin-right: 3%;"  type="text" placeholder="请输入类型名称" />
 	            		<a href="##" class="add-btn btn2">确定提交</a>
 	            	</div>
-            		<table class="table" id="mytable2"  cellspacing="0" style="margin-top:45px">
+            		<table class="table" id="mytable2"  cellspacing="0" >
 						<thead>
 							<tr>
-								<td>类型名称</td>
-								<td>收支类型</td>
-								<td>操作</td>
+								<td style="width: 33%;">类型名称</td>
+								<td style="width: 33%;">收支类型</td>
+								<td style="width: 33%;">操作</td>
 							</tr>
 						</thead>
 						<tbody id="tab-com2">
@@ -128,11 +128,11 @@
 				<div class="tab tab4" id="mytab_04_1">
 						<div class="download-bg">
 							<div class="down-div select-list">
-								<button type="button" class="gz-download bx-download">报销模板下载</button>
+								<button type="button" class="gz-download bx-download" style="background: #2fafe6;">报销模板单下载</button>
 								<button class="sub" lay-event="uploadSal" id="sal_sub"><i class="layui-icon"></i>上传报销信息</button>
 							</div>					
 						</div>
-						<table class="sal_log table" id="sal_log"  cellspacing="0" style="margin-top:45px">
+						<table class="sal_log table" id="sal_log"  cellspacing="0" >
 						</table>
 				<div th:include="include :: footer"></div>	
 			</div>
