@@ -986,17 +986,16 @@ function delStaff(but){
     var $row = $(but).parents('tr');  
     var $cols = $row.find('td'); 
     var id =$cols[0].innerText;
+    var temp = {"id":id};
     layer.open({
         content: "确定删除\""+$cols[2].innerText+"\"吗?"
         ,btn: ['确认', '取消']
         ,yes: function(index){
         	$.ajax({
         	    url : ctx+"/mp/salary/delStaff",// 获取自己系统后台用户信息接口
-        	    type : "get",
+        	    type : "post",
         	    async :true,
-        	    contentType:"application/json",
-        	    dataType: "json",
-        	    data:{"id":id},
+        	    data:temp,
         	    success : function(res) {
         	    	layerMsg(res.msg);
         	    	$(but).parents("tr").remove();

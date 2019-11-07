@@ -44,18 +44,11 @@
         	<div class="tab-box">
             	<ul id="nav-ul">
                 	<li class="stitle alter" id="mytab_02" onclick="nTabs('mytab_02');window.open='#mytab_02'">
-                    	<sapn> 报销单明细类型增加</span>
+                    	<span>报销单明细类型增加</span>
                     	<img src="../image/salary/salary/icon1.png" />
                 	</li>
-                <!-- <span>报销明细类型增加</span>
-                	<img th:src="@{/salary/img/icon1.png}"/>   ss -->
-   <!--              <li class="stitle com" id="mytab_01" onclick="nTabs('mytab_01');window.open='#mytab_01'" shiro:hasRole="admin">
-                	 <span>通用报销类型</span>
-                     <img th:src="@{/salary/img/icon6.png}" />
-                     <img src="../image/salary/salary/icon6.png" />
-                </li> -->
                 	<li class="stitle zdy alter1" style="width: 160px;"id="mytab_03" onclick="nTabs('mytab_03');window.open='#mytab_03'">
-                		<span> 报销模板单调整</span>
+                		<span>报销单模板调整</span>
                 		<img src="../image/salary/salary/icon2.png" />
                 	</li>
                		<li class="stitle sc" id="mytab_04" onclick="nTabs('mytab_04');window.open='#mytab_04'">

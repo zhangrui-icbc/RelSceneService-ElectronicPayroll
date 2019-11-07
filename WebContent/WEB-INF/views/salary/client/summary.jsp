@@ -65,6 +65,7 @@
 	</body>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.2.1.min.js" ></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/salary/client/summary.js"  ></script>
+	<script src="${pageContext.request.contextPath}/js/salary/client/layer.js"></script>
 	<script type="text/javascript" th:inline="javascript" > 
 	/* 	var s=$(window).height();//是滚动条高度
 //		var h=$(".company-msg").height();//是标签高度

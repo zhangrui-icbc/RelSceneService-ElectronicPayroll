@@ -51,7 +51,6 @@ public class SalaryWebController {
     	paramsMap.put("startDate", startDate);
     	paramsMap.put("endDate", endDate);
     	List<SalaryVO>  oaSalaryList= salaryWebService.getSalaryInfo(paramsMap);
-//    	List<SalaryImportVO> importList = salaryWebService.getSalaryInfoList(paramsMap);
     	return AjaxResult.success("³É¹¦", oaSalaryList);
     }
     

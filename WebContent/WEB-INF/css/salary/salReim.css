@@ -19,6 +19,8 @@ html{
 			    text-align: center;
 			    padding: 6px 33px;
 			    color:#009688;
+			    font-weight: bolder;
+			    font-size: 16px;
 			}
 			.nav .qiu {
 				border: 1px solid #009688;
@@ -26,6 +28,8 @@ html{
 			    background: #009688;
 			    color: white;
 			    border-radius: 5px 5px 0 0;
+			    font-weight: bolder;
+			    font-size: 16px;
 			}
 			iframe{
 				    width: 96%;
@@ -131,4 +135,8 @@ detail_tab {
 }
 #listDetail_tab tr td{
 	text-align:center;
+}
+
+#ifream3{
+	height:500px;
 }

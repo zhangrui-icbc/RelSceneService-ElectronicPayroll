@@ -98,6 +98,7 @@ $(function() {
 
 		      },
 		      error : function(res){
+		    	  actAlert("访问失败!");
 		      }
 		  });
 		})
@@ -163,7 +164,6 @@ var this_year=year.toString()+'-'+month.toString()
 		
 		//回首页
 		$(".home-btn").click(function(){
-			//window.location.href = ctx+"/salaryWebUser/jumpIndex";
 			window.location.href = ctx+"/com/salaryWebUser/jumpIndex1";
 		})
 		
