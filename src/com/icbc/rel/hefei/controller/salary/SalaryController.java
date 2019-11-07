@@ -62,9 +62,6 @@ public class SalaryController {
 	private static final Logger logger = Logger.getLogger(SalaryController.class);
 	@Autowired
 	private SalaryService salaryService;
-	
-	@Autowired
-	private SalaryImportService salaryImportService;
 	/**
 	 * 跳转工资条页面
 	 * @return

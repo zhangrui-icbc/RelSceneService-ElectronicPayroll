@@ -47,8 +47,6 @@ public class SalConfigController {
 	@Autowired
 	private SysLogInfoService logService;
 	@Autowired
-	private SysBankOrgInfoService bankOrgInfoService;
-	@Autowired
 	private SceneSwitchService service;
 	/**
 	 * 工资单页面	

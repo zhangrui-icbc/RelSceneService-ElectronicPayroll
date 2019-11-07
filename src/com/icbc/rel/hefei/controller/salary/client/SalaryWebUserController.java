@@ -1,6 +1,7 @@
 package com.icbc.rel.hefei.controller.salary.client;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
@@ -19,12 +20,8 @@ import com.icbc.rel.hefei.entity.salary.client.SalaryUser;
 import com.icbc.rel.hefei.service.rel.ImUserService;
 import com.icbc.rel.hefei.service.rel.PublicNumberInfoService;
 import com.icbc.rel.hefei.service.salary.client.service.SalaryWebUserService;
-import com.icbc.rel.hefei.service.salary.service.SalaryUserService;
 import com.icbc.rel.hefei.service.sys.SceneSwitchService;
 import com.icbc.rel.hefei.service.sys.SysActivityService;
-import com.icbc.rel.hefei.service.sys.SysPublicNumberInfoService;
-import com.icbc.rel.hefei.util.EnumUtil;
-import com.icbc.rel.hefei.util.PasswordCheck;
 import com.icbc.rel.hefei.util.SessionParamConstant;
 import com.icbc.rel.hefei.util.SessionUtil;
 
@@ -39,14 +36,8 @@ import com.icbc.rel.hefei.util.SessionUtil;
 public class SalaryWebUserController {
 	@Autowired
 	private SalaryWebUserService salaryWebUserService;
-	
-	@Autowired
-	private SalaryUserService salaryUserService;
-	
 	@Autowired
 	private SysActivityService sysActivityService;
-	@Autowired
-	private SysPublicNumberInfoService sysPublicNumberInfoService;
 	@Autowired
 	private SceneSwitchService sceneSwitchService;
 	
@@ -55,8 +46,7 @@ public class SalaryWebUserController {
 	 * @return
 	 */
 	@RequestMapping("/salaryWebUser/jumpLogin")
-	public String jumpSalary(HttpServletRequest request)
-	{
+	public String jumpSalary(HttpServletRequest request){
 		//TODO 增加地区判断 
 		/*客户端得通过活动链接里的activityuid获取对应的mpid然后通过syspublicnumberinfo那张表找到该公众号的机构号，如果这张表里还没有机构号这个数据，就再走一次拉取公众号信息的接口来获取机构号(个人判断不会没有机构号,因为pc端已经判断好了)*/
 		String activityUid = request.getParameter("activityUid");
@@ -189,9 +179,7 @@ public class SalaryWebUserController {
     public AjaxResult resetPassword(HttpServletRequest request,String newPassword1,String newPassword2){
     	 if(!newPassword1.equals(newPassword2)) {
     		return AjaxResult.error("新密码两次输入不一致!,请检查后重新输入");
-    	}/*else if(PasswordCheck.checkPassword(newPassword1).equals("error")) {
-    		return AjaxResult.error("请输入正确的密码格式!");
-    	}*/else {
+    	}else {
     		SalaryUser user =  (SalaryUser) request.getSession().getAttribute("user");
 			if(user.getPassword().equals(newPassword1)) {
 				return AjaxResult.error("新密码不能与旧密码一致,请重新输入");

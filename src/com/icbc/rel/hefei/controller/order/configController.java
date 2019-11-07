@@ -172,7 +172,6 @@ public class configController {
 			msg.setCode(-1);
 			msg.setMessage("保存点餐参数配置报错："+ex.getMessage());
 			logger.error("保存点餐参数配置报错：",ex);
-			
 			return msg;
 		}
 		
