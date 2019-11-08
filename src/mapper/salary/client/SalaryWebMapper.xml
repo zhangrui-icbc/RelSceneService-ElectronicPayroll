@@ -30,7 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 查询工资汇总信息 -->
 	<select id="getSumSalaryInfo" resultMap="salaryResultMap">
 		SELECT oa.id AS id , oa.import_time AS import_time , oa.issue_time AS issue_time , oai.salary_item_id AS salary_item_id , oai.salary_id AS salary_id,  oai.col_index as col_index,
-		oai.template_id AS template_id, oai.template_col_name AS template_col_name, sum(oai.import_amount) AS import_amount, oai.user_id AS user_id,oai.category as category
+		oai.template_id AS template_id, oai.template_col_name AS template_col_name, oai.import_amount AS import_amount, oai.user_id AS user_id,oai.category as category
 		FROM salary oa LEFT JOIN salary_import oai ON oa.`id` = oai.`salary_id` WHERE oai.`user_id`=#{params.userId} AND  oai.`template_id`=#{params.companyId} 
 			and  oa.issue_time in ( SELECT a.issue_time FROM (SELECT a.`issue_time` AS issue_time FROM  salary a LEFT JOIN salary_import b ON a.`id` = b.`salary_id` WHERE b.`user_id`=#{params.userId} ORDER BY a.`issue_time` DESC) AS a)	
 		<if test="params.startDate != null and  params.startDate != '' ">
@@ -39,7 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<if test="params.endDate != null and  params.endDate != '' ">
 			  and date_format(oa.issue_time,'%Y-%m') &lt;= #{params.endDate} 
 		</if>
-		group by oai.template_col_name order by oai.col_index asc
+		<!-- group by oai.template_col_name --> order by oai.col_index asc
     </select>
     <!-- 工资明细 -->
     <select id="getSalaryDetail" resultType="com.icbc.rel.hefei.entity.salary.client.SalaryImportVO">

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.ibm.math.BigDecimal;
 import com.icbc.rel.hefei.dao.salary.client.SalaryWebMapper;
 import com.icbc.rel.hefei.entity.salary.client.SalaryImportVO;
 import com.icbc.rel.hefei.entity.salary.client.SalaryVO;
@@ -36,8 +37,24 @@ public class SalaryWebServiceImpl implements SalaryWebService {
 		String startDate = (String) paramsMap.get("startDate");
 		String endDate = (String) paramsMap.get("endDate");
 		List<SalaryVO> list  = new ArrayList<SalaryVO>();
-		if(!StringUtils.isEmpty(startDate)&&!StringUtils.isEmpty(endDate)) {
-			return salaryWebMapper.getSumSalaryInfo(paramsMap);
+		if(!StringUtils.isEmpty(startDate)&&!StringUtils.isEmpty(endDate)) {//Лузм
+			List<SalaryVO> listSV = salaryWebMapper.getSumSalaryInfo(paramsMap);
+			List<SalaryImportVO> listSIV= new ArrayList<SalaryImportVO>();
+			for (int i = 0; i < listSV.size(); i++) {
+				listSIV.addAll(listSV.get(i).getImportList());
+			}
+			for (int i = 0; i < listSIV.size(); i++) {
+				for (int j = listSIV.size()-1;j>i; j--) {
+					if(listSIV.get(i).getTemplateColName().equals(listSIV.get(j).getTemplateColName())) {
+						listSIV.get(i).setImportAmount(new BigDecimal(listSIV.get(i).getImportAmount()).add(new BigDecimal(listSIV.get(j).getImportAmount())).toString());
+						listSIV.remove(j);
+					}
+				}
+			}
+			listSV.get(0).setImportList(listSIV);
+			List<SalaryVO> listSV1 =new ArrayList<SalaryVO>();
+			listSV1.add(listSV.get(0));
+			return listSV1;
 		}else {
 			 list =salaryWebMapper.getSalaryInfo(paramsMap);
 			 sort(list);
@@ -47,7 +64,6 @@ public class SalaryWebServiceImpl implements SalaryWebService {
 
 	@Override
 	public List<SalaryImportVO> getSalaryDetail(Map<String, Object> paramsMap) {
-		// TODO Auto-generated method stub
 		return salaryWebMapper.getSalaryDetail(paramsMap);
 	}
 	

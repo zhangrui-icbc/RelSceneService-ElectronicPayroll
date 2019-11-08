@@ -29,10 +29,12 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -59,7 +61,9 @@ import com.icbc.rel.hefei.service.rel.MessageService;
 import com.icbc.rel.hefei.service.salary.service.SalaryService;
 import com.icbc.rel.hefei.service.sys.SysActivityService;
 import com.icbc.rel.hefei.util.DateUtils;
+import com.icbc.rel.hefei.util.ExcelUtil;
 import com.icbc.rel.hefei.util.MobileUtil;
+import com.icbc.rel.hefei.util.SalaryExcelUtil;
 import com.icbc.rel.hefei.util.SessionParamConstant;
 import com.icbc.rel.hefei.util.SystemConfigUtil;
 import com.icbc.rel.hefei.util.UUIDUtils;
@@ -79,8 +83,6 @@ public class SalaryServiceImpl implements SalaryService {
 	SalaryCustomMapper salaryCustomMapper;
 	@Autowired
 	SalaryCommonMapper salaryCommonMapper;
-	@Autowired
-	private SysActivityService sysActivityService;
 	
 	/**
 	 * 处理上传的Excel文件
@@ -111,18 +113,6 @@ public class SalaryServiceImpl implements SalaryService {
         	if(oaSalary!=null) {
         		salaryMapper.insertOaSalary(oaSalary);
         		salaryMapper.insertOaSalaryImport(oaSalary);
-        		//信使消息推送
-        		   /*    		String activityUid = (String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
-        		SysActivityInfo activity = sysActivityService.getSceneByUid(activityUid);
-     		//根据userid查出所有的ImUserId
-        		String domainUrl = SystemConfigUtil.domainName;
-        		net.sf.json.JSONArray articles = MessageHelper.GetArticles("您已成功下单", "民以食为天",
-        				domainUrl + "RelSceneService/image/order/supper.jpg",
-        				domainUrl + "RelSceneService/com/myOrderDetail?activityUid="+activityUid);
-        		JSONObject obj = MessageHelper.getPicMessage(activity.getMpId(), ImUserId, "您已成功下单", "民以食为天",
-        				articles);
-        		MessageService.SendMessage(obj);
-        		*/
         	}
         	 return ajaxResult;
         }
@@ -224,28 +214,32 @@ public class SalaryServiceImpl implements SalaryService {
 		 * @throws ParseException */
 	    private static AjaxResult read2003Excel(File file,List<SalaryCustomTemplate> templateList) throws FileNotFoundException, IOException, ParseException, NullPointerException {
 	    	HSSFWorkbook hwb;
-	        HSSFSheet sheet=null;
 	        Salary oaSalary =new Salary();
 	        List<SalaryImport>  oaSalaryImportList = new ArrayList<SalaryImport>();
 	        List<Long> mobileList = new ArrayList<Long>();
 	        hwb = new HSSFWorkbook(new FileInputStream(file));
-			sheet = hwb.getSheetAt(0);
-			HSSFRow row = null;
-			HSSFCell cell = null;
+	        List<String[]> data = SalaryExcelUtil.ReadExcel(hwb, 0);
+	        if((data.get(0).length-2)!=templateList.size()) {
+	        	return AjaxResult.error("上传文件内容格式不正确！");
+	        }else {
+		        for (int i = 0; i < (data.get(0).length-2); i++) {
+					if(!data.get(0)[i+2].equals(templateList.get(i).getName())) {
+						return AjaxResult.error("上传文件内容格式不正确！123");
+					}
+				}
+	        }
 			oaSalary.setImportTime(new Date());//创建时间
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 			Date issueTime;
-			issueTime = sdf.parse(String.valueOf((int)sheet.getRow(1).getCell(1).getNumericCellValue()));
+			issueTime = sdf.parse(data.get(1)[1]);
 			oaSalary.setIssueTime(issueTime);//工资发放时间
 			String fileName = file.getName();
 			String arr[] = fileName.split("\\.");
 			String excelName = arr[0];
 			oaSalary.setExcelName(excelName);
 			//根据excel的行数循环
-			for(int i = 1;i<= sheet.getLastRowNum();i++){
-			//	String companyId = templateList.get(0).getCompanyId();
-				row = sheet.getRow(i);
-				long mobile = (long) row.getCell(0).getNumericCellValue();
+			for(int i = 1;i< data.size();i++){
+				long mobile = Long.valueOf(data.get(i)[0]);
 				if(mobileList.contains(mobile)) {
 					return AjaxResult.error("手机号:"+mobile+"在excel中有重复!");
 				}else {
@@ -256,27 +250,35 @@ public class SalaryServiceImpl implements SalaryService {
 					SalaryImport oaSalaryImport =new  SalaryImport();
 					//列号
 					int colIndex = templateList.get(j).getColIndex();
-					cell = row.getCell(colIndex);
-					switch (cell.getCellType()) {
-						case Cell.CELL_TYPE_NUMERIC:
-							Double toBeString =cell.getNumericCellValue();
-							String temp= String.format("%.2f",toBeString);
-							oaSalaryImport.setImportAmount(temp);//具体值
-							break;
-						case Cell.CELL_TYPE_STRING:
-							oaSalaryImport.setImportAmount(cell.getStringCellValue());//具体值
-							break;
-						default:
-							return AjaxResult.error("excel第"+(colIndex+1)+"列第"+(i+1)+"行格式错误,请检查后再次导入!");
-							//oaSalaryImport.setImportAmount("格式错误");
-							//break;
-				}
-					oaSalaryImport.setTemplateColName(sheet.getRow(0).getCell(colIndex).getStringCellValue());//名称
+					oaSalaryImport.setImportAmount(data.get(i)[colIndex]);//具体值
+//					switch (cell.getCellType()) {
+//						case Cell.CELL_TYPE_NUMERIC:
+//							Double toBeString =cell.getNumericCellValue();
+//							String temp= String.format("%.2f",toBeString);
+//							oaSalaryImport.setImportAmount(temp);//具体值
+//							break;
+//						case Cell.CELL_TYPE_STRING:
+//							oaSalaryImport.setImportAmount(cell.getStringCellValue());//具体值
+//							break;
+//						case Cell.CELL_TYPE_FORMULA:	
+//
+//							HSSFFormulaEvaluator evaluator = new HSSFFormulaEvaluator(hwb);
+//							CellValue tempCellValue = evaluator.evaluate(cell);
+//							double iCellValue = tempCellValue.getNumberValue(); 
+//							String temp1= String.format("%.2f",iCellValue);
+//							oaSalaryImport.setImportAmount(temp1);//具体值
+//							break;
+//						default:
+//							return AjaxResult.error("excel第"+(colIndex+1)+"列第"+(i+1)+"行格式错误,请检查后再次导入!");
+//							//oaSalaryImport.setImportAmount("格式错误");
+//							//break;
+//				}
+					oaSalaryImport.setTemplateColName(data.get(0)[colIndex]);//名称
 					oaSalaryImport.setSalaryItemId(j);//元素id
 					oaSalaryImport.setTemplateId(templateList.get(j).getCompanyId());//公司id与模板id一致
-					oaSalaryImport.setUserId((long) row.getCell(0).getNumericCellValue());//员工编号(固定且具体的某一列)
+					oaSalaryImport.setUserId(mobile);//员工编号(固定且具体的某一列)
 					oaSalaryImport.setColIndex(colIndex);
-					int category = getCategory(templateList,sheet.getRow(0).getCell(colIndex).getStringCellValue());
+					int category = getCategory(templateList,data.get(0)[colIndex]);
 					oaSalaryImport.setCategory(category);
 					oaSalaryImportList.add(oaSalaryImport);
 			    	}

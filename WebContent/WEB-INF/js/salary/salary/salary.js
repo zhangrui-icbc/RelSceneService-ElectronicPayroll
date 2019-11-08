@@ -38,7 +38,7 @@
                     datatype:'json',
                     data:{},
                     error:function(){
-                    	alert("error")
+                    	alert("员工信息获取失败!")
                     },
                     success:function(res){
                        var data=res.data;

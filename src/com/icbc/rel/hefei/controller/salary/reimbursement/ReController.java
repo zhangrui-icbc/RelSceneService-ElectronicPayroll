@@ -94,7 +94,7 @@ public class ReController {
     	AjaxResult ajaxResult;
 		try {
 			ajaxResult = reService.uploadSalary(file,companyId);
-			String mpId=SessionUtil.getMpId(request.getSession());
+			/*String mpId=SessionUtil.getMpId(request.getSession());
 			anaylsisXmlUtil t=new anaylsisXmlUtil(); 
 			logger.info("群发图文消息接口示例");
 			String content;//上送的消息内容，需要是string
@@ -119,7 +119,7 @@ public class ReController {
 					logger.info("推送消息失败重试中----------------第"+(i+1)+"次");
 					i++;
 				}
-			}
+			}*/
 			
 			return ajaxResult;
 		} catch (NullPointerException e) {
