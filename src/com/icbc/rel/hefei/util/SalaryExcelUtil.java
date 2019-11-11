@@ -8,6 +8,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
@@ -387,7 +388,7 @@ public class SalaryExcelUtil {
 			cellValue = String.valueOf(cell.getBooleanCellValue());
 			break;
 		case Cell.CELL_TYPE_FORMULA: // ¹«Ê½
-			cellValue = String.valueOf(cell.getNumericCellValue());
+			cellValue =NumberToTextConverter.toText(cell.getNumericCellValue());
 			break;
 		case Cell.CELL_TYPE_BLANK: // ¿ÕÖµ
 			cellValue = "";
