@@ -113,9 +113,9 @@ $(".btn1").bind("click", function(){
 			    dataType: "json",
 			    success : function(res) {
 			    	if(res.code=="0"){
+			    		$("#mytable2").append("<tr>"+"<td>"+column_b+"</td><td>"+column_num_b+"</td>"+alterColEdicHtml+"</tr>");
 			    		$("#mytab_02").click();
 			    		layerMsg(res.msg);
-			    		$("#mytable2").append("<tr>"+"<td>"+column_b+"</td><td>"+column_num_b+"</td>"+alterColEdicHtml+"</tr>");
 			    	}else if(res.code=="500"){
 			    		layerMsg(res.msg);
 			    	}else{
@@ -721,7 +721,7 @@ function delCom(id){
  * 查询出备选模板字段
  * @returns
  */
-$(".alter").click(function(){
+$("#mytab_02").click(function(){
 		$.ajax({
 	    url : ctx+"/mp/alternative/alternative",// 获取自己系统后台用户信息接口
 	    type : "POST",
@@ -757,7 +757,7 @@ $(".alter").click(function(){
  * 新增备选模板字段
  * @returns
  */
-function addAlter(){
+/*function addAlter(){
 		var type=$(".field_b").val();
 	   var name=$(".column_b").val();
 	   if(name.length>10){
@@ -786,7 +786,7 @@ function addAlter(){
 	    	  layerMsg("访问失败")
 	      }
 	  });
-}
+}*/
 /**
  * 修改备选模板字段
  * @returns
