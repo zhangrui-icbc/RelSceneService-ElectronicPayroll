@@ -1,6 +1,7 @@
 package com.icbc.rel.hefei.controller.salary.reimbursement;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +39,13 @@ public class ReCustomTemplateController {
     	if(StringUtils.isEmpty(companyId)) {
         	return AjaxResult.error("自定义失败!");
         	}
+//    	List<ReCustomTemplate> reTemplateList1 = new ArrayList<ReCustomTemplate>(1);
+//    	reTemplateList1.get(0).setCategory(11);
+//    	reTemplateList1.get(0).setColIndex(2);
+//    	reTemplateList1.get(0).setCompanyId(companyId);
+//    	reTemplateList1.get(0).setName("报销合计");
+    	
+    	
     	reCustomService.insertReCustomTemplate(reTemplateList,companyId);
     	return  AjaxResult.success("成功!",reTemplateList);
     }

@@ -1,6 +1,7 @@
 package com.icbc.rel.hefei.controller.salary;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +38,20 @@ public class CustomTemplateController {
     	if(StringUtils.isEmpty(companyId)) {
     	  return AjaxResult.error("自定义失败!");
     	}
+//    	List<SalaryCustomTemplate> salaryTemplateList1 = new ArrayList<SalaryCustomTemplate>();
+//    	salaryTemplateList1.get(0).setCategory(11);
+//    	salaryTemplateList1.get(0).setColIndex(2);
+//    	salaryTemplateList1.get(0).setCompanyId(companyId);
+//    	salaryTemplateList1.get(0).setName("实际收入");
+//    	salaryTemplateList1.get(0).setCategory(22);
+//    	salaryTemplateList1.get(0).setColIndex(3);
+//    	salaryTemplateList1.get(0).setCompanyId(companyId);
+//    	salaryTemplateList1.get(0).setName("收入合计");
+//    	salaryTemplateList1.get(0).setCategory(33);
+//    	salaryTemplateList1.get(0).setColIndex(4);
+//    	salaryTemplateList1.get(0).setCompanyId(companyId);
+//    	salaryTemplateList1.get(0).setName("支出合计");
+//    	salaryTemplateList1.addAll(salaryTemplateList);
     	salaryCustomService.insertSalaryCustomTemplate(salaryTemplateList,companyId);
     	return  AjaxResult.success("自定义成功!",salaryTemplateList);
     }
