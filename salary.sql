@@ -1,3 +1,17 @@
+/*
+SQLyog v10.2 
+MySQL - 5.6.28 : Database - salary_demo
+*********************************************************************
+*/
+
+/*!40101 SET NAMES utf8 */;
+
+/*!40101 SET SQL_MODE=''*/;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
 /*Table structure for table `reimbursement` */
@@ -42,7 +56,7 @@ CREATE TABLE `reimbursement_custom_template` (
   `col_index` varchar(3) DEFAULT NULL COMMENT '列号',
   `category` int(3) DEFAULT '0' COMMENT '类别.1收入合计,2支出合计,3实际收入,总计项:收入合计11,支出合计22,实际收入33',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1055 DEFAULT CHARSET=gbk COMMENT='自定义模板表';
+) ENGINE=InnoDB AUTO_INCREMENT=1103 DEFAULT CHARSET=gbk COMMENT='自定义模板表';
 
 /*Data for the table `reimbursement_custom_template` */
 
@@ -73,11 +87,11 @@ CREATE TABLE `reimbursement_template_alternative` (
   `name` varchar(20) DEFAULT NULL COMMENT '列名称',
   `category` int(3) DEFAULT NULL COMMENT '类别.1收入合计,2支出合计,3实际收入,总计项:收入合计11,支出合计22,实际收入33',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COMMENT='模板字段备选表';
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8mb4 COMMENT='模板字段备选表';
 
 /*Data for the table `reimbursement_template_alternative` */
 
-insert  into `reimbursement_template_alternative`(`id`,`name`,`category`) values (23,'报销合计',11),(93,'交通费',NULL),(94,'住宿费',NULL),(96,'话费',NULL),(98,'餐费',NULL),(99,'差旅费',NULL);
+insert  into `reimbursement_template_alternative`(`id`,`name`,`category`) values (93,'交通费',NULL),(94,'住宿费',NULL),(96,'话费',NULL),(98,'餐费',NULL),(99,'差旅费',NULL),(100,'洗衣费',NULL);
 
 /*Table structure for table `salary` */
 
@@ -103,7 +117,7 @@ CREATE TABLE `salary_common_template` (
   `col_index` varchar(3) DEFAULT NULL COMMENT '列号',
   `remark` varchar(100) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COMMENT='固定值模板表';
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COMMENT='固定值模板表';
 
 /*Data for the table `salary_common_template` */
 
@@ -120,7 +134,7 @@ CREATE TABLE `salary_custom_template` (
   `col_index` varchar(3) DEFAULT NULL COMMENT '列号',
   `category` int(3) DEFAULT '0' COMMENT '类别.1收入合计,2支出合计,3实际收入,0无分组',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=832 DEFAULT CHARSET=gbk COMMENT='自定义模板表';
+) ENGINE=InnoDB AUTO_INCREMENT=1112 DEFAULT CHARSET=gbk COMMENT='自定义模板表';
 
 /*Data for the table `salary_custom_template` */
 
@@ -150,13 +164,12 @@ CREATE TABLE `salary_template_alternative` (
   `id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `name` varchar(20) DEFAULT NULL COMMENT '列名称',
   `category` int(3) DEFAULT NULL COMMENT '类别.1收入合计,2支出合计,3实际收入,0无分组',
-  `company_id` varchar(30) DEFAULT NULL COMMENT '公司id',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8mb4 COMMENT='模板字段备选表';
+) ENGINE=InnoDB AUTO_INCREMENT=183 DEFAULT CHARSET=utf8mb4 COMMENT='模板字段备选表';
 
 /*Data for the table `salary_template_alternative` */
 
-insert  into `salary_template_alternative`(`id`,`name`,`category`,`company_id`) values (23,'实际收入',11,NULL),(29,'收入合计',22,NULL),(30,'支出合计',33,NULL),(95,'工资总额',1,NULL),(96,'基本工资',1,NULL),(97,'应付工资合计',1,NULL),(98,'应扣款合计',2,NULL),(99,'应补款合计',1,NULL),(100,'工资合计',1,NULL),(101,'社保',2,NULL),(104,'收入额',1,NULL),(106,'当月实发工资',1,NULL),(107,'单位支出',44,NULL),(114,'养老（单位）',4,NULL),(127,'备注',55,NULL);
+insert  into `salary_template_alternative`(`id`,`name`,`category`) values (95,'工资总额',1),(96,'基本工资',1),(97,'应付工资合计',1),(98,'应扣款合计',2),(99,'应补款合计',1),(100,'工资合计',1),(101,'社保',2),(104,'收入额',1),(106,'当月实发工资',1),(107,'单位支出',44),(163,'子女教育',6),(164,'继续教育',6),(165,'专项附加扣除',66),(167,'通讯补贴',1),(168,'午餐费补贴',1),(170,'节日补贴',1),(173,'养老保险',4),(174,'医疗保险',4),(175,'失业保险',4),(176,'住房公积金',4),(177,'其他扣款',4),(178,'个人所得税',2),(179,'赡养老人',4),(180,'绩效工资',1),(182,'备注',55);
 
 /*Table structure for table `salary_user` */
 
@@ -169,8 +182,8 @@ CREATE TABLE `salary_user` (
   `company_id` varchar(30) DEFAULT NULL COMMENT '公司id/公司编号',
   `name` varchar(20) DEFAULT NULL COMMENT '员工姓名',
   `openId` varchar(32) DEFAULT NULL COMMENT '用户唯一标识',
-  PRIMARY KEY (`id`,`mobile`)
-) ENGINE=InnoDB AUTO_INCREMENT=114 DEFAULT CHARSET=utf8 COMMENT='公司员工表';
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=196 DEFAULT CHARSET=utf8 COMMENT='公司员工表';
 
 /*Data for the table `salary_user` */
 
