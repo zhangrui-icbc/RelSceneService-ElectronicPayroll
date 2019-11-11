@@ -198,7 +198,7 @@ public class ReServiceImpl implements ReService {
 			    		oaSalaryImport.setTemplateColName(data.get(0)[colIndex]);//名称
 			    		oaSalaryImport.setReimbursementItemId(j);//元素id
 			    		oaSalaryImport.setTemplateId(templateList.get(j).getCompanyId());//公司id与模板id一致
-			    		oaSalaryImport.setUserId(Long.valueOf(data.get(1)[0]));//员工编号(固定且具体的某一列)
+			    		oaSalaryImport.setUserId(Long.valueOf(data.get(i)[0]));//员工编号(固定且具体的某一列)
 			    		oaSalaryImport.setColIndex(colIndex);
 			    		int category = getCategory(templateList,data.get(0)[colIndex]);
 			    		oaSalaryImport.setCategory(category);

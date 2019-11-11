@@ -251,28 +251,6 @@ public class SalaryServiceImpl implements SalaryService {
 					//列号
 					int colIndex = templateList.get(j).getColIndex();
 					oaSalaryImport.setImportAmount(data.get(i)[colIndex]);//具体值
-//					switch (cell.getCellType()) {
-//						case Cell.CELL_TYPE_NUMERIC:
-//							Double toBeString =cell.getNumericCellValue();
-//							String temp= String.format("%.2f",toBeString);
-//							oaSalaryImport.setImportAmount(temp);//具体值
-//							break;
-//						case Cell.CELL_TYPE_STRING:
-//							oaSalaryImport.setImportAmount(cell.getStringCellValue());//具体值
-//							break;
-//						case Cell.CELL_TYPE_FORMULA:	
-//
-//							HSSFFormulaEvaluator evaluator = new HSSFFormulaEvaluator(hwb);
-//							CellValue tempCellValue = evaluator.evaluate(cell);
-//							double iCellValue = tempCellValue.getNumberValue(); 
-//							String temp1= String.format("%.2f",iCellValue);
-//							oaSalaryImport.setImportAmount(temp1);//具体值
-//							break;
-//						default:
-//							return AjaxResult.error("excel第"+(colIndex+1)+"列第"+(i+1)+"行格式错误,请检查后再次导入!");
-//							//oaSalaryImport.setImportAmount("格式错误");
-//							//break;
-//				}
 					oaSalaryImport.setTemplateColName(data.get(0)[colIndex]);//名称
 					oaSalaryImport.setSalaryItemId(j);//元素id
 					oaSalaryImport.setTemplateId(templateList.get(j).getCompanyId());//公司id与模板id一致
