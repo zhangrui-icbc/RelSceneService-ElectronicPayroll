@@ -5,20 +5,18 @@ $( ".DIY" ).sortable();
  * 自定义模板
  */
 $(".sunmit-btn").click(function(){	
-  	var objArr = [];
+  	var objArr = [ {colIndex: 0, name: "实际收入", category: "11"},{colIndex: 1, name: "收入合计", category: "22"}, {colIndex: 2, name: "支出合计", category: "33"}];
     for(var i = 0; i<$(".DIY span").length; i++){
         var obj = {};
-        var diy_id=$(".DIY span").eq(i).attr("data-id");
 //        console.log(diy_id);
 		var diy_category=$(".DIY span").eq(i).attr("data-category");
-		var diy_type=$(".DIY span").eq(i).attr("data-type");
 		var diy_name=$(".DIY span").eq(i).text();
 		obj.colIndex=i;
-		obj.id=diy_id;
-		obj.type=diy_type;
         obj.name = diy_name;
         obj.category = diy_category;
-        objArr.push(obj);
+        if(diy_name!="实际收入"&&diy_name!="收入合计"&&diy_name!="支出合计"){
+        	objArr.push(obj);
+        }
     }
 	 $.ajax({
 		 	type:"POST",
@@ -32,6 +30,7 @@ $(".sunmit-btn").click(function(){
 		 	},
 		 	success:function(res){
 		 		if(res.code=="0"){
+		 			$("#mytab_03").click();
 		 			layerMsg("自定义模板成功!");
 	        	}else{
 	        		layerMsg('活动失效!');

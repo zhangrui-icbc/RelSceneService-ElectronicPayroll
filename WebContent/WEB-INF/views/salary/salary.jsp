@@ -117,7 +117,7 @@
                 	<div class="alternative">
                 	</div>
                   <div id="notes" class="notes"  style="margin: 2% 0% 2% 10%;">
-	                	<h2 class="descp"><span style="color:#c00000">温馨提示：</span>实际收入、收入合计、支出合计为必选项，否则将导致上传数据异常。点击上方备选明细类型选择所需工资单明细类型，点击下方单个已选明细类型，前后挪动可更改明细类型展示的先后顺序。</h2>
+	                	<h2 class="descp"><span style="color:#c00000">温馨提示：</span>实际收入、收入合计、支出合计为必选项，已默认选择。点击上方备选明细类型选择所需工资单明细类型，点击下方单个已选明细类型，前后挪动可更改明细类型展示的先后顺序。</h2>
                 	</div>
                 	<h3 style="font-size:15px;padding-left:8%;font-weight:600;">已选明细类型:</h3>
                 	<div class="add">

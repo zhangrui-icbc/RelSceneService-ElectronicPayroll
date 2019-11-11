@@ -88,8 +88,9 @@ public class MessageHelper {
          isAllowSendToOther 是否允许转发 融e联独立版适用 1允许 0不允许 可写死1
          url： 图文消息正文链接，即点进该图文消息后所展示的页面内容 由J_MP_MATERIAL表中获取
 	 */
-	public static JSONObject getPicArticles(String title, String picurl, String url) {
+	public static JSONObject getPicArticlesForHF005(String title, String picurl, String url) {
 		JSONObject obj = new JSONObject();//这是需要上送的content的内容
+		JSONObject result = new JSONObject();//这是需要上送的content的内容
 		JSONArray jsondetailArray = new JSONArray();//这是articles的内容
 		JSONObject obj1 = new JSONObject();
 		obj1.put("attachno", "1");
@@ -103,7 +104,8 @@ public class MessageHelper {
 		String attatchId = UUID.randomUUID().toString().replace("-", "");
 		obj.put("attachid", attatchId);//图文消息素材id
 		obj.put("articles", jsondetailArray);
-		
-		return obj;
+		result.put("news", obj);
+		result.put("msgtype", "news");
+		return result;
 	}
 }

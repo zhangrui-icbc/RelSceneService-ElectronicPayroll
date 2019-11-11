@@ -50,7 +50,7 @@ public class testController {
 			String title = "薪资消息";//图文消息显示的标题
 			String picurl = domainUrl + "RelSceneService/image/order/supper.jpg";//图文消息的图片地址
 			String url = domainUrl + "RelSceneService/com/myOrderDetail?activityUid=";//图文消息的正文链接
-			JSONObject picMessage = MessageHelper.getPicArticles(title, picurl, url);
+			JSONObject picMessage = MessageHelper.getPicArticlesForHF005(title, picurl, url);
 			content = URLEncoder.encode(picMessage.toString(),"utf-8");
 			//fanalXmlStr = t.makeXmlByHf005("12345678", "0", "3", "18100000014", "raw", content);
 			fanalXmlStr = t.makeXmlByHf005("12345678", "1", "0","", "raw", content);

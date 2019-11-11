@@ -1,6 +1,7 @@
 package com.icbc.rel.hefei.util;
 
 import java.util.Map;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,12 +17,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.alibaba.fastjson.JSONObject;
-import com.icbc.crypto.utils.RSA;
-
 import org.apache.log4j.Logger;
-
-import net.sf.json.JSONArray;
 
 public class anaylsisXmlUtil {
 	
@@ -125,21 +121,21 @@ public class anaylsisXmlUtil {
 		    xml.append("<?xml version=\"1.0\" encoding=\"GBK\"?>");
 		    xml.append("<APPROOT>");
 		    xml.append("<PUBLIC>");
-		/*    xml.append("<fcode>HF005</fcode>");*/
-		    xml.append("<server_ip>"+IP+"</server_ip>");//
+		    xml.append("<FCODE>HF005</FCODE>");
+		    xml.append("<SERVER_IP>"+IP+"</SERVER_IP>");//
 		  /*  xml.append("<dt>"+date+"</dt>");
 		    xml.append("<tm>"+tm+"</tm>");*/
-		    xml.append("<dt></dt>");//ÖÃ¿Õ
-		    xml.append("<tm></tm>");//ÖÃ¿Õ
-		    xml.append("<channelIdentifier>cjy</channelIdentifier>");//
-		    xml.append(" <channeLcODE>F-MIMS</channeLcODE>");
+		    xml.append("<DT>"+CommonUtil.DateConvertStr(new Date(), "yyyy-MM-dd")+"</DT>");//ÖÃ¿Õ
+		    xml.append("<TM>"+CommonUtil.DateConvertStr(new Date(), "HHmmss")+"</TM>");//ÖÃ¿Õ
+		    xml.append("<CHANNELIDENTIFIER>cjy</CHANNELIDENTIFIER>");//
+		    xml.append("<CHANNELCODE>F-MIMS</CHANNELCODE>");
 		    xml.append("</PUBLIC>");
 		    xml.append("<PRIVATE>");
 		    xml.append(" <VERSION>1.0</VERSION>");
 		    xml.append("<APPNAME>F-MIMS</APPNAME>");//
 		    xml.append("<MSGS>");
 		    xml.append("<MSG>");
-		    xml.append("<TRANSNO>"+TransNo+"</TRANSNO>");//Ëæ»úÊý
+		    xml.append("<TRANSNO>"+System.currentTimeMillis()+"</TRANSNO>");//Ëæ»úÊý
 		    xml.append(" <KEY></KEY>");//ÖÃ¿Õ
 		    xml.append(" <PRI>0</PRI>");
 		    xml.append("<MPID>"+Mpid+"</MPID> ");
@@ -153,16 +149,15 @@ public class anaylsisXmlUtil {
 		    xml.append("<SWITCH>0</SWITCH>");
 		    xml.append(" <PUSHSTR></PUSHSTR>");//ÖÃ¿Õ
 		    xml.append(" <MSGTYPE>"+msgType+"</MSGTYPE>");
-		    xml.append(" <CONTENT>"+content+"</CONTENT>  ");
+		    xml.append(" <CONTENT>"+URLEncoder.encode(content)+"</CONTENT>  ");
 		    xml.append(" <RESERVE></RESERVE>");//ÖÃ¿Õ
 		    xml.append(" </MSG>");
 		    xml.append(" </MSGS>");
 		    xml.append(" </PRIVATE>");
 		    xml.append(" </APPROOT>");
-		       
+		    logger.info(xml.toString());
 	        return xml.toString();
 	    }
-	
 	
 	
 	
