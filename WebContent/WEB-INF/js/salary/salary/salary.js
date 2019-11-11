@@ -348,6 +348,11 @@ function alterRowElim(but) {  //Elimina la fila actual
     });
     //获取到了id
     var id =$cols[0].innerText;
+    var type =$cols[2].innerText;
+    if(type=="汇总项"){
+    	layerMsg("汇总项不可删除!");
+    	return false;
+    }
     layer.open({
         content: "确定删除\""+$cols[1].innerText+"\"吗?"
         ,btn: ['确认', '取消']
