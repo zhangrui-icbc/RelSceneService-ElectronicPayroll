@@ -26,7 +26,7 @@ var ctx = $("#contextPath").val().trim();
 	}
 	
 	$(".forget-pwd").click(function(){
-		actAlert("请致电客服4006964466 初始化登录密码");
+		actAlert("请联系管理员初始化登录密码");
 		  })
 	function actAlert(msg){
 		 layer.open({
