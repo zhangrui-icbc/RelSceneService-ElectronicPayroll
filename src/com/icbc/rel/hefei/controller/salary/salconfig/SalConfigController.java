@@ -103,6 +103,7 @@ public class SalConfigController {
 				flag=1;
 				mav.addObject("data", obj);
 			}else{
+				request.getSession().removeAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
 				mav.addObject("data", "\"\"");
 			}
 		}
@@ -157,7 +158,6 @@ public class SalConfigController {
 				activity.setBeginTime(new Date());
 				activityService.insert(activity);
 				logService.transforlog(activity, null, 1, EnumUtil.sceneType.salary.getSceneName(), activity.getMpName(),activity.getActivityName(),"新增配置");
-				
 			}else {
 				//更新活动名称
 				activity.setActivityName(info.getActivityName());
@@ -175,7 +175,6 @@ public class SalConfigController {
 			msg.setCode(-1);
 			msg.setMessage("保存工资单参数配置报错："+ex.getMessage());
 			logger.error("保存工资单参数配置报错：",ex);
-			
 			return msg;
 		}
 		

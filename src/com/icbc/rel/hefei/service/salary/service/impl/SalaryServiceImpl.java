@@ -163,6 +163,16 @@ public class SalaryServiceImpl implements SalaryService {
 	  */
 	 	@Override
 	 	public AjaxResult insertStaffInfo(List<SalaryStaff> staffList, String companyId) {
+	 		//判断导入的手机号是否重复
+	 		for (int i = 0; i < staffList.size(); i++) {
+	 			for (int j = staffList.size()-1; j >i; j--) {
+	 				String  sPhone = staffList.get(i).getMobile();
+	 				String  ePhone = staffList.get(j).getMobile();
+	 	           if  (ePhone.equals(sPhone))  {  
+	 	        	  return AjaxResult.warn("Excel中手机号:"+ePhone+"重复,请检查后导入!");
+	 	            } 
+				}
+			}
 	 		List<SalaryStaff> mobileList = salaryMapper.getMobileList(companyId);
 	 		for (int i = 0; i < mobileList.size(); i++) {
 				for (int j = 0; j < staffList.size(); j++) {
@@ -175,7 +185,7 @@ public class SalaryServiceImpl implements SalaryService {
 					}
 					
 					//手机号码格式校验,过滤非手机号
-					if(!MobileUtil.checkChinaMobile(staffList.get(j).getMobile())) {
+					if(!MobileUtil.checkGeneralPhone(staffList.get(j).getMobile())) {
 						staffList.remove(j);
 						j--;
 					}

@@ -94,6 +94,24 @@ public class MobileUtil {
         return false;
     }
 
+    
+    
+    /**
+     * 通用大陆手机号码校验(1开头11位)
+     *
+     * @param phone
+     *
+     * @return
+     */
+    public static boolean checkGeneralPhone(String phone) {
+        if (StringUtils.isNotBlank(phone)) {
+            if (phone.trim().length()==11&&phone.startsWith("1")) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /**
      * 隐藏手机号中间四位
      *

@@ -282,6 +282,13 @@ function alterRowElim(but) {  //Elimina la fila actual
     });
   //获取到了id
     var id =$cols[0].innerText;
+    var type =$cols[2].innerText;
+    if(type=="汇总项"){
+    	layerMsg("汇总项不可删除!");
+    	return false;
+    }
+    
+    
     layer.open({
         content: "确定删除\""+$cols[1].innerText+"\"吗?"
         ,btn: ['确认', '取消']
@@ -606,6 +613,12 @@ $(".alter").click(function(){
 	    success : function(res) {
 	    	if(res.code==0){
 	    		var str = "";
+    			str += "<tr>" +  // id
+    			"<td class='hid'>1</td>" +
+    			"<td>报销合计</td>" +
+    			"<td>汇总项</td>" +
+    			'<td name="buttons">'+alterNewColHtml+"</td>"+
+    			"</tr>";
 	    		var list = res.data.up;
 	    		var data1=res.data.down;
 	    		 $("#tab-com2").children().remove();

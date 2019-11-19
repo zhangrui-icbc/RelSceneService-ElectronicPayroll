@@ -5,7 +5,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.icbc.rel.hefei.dao.salary.SalaryAlternativeMapper">
 	<!-- 查询备选信息 -->
 	<select id="getAlternativeInfo"    resultType="com.icbc.rel.hefei.entity.salary.SalaryTemplateAlternative">
-		select * from salary_template_alternative ORDER BY category
+		SELECT * FROM salary_template_alternative 
 	</select>
 	
 	<!-- 插入备选字段 -->

@@ -15,7 +15,7 @@ public class ReTemplateAlternative
 	private Integer id;
 	/** 列名称 */
 	private String name;
-	/** 分组.1收入合计,2支出合计,3实际收入,0无分组 */
+	//TODO 备用字段删除的话,对应数据库字段也需要删除
 	private Integer category;
 
 	public void setId(Integer id) 

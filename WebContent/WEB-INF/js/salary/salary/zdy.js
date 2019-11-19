@@ -5,18 +5,20 @@ $( ".DIY" ).sortable();
  * 自定义模板
  */
 $(".sunmit-btn").click(function(){	
-  	var objArr = [ {colIndex: 0, name: "实际收入", category: "11"},{colIndex: 1, name: "收入合计", category: "22"}, {colIndex: 2, name: "支出合计", category: "33"}];
+  	//var objArr = [ {colIndex: 0, name: "实际收入", category: "11"},{colIndex: 1, name: "收入合计", category: "22"}, {colIndex: 2, name: "支出合计", category: "33"}];
+	var objArr=[];
+  	var aa=$(".DIY span").text();
     for(var i = 0; i<$(".DIY span").length; i++){
         var obj = {};
-//        console.log(diy_id);
 		var diy_category=$(".DIY span").eq(i).attr("data-category");
 		var diy_name=$(".DIY span").eq(i).text();
 		obj.colIndex=i;
         obj.name = diy_name;
         obj.category = diy_category;
-        if(diy_name!="实际收入"&&diy_name!="收入合计"&&diy_name!="支出合计"){
-        	objArr.push(obj);
-        }
+//        if(diy_name!="实际收入"&&diy_name!="收入合计"&&diy_name!="支出合计"){
+//        	objArr.push(obj);
+//        }
+        objArr.push(obj);
     }
 	 $.ajax({
 		 	type:"POST",
@@ -63,15 +65,35 @@ $("#mytab_03").click(function(){
 	    				 str+="<span class='act1' data-id='"+list[i].id+"'  data-category='"+list[i].category+"' data-type='"+list[i].type+"'  data-name='"+list[i].name+"' >"+list[i].name+"</span>";			 
 	    			}else{
 	    				 str+="<span data-id='"+list[i].id+"'  data-category='"+list[i].category+"' data-type='"+list[i].type+"' data-name='"+list[i].name+"' >"+list[i].name+"</span>";			 
-	    				
 	    			 }
 	    		}
 	    		 $(".alternative").html(str);
 	    		var xqo1 = eval( data1);
 	    		var html1="";
+//	    		if(xqo1.indexOf("实际收入") != -1){//不含有
+//	    			html1+="<span data-id='1' data-category='11' data-type='实际收入' data-name='实际收入' >实际收入</span>";
+//	    			html1+="<span data-id='2' data-category='22' data-type='收入合计' data-name='收入合计' >收入合计</span>";
+//	    			html1+="<span data-id='3' data-category='33' data-type='支出合计' data-name='支出合计' >支出合计</span>";
+//	    		}
+	    		var ab=0;
+	    		for(var i in xqo1){
+	    			if(xqo1[i].name=="实际收入"){
+	    				ab=1;
+	    			}
+	    		}
+	    		if(ab!=1){
+    				html1+="<span data-id='1' data-category='11' data-type='实际收入' data-name='实际收入' >实际收入</span>";
+	    			html1+="<span data-id='2' data-category='22' data-type='收入合计' data-name='收入合计' >收入合计</span>";
+	    			html1+="<span data-id='3' data-category='33' data-type='支出合计' data-name='支出合计' >支出合计</span>";
+	    		}
+	    		
 	    		for(var i in xqo1){
 	    			console.log(xqo1[i].id);
-	    			html1+="<span data-id='"+xqo1[i].id+"' data-category='"+xqo1[i].category+"' data-type='"+xqo1[i].type+"' data-name='"+xqo1[i].name+"' >"+xqo1[i].name+"<i class='delete'></i></span>"
+	    			if(xqo1[i].name=="实际收入"||xqo1[i].name=="支出合计"||xqo1[i].name=="收入合计"){
+	    				html1+="<span data-id='"+xqo1[i].id+"' data-category='"+xqo1[i].category+"' data-type='"+xqo1[i].type+"' data-name='"+xqo1[i].name+"' >"+xqo1[i].name+"</span>"
+	    			}else{
+	    				html1+="<span data-id='"+xqo1[i].id+"' data-category='"+xqo1[i].category+"' data-type='"+xqo1[i].type+"' data-name='"+xqo1[i].name+"' >"+xqo1[i].name+"<i class='delete'></i></span>"
+	    			}
 	    			
 				}
 	    		 $(".DIY").html(html1);

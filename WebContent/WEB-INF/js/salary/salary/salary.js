@@ -1,74 +1,67 @@
-        (function(){
-            var selector = $("#selector");
-            var li_select = $("#selector .li_select");  //模拟select的ul选项
-            var mrSelector = $("#selector .mr-selector");
-            var li = $("#selector .li_select li"); //li选项
+  (function(){
+      //方法内容
+      var selector = $("#selector");
+      var li_select = $("#selector .li_select");  //模拟select的ul选项
+      var mrSelector = $("#selector .mr-selector");
+      var li = $("#selector .li_select li"); //li选项
 
-            selector.click(function(eve){
-                eve.stopPropagation();   //阻止冒泡避免点击后消失    
-            });
+      selector.click(function(eve){
+          eve.stopPropagation();   //阻止冒泡避免点击后消失    
+      });
 
-            mrSelector.click(function(){
-                li_select.toggle();
-            });
-            $(".arrow").click(function(){
-                li_select.toggle();
-            });
-            li.click(function(eve){
-                var index = $(this).index();
-                console.log(index);
-                var text = $(this).text();  //获取当前点击li文本
-                mrSelector.text(text);      //赋值默认选项文本
-                console.log($("#selector .hd-selector option"));
-                selector.find(".hd-selector option").eq(index)
-                    .attr("selected","selected").siblings().removeAttr("selected");
-                $(this).parent().hide();
+      mrSelector.click(function(){
+          li_select.toggle();
+      });
+      $(".arrow").click(function(){
+          li_select.toggle();
+      });
+      li.click(function(eve){
+          var index = $(this).index();
+          console.log(index);
+          var text = $(this).text();  //获取当前点击li文本
+          mrSelector.text(text);      //赋值默认选项文本
+          console.log($("#selector .hd-selector option"));
+          selector.find(".hd-selector option").eq(index)
+              .attr("selected","selected").siblings().removeAttr("selected");
+          $(this).parent().hide();
 
-            });
+      });
 
-            $("body").click(function(){
-                li_select.hide();
-            });
-            
-          //员工信息
-            $("#mytab_05").click(function(){
-            	$.ajax({
-            		 url : ctx+"/mp/salary/getAllStaff",
-                    type:'get',
-                    datatype:'json',
-                    data:{},
-                    error:function(){
-                    	alert("员工信息获取失败!")
-                    },
-                    success:function(res){
-                       var data=res.data;
-                       var totalRows=data.length;
-                       var perPage=20;  //每页显示条数
-                       var pagetotal=0;  //总页数
-                       if(totalRows%perPage==0){
-                       	  pagetotal=totalRows/perPage;
-                       }
-                       else{
-                       		pagetotal=Math.ceil(totalRows/perPage);
-                       }
-            	    	//将数据显示在页面上
-            	    	var btnHtml="<span class='change-btn' onclick='Edit(this)'>编辑</span>|<span class='delEmploy-btn' onclick='delStaff(this)'>删除</span>|<span class='initialPwd-btn' onclick='updatePwd(this)'>初始化密码</span>"
-            	     	
-            	     	//遍历数据
-            	     	var str="";
-            			for(var i in data){
-            				var dataList=data[i];
-            				var _num=Number(i)+1;
-            				str += "<tr><td class='hid'>"+data[i].id+"</td><td class='yg-name'>"+data[i].name+"</td><td class=''>"+data[i].mobile+"</td><td class='action-btns'>"+btnHtml+"</td>";
-            				
-            			}
-            			$('#ygMsg_tbody').html(str);
-            		}
-            	})
-            })
-
-        }());
-        
+      $("body").click(function(){
+          li_select.hide();
+      });
+    //员工信息
+      $("#mytab_05").click(function(){
+      	$(".mobile-input").val("");
+      	$.ajax({
+      		 url : ctx+"/mp/salary/getAllStaff",
+              type:'post',
+              datatype:'json',
+              data:{},
+              error:function(){
+              //	layerMsg("员工信息获取失败!")
+              },
+              success:function(res){
+                 var data=res.data;
+                 if(data==null&&res.code=='500'){
+//              	   layerMsg(res.msg); 
+                 }else{
+              	   //将数据显示在页面上
+              	   var btnHtml="<span class='change-btn' onclick='Edit(this)'>编辑</span>|<span class='delEmploy-btn' onclick='delStaff(this)'>删除</span>|<span class='initialPwd-btn' onclick='updatePwd(this)'>初始化密码</span>"
+              	   //遍历数据
+              	   var str="";
+              	   for(var i in data){
+              		   var dataList=data[i];
+              		   var _num=Number(i)+1;
+              		   str += "<tr><td class='hid'>"+data[i].id+"</td><td class='yg-name'>"+data[i].name+"</td><td class=''>"+data[i].mobile+"</td><td class='action-btns'>"+btnHtml+"</td>";
+              	   }
+              	   $('#ygMsg_tbody').html(str);
+              	   
+                 }
+      		}
+      	})
+      }) 	
+      }());
         
         
 var ctx = $("#contextPath").val().trim();	
@@ -78,7 +71,7 @@ $(".btn1").bind("click", function(){
 		   	var column_num=$(".column_num").val();
 		   	var note=$(".note").val();
 		 	if(field==""||column==""||column_num==""){
-		 		layerMsg("信息不能为空")
+		 		layerMsg("信息不能为空");
 		   		return;
 		   }
 		 	else{
@@ -524,7 +517,7 @@ $("#mytab_04").click(function(){
 	    		}
 	    		$(".sal_log").html(str);
 	    	}else{
-	    		layerMsg("访问失败");
+	    		layerMsg(res.msg);
 	    	}
 	      },
 	      error : function(data){
@@ -733,6 +726,24 @@ $("#mytab_02").click(function(){
 	    success : function(res) {
 	    	if(res.code==0){
 	    		var str = "";
+	    		str +="<tr>" +  // id
+    			"<td class='hid'>1</td>" +
+    			"<td>实际收入</td>" +
+    			"<td>" + salType(11) + "</td>" +
+    			'<td name="buttons">'+alterNewColHtml+"</td>"+
+    			"</tr>";
+	    		str +="<tr>" +  // id
+	    		"<td class='hid'>1</td>" +
+    			"<td>收入合计</td>" +
+    			"<td>" + salType(22) + "</td>" +
+    			'<td name="buttons">'+alterNewColHtml+"</td>"+
+    			"</tr>";
+	    		str +="<tr>" +  // id
+	    		"<td class='hid'>1</td>" +
+    			"<td>支出合计</td>" +
+    			"<td>" + salType(33) + "</td>" +
+    			'<td name="buttons">'+alterNewColHtml+"</td>"+
+    			"</tr>";
 	    		var list = res.data.up;
 	    		var data1=res.data.down;
 	    		 $("#tab-com2").children().remove();
@@ -1083,15 +1094,6 @@ $("#ygMsg-detail").click(function(){
 	    data:{"mobile":mobile},
 	    success : function(res) {
             var data=res.data;
-            var totalRows=data.length;
-            var perPage=20;  //每页显示条数
-            var pagetotal=0;  //总页数
-            if(totalRows%perPage==0){
-            	  pagetotal=totalRows/perPage;
-            }
-            else{
-            		pagetotal=Math.ceil(totalRows/perPage);
-            }
  	    	//将数据显示在页面上
  	    	var btnHtml="<span class='change-btn' onclick='Edit(this)'>编辑</span>|<span class='delEmploy-btn' onclick='delStaff(this)'>删除</span>|<span class='initialPwd-btn'  onclick='updatePwd(this)'>初始化密码</span>"
  	     	//遍历数据

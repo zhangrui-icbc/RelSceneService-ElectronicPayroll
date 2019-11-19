@@ -9,7 +9,8 @@ window.onload=function(){
  * 自定义模板
  */
 $(".sunmit-btn").click(function(){	
-  	var objArr = [{colIndex: 0, name: "报销合计", category: "11"}];
+  //	var objArr = [{colIndex: 0, name: "报销合计", category: "11"}];
+	var objArr =[];
     for(var i = 0; i<$(".DIY span").length; i++){
         var obj = {};
 		var diy_category=$(".DIY span").eq(i).attr("data-category");
@@ -17,9 +18,10 @@ $(".sunmit-btn").click(function(){
 		obj.colIndex=i;
         obj.name = diy_name;
         obj.category = diy_category;
-        if(diy_name!="报销合计"){
-        	objArr.push(obj);
-        }
+//        if(diy_name!="报销合计"){
+//        	objArr.push(obj);
+//        }
+        objArr.push(obj);
     }
 	 $.ajax({
 		 	type:"POST",
@@ -72,10 +74,22 @@ $("#mytab_03").click(function(){
 	    		 $(".alternative").html(str);
 	    		var xqo1 = eval( data1);
 	    		var html1="";
+	    		var ab=0;
+	    		for(var i in xqo1){
+	    			if(xqo1[i].name=="报销合计"){
+	    				ab=1;
+	    			}
+	    		}
+	    		if(ab!=1){
+    				html1+="<span data-id='1' data-category='11' data-type='报销合计' data-name='报销合计' >报销合计</span>";
+	    		}
 	    		for(var i in xqo1){
 	    			console.log(xqo1[i].id);
-	    			html1+="<span data-id='"+xqo1[i].id+"' data-category='"+xqo1[i].category+"' data-type='"+xqo1[i].type+"' data-name='"+xqo1[i].name+"' >"+xqo1[i].name+"<i class='delete'></i></span>"
-	    			
+	    			if(xqo1[i].name=="报销合计"){
+	    				html1+="<span data-id='"+xqo1[i].id+"' data-category='"+xqo1[i].category+"' data-type='"+xqo1[i].type+"' data-name='"+xqo1[i].name+"' >"+xqo1[i].name+"</span>"
+	    			}else{
+	    				html1+="<span data-id='"+xqo1[i].id+"' data-category='"+xqo1[i].category+"' data-type='"+xqo1[i].type+"' data-name='"+xqo1[i].name+"' >"+xqo1[i].name+"<i class='delete'></i></span>"
+	    			}
 				}
 	    		 $(".DIY").html(html1);
 	    			$(".DIY span .list-id").each(function(index, element) {
