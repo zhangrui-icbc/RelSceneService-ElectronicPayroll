@@ -55,9 +55,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    	</insert>
    	<!-- 插入员工信息 -->
 	<insert id="insertStaffInfo"   parameterType = "java.util.List">
-		insert into salary_user (mobile , company_id , name) values
+		insert into salary_user (mobile , company_id , name , dept) values
 			<foreach collection="List" item="item"  separator="," >
-				(#{item.mobile} , #{item.companyId} , #{item.name} )
+				(#{item.mobile} , #{item.companyId} , #{item.name} , #{item.dept} )
 			</foreach>
    	</insert>
    	<!-- 修改员工登录密码 -->
@@ -83,8 +83,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getMobileList" resultType="com.icbc.rel.hefei.entity.salary.SalaryStaff">
 		select id, mobile, password, company_id as companyId, name, openId  from  salary_user where company_id =#{companyId}
 	</select>
+	<!-- 查询员工信息 -->
 	<select id="getStaffInfo" resultType="com.icbc.rel.hefei.entity.salary.SalaryStaff">
-		select id, mobile, company_id as companyId, name from  salary_user  where company_id =#{companyId}  
+		select id, mobile, company_id as companyId, name,dept from  salary_user  where company_id =#{companyId}  
 		<if test="mobile != null and mobile != '' ">
 			and mobile =#{mobile}
 		</if>

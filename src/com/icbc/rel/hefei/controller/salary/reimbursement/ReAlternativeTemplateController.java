@@ -31,6 +31,9 @@ public class ReAlternativeTemplateController {
     @ResponseBody
     public AjaxResult alternative(HttpServletRequest request){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
+    	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
+    		return AjaxResult.error("请先保存参数配置信息！");
+    	}
     	Map<String, Object> result  = reAlternativeService.getAlternativeInfo(companyId);
     	return AjaxResult.success("查询成功", result);
     }
@@ -43,7 +46,7 @@ public class ReAlternativeTemplateController {
     public AjaxResult addAlternative(HttpServletRequest request,@RequestBody ReTemplateAlternative reTemplateAlternative){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("活动失效!");
+    		return AjaxResult.error("请先保存参数配置信息！");
     	}
     	reTemplateAlternative= reAlternativeService.addAlternative(reTemplateAlternative);
         if(reTemplateAlternative!=null) {
@@ -78,7 +81,7 @@ public class ReAlternativeTemplateController {
     public AjaxResult delAlternative(HttpServletRequest request){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("活动失效!");
+    		return AjaxResult.error("请先保存参数配置信息！");
     	}
     	int id = Integer.valueOf(request.getParameter("id"));
     	reAlternativeService.delAlternative(id);

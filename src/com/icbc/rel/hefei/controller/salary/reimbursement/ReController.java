@@ -70,7 +70,7 @@ public class ReController {
     public AjaxResult uploadSalary(HttpServletRequest request) throws Exception{
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("活动失效!");
+    		return AjaxResult.error("请先保存参数配置信息！");
     	}
     	// 1、创建一个DiskFileItemFactory工厂
 		DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -90,7 +90,7 @@ public class ReController {
         	return AjaxResult.error("格式错误!仅支持xls格式文件.");
         }
 		File file = new File(fileName);
-		list.get(0).write(file);
+//		list.get(0).write(file);
     	AjaxResult ajaxResult;
 		try {
 			ajaxResult = reService.uploadSalary(file,companyId);
@@ -152,7 +152,7 @@ public class ReController {
     public AjaxResult upLoadLog(HttpServletRequest request){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("活动失效!");
+    		return AjaxResult.error("请先保存参数配置信息！");
     	}
     	Map<String, Object> paramsMap =new HashMap<String, Object>();
     	paramsMap.put("companyId" , companyId);
@@ -167,7 +167,7 @@ public class ReController {
     public AjaxResult upLoadDetail(HttpServletRequest request){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("活动失效!");
+    		return AjaxResult.error("请先保存参数配置信息！");
     	}
     	String reId = request.getParameter("reId");
     	String date = request.getParameter("date");
@@ -193,7 +193,7 @@ public class ReController {
     public AjaxResult delLog(HttpServletRequest request){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("活动失效!");
+    		return AjaxResult.error("请先保存参数配置信息！");
     	}
     	String salaryId = request.getParameter("reId");
     	reService.delLog(salaryId);

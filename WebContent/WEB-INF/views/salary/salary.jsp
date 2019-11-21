@@ -160,7 +160,7 @@
 		<div class="ygMsg" id="ygMsg">
 			<table id="ygMsg_tab" cellspacing="0">
 				
-				<thead><th style="width: 33%;">姓名</th><th style="width: 33%;">手机号</th><th style="width: 33%;">操作</th></thead>
+				<thead><th style="width: 25%;">部门</th><th style="width: 25%;">姓名</th><th style="width: 25%;">手机号</th><th style="width: 25%;">操作</th></thead>
 				<tbody id="ygMsg_tbody"></tbody>
 			</table>
 		</div>

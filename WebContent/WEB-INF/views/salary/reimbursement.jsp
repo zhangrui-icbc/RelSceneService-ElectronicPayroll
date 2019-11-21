@@ -147,7 +147,7 @@ layui.use(['element','laydate','table','form','upload'],function(){
 	var table = layui.table;
 	var form=layui.form;
 	var upload=layui.upload;
-	 var nowTime=new Date(); 
+/* 	 var nowTime=new Date(); 
 	 
 	 var orderType=0;
 	 var date=new Date();
@@ -243,7 +243,7 @@ layui.use(['element','laydate','table','form','upload'],function(){
 		elem:'#cancelTime',
 		type:'time',
 		format:'HH:mm:ss',
-	});
+	}); */
 	//报销信息上传
  	upload.render({
 		elem:"#sal_sub",

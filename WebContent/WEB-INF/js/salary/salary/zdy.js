@@ -35,7 +35,7 @@ $(".sunmit-btn").click(function(){
 		 			$("#mytab_03").click();
 		 			layerMsg("自定义模板成功!");
 	        	}else{
-	        		layerMsg('活动失效!');
+	        		layerMsg('请先保存参数配置信息！');
 	        	}
 		 	}
 		 });
@@ -70,11 +70,6 @@ $("#mytab_03").click(function(){
 	    		 $(".alternative").html(str);
 	    		var xqo1 = eval( data1);
 	    		var html1="";
-//	    		if(xqo1.indexOf("实际收入") != -1){//不含有
-//	    			html1+="<span data-id='1' data-category='11' data-type='实际收入' data-name='实际收入' >实际收入</span>";
-//	    			html1+="<span data-id='2' data-category='22' data-type='收入合计' data-name='收入合计' >收入合计</span>";
-//	    			html1+="<span data-id='3' data-category='33' data-type='支出合计' data-name='支出合计' >支出合计</span>";
-//	    		}
 	    		var ab=0;
 	    		for(var i in xqo1){
 	    			if(xqo1[i].name=="实际收入"){

@@ -47,16 +47,6 @@
 	                 <button class="layui-btn" type="button"  id="btnreturn" onclick="returnLast()">返回</button>
 	               </div>
 	                 </div>
-<!-- 	                 <div class="layui-form-item">
-	                     <label class="layui-form-label">活动描述<span class="red">*</span></label>
-	                     <div class="layui-input-inline" >
-	                         <textarea style="width:400px;min-height:60px;" maxlength="50" name="activityDesc" class="layui-textarea mouseover" ></textarea>
-	                     </div>
-	                 </div> -->
-<!-- 	                 <div class="btngroup">
-	                  <button class="layui-btn" type="button" id="btnsave" lay-filter="btnsave" lay-submit>保存</button>
-	                 <button class="layui-btn" type="button"  id="btnreturn" onclick="returnLast()">返回</button>
-	               </div> -->
 	               </form>
 	             </div>
 	        </div>
@@ -69,9 +59,8 @@
 			<iframe id="ifream2" class="detail" src="./reimbursement" style="display: none;"></iframe>
 			<iframe id="ifream3" class="detail" src="./explain" style="display: none;"></iframe>
 		</div>
-		</div>
+	</div>
 </div>
-<script src="${pageContext.request.contextPath}/js/salary/salReim.js"></script>
 <script src="${pageContext.request.contextPath}/js/common.js"></script>
 <script src="${pageContext.request.contextPath}/js/salary/jquery-ui.js"></script>
 <script src="${pageContext.request.contextPath}/js/salary/layer.js"></script>

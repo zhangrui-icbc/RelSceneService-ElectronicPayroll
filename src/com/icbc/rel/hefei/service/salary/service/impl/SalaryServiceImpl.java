@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,6 +36,8 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -146,8 +149,9 @@ public class SalaryServiceImpl implements SalaryService {
 		    	SalaryStaff salaryStaff =new SalaryStaff();
 		    	row = sheet.getRow(i);
 		    	salaryStaff.setCompanyId(companyId);
-		    	salaryStaff.setName(getValue(row.getCell(0)));
-		    	salaryStaff.setMobile(getValue(row.getCell(1)));
+		    	salaryStaff.setDept(getCellValue(row.getCell(0)));
+		    	salaryStaff.setName(getCellValue(row.getCell(1)));
+		    	salaryStaff.setMobile(getCellValue(row.getCell(2)));
 		    	staffList.add(salaryStaff);
 		    }
         } catch (Exception e) {
@@ -432,7 +436,8 @@ public class SalaryServiceImpl implements SalaryService {
 	public void staffExport(HttpServletRequest request,HttpServletResponse response) {
 		HSSFWorkbook workBook = new HSSFWorkbook();
 		List<String> fieldName=new ArrayList<String>();  //excel数据标题
-		fieldName.add("姓名 ");
+		fieldName.add("部门");
+		fieldName.add("姓名");
 		fieldName.add("手机号码");
 		//确定sheet表格数
 		HSSFCellStyle cellStyle = workBook.createCellStyle();//创建列的样式对象
@@ -546,18 +551,59 @@ public class SalaryServiceImpl implements SalaryService {
 	}
 
 	
+	public static String getCellValue(Cell cell) {
+		String cellValue = "";
+		if (cell == null) {
+			return cellValue;
+		}
+		// 把数字当成String来读，避免出现1读成1.0的情况
+		if (cell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+			if (DateUtil.isCellDateFormatted(cell)) {
+				Date d = cell.getDateCellValue();
+				DateFormat formater = new SimpleDateFormat("yyyy-MM-dd");
+				cellValue = formater.format(d);
+				cell.setCellValue(cellValue);
+			}
+			cell.setCellType(Cell.CELL_TYPE_STRING);
+			
+		}
+		// 判断数据的类型
+		switch (cell.getCellType()) {
+		case Cell.CELL_TYPE_NUMERIC: // 数字
+			cellValue = String.valueOf(cell.getNumericCellValue());
+
+			break;
+		case Cell.CELL_TYPE_STRING: // 字符串
+			cellValue = String.valueOf(cell.getStringCellValue());
+			break;
+		case Cell.CELL_TYPE_BOOLEAN: // Boolean
+			cellValue = String.valueOf(cell.getBooleanCellValue());
+			break;
+		case Cell.CELL_TYPE_FORMULA: // 公式
+			cellValue =NumberToTextConverter.toText(cell.getNumericCellValue());
+			break;
+		case Cell.CELL_TYPE_BLANK: // 空值
+			cellValue = "-";
+			break;
+		case Cell.CELL_TYPE_ERROR: // 故障
+			cellValue = "非法字符";
+			break;
+
+		default:
+			cellValue = "未知类型";
+			break;
+		}
+		return cellValue;
+	}
 	
-	@SuppressWarnings("static-access")
-	private static String getValue(HSSFCell hssfCell) {
-	         if (hssfCell.getCellType() == hssfCell.CELL_TYPE_BOOLEAN) {
-	             return String.valueOf(hssfCell.getBooleanCellValue());
-	         } else if (hssfCell.getCellType() == hssfCell.CELL_TYPE_NUMERIC) {
-	        	 DecimalFormat df = new DecimalFormat("0");
-	        	 return df.format(hssfCell.getNumericCellValue());
-	         } else {
-	             return String.valueOf(hssfCell.getStringCellValue());
-	         }
-	     }
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@Override
 	public List<SalaryStaff> getStaffInfo( String companyId,String mobile) {

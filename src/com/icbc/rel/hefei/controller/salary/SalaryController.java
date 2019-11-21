@@ -83,7 +83,7 @@ public class SalaryController {
     public AjaxResult uploadSalary(HttpServletRequest request) throws Exception{
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("活动失效!");
+    		return AjaxResult.error("请先保存参数配置信息！");
     	}
     	// 1、创建一个DiskFileItemFactory工厂
 		DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -103,7 +103,7 @@ public class SalaryController {
         	return AjaxResult.error("格式错误!仅支持xls格式文件.");
         }
 		File file = new File(fileName);
-		list.get(0).write(file);
+//		list.get(0).write(file);
     	AjaxResult ajaxResult;
 		try {
 			ajaxResult = salaryService.uploadSalary(file,companyId);
@@ -154,7 +154,7 @@ public class SalaryController {
     public AjaxResult uploadStaff(HttpServletRequest request) throws Exception{
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("活动失效!");
+    		return AjaxResult.error("请先保存参数配置信息！");
     	}
     	// 1、创建一个DiskFileItemFactory工厂
 		DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -174,7 +174,7 @@ public class SalaryController {
         	return AjaxResult.error("格式错误!仅支持xls格式文件.");
         }
 		File file = new File(fileName);
-		list.get(0).write(file);
+//		list.get(0).write(file);
 		List<SalaryStaff> staffList=  salaryService.uploadStaff(file,companyId);
     	AjaxResult  ajaxResult = salaryService.insertStaffInfo(staffList,companyId);
         return ajaxResult;
@@ -211,7 +211,7 @@ public class SalaryController {
     public AjaxResult updatePwd(HttpServletRequest request){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("活动失效!");
+    		return AjaxResult.error("请先保存参数配置信息！");
     	}
     	String id = request.getParameter("id");
     	salaryService.updatePwd(Integer.valueOf(id));
@@ -226,7 +226,7 @@ public class SalaryController {
     public AjaxResult delStaff(HttpServletRequest request){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("活动失效!");
+    		return AjaxResult.error("请先保存参数配置信息！");
     	}
     	String id = request.getParameter("id");
     	salaryService.delStaff(Integer.valueOf(id));
@@ -241,7 +241,7 @@ public class SalaryController {
     public AjaxResult exchangeMobile(HttpServletRequest request,SalaryStaff salaryStaff){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("活动失效!");
+    		return AjaxResult.error("请先保存参数配置信息！");
     	}
     	List<SalaryStaff> staffList = salaryService.getStaffInfo(companyId,salaryStaff.getMobile());
     	if(staffList.size()>0 && staffList.get(0).getId()!=salaryStaff.getId()) {
@@ -262,7 +262,7 @@ public class SalaryController {
     public AjaxResult upLoadLog(HttpServletRequest request){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("活动失效!");
+    		return AjaxResult.error("请先保存参数配置信息！");
     	}
     	Map<String, Object> paramsMap =new HashMap<String, Object>();
     	paramsMap.put("companyId" , companyId);
@@ -278,7 +278,7 @@ public class SalaryController {
     public AjaxResult delLog(HttpServletRequest request){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("活动失效!");
+    		return AjaxResult.error("请先保存参数配置信息！");
     	}
     	String salaryId = request.getParameter("salaryId");
         salaryService.delLog(salaryId);
@@ -293,9 +293,9 @@ public class SalaryController {
     public AjaxResult getAllStaff(HttpServletRequest request){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("活动失效!");
+    		return AjaxResult.error("请先保存参数配置信息！");
     	}
-    	String mobile =request.getParameter("mobile");//页码
+    	String mobile =request.getParameter("mobile");
     	List<SalaryStaff> staffList = salaryService.getStaffInfo(companyId,mobile);
     	return AjaxResult.success("查询成功", staffList);
     }  

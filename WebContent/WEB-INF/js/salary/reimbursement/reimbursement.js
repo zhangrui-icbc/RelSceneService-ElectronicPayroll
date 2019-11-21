@@ -463,7 +463,7 @@ $("#mytab_04").click(function(){
 	    		str+="</body>";
 	    		$(".sal_log").html(str);
 	    	}else{
-	    		layerMsg("访问失败");
+	    		//layerMsg("访问失败");
 	    	}
 	      },
 	      error : function(data){
@@ -633,7 +633,7 @@ $(".alter").click(function(){
 	    		 $("#tab-com2").html(str);
 	    		 
 	    	}else if(res.code=="500"){
-	    		layerMsg(res.msg);
+	    		//layerMsg(res.msg);
 	    	}else{
 	    		 layerMsg("访问失败!");
 	    	}

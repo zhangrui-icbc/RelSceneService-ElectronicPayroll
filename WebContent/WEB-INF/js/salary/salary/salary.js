@@ -47,13 +47,13 @@
 //              	   layerMsg(res.msg); 
                  }else{
               	   //将数据显示在页面上
-              	   var btnHtml="<span class='change-btn' onclick='Edit(this)'>编辑</span>|<span class='delEmploy-btn' onclick='delStaff(this)'>删除</span>|<span class='initialPwd-btn' onclick='updatePwd(this)'>初始化密码</span>"
+              	   var btnHtml="<span class='change-btn' onclick='Edit(this)'>编辑</span> | <span class='delEmploy-btn' onclick='delStaff(this)'>删除</span> | <span class='initialPwd-btn' onclick='updatePwd(this)'>初始化密码</span>"
               	   //遍历数据
               	   var str="";
               	   for(var i in data){
               		   var dataList=data[i];
               		   var _num=Number(i)+1;
-              		   str += "<tr><td class='hid'>"+data[i].id+"</td><td class='yg-name'>"+data[i].name+"</td><td class=''>"+data[i].mobile+"</td><td class='action-btns'>"+btnHtml+"</td>";
+              		   str += "<tr><td class='hid'>"+data[i].id+"</td><td class='dept'>"+ifnul(data[i].dept)+"</td><td class='yg-name'>"+data[i].name+"</td><td class=''>"+data[i].mobile+"</td><td class='action-btns'>"+btnHtml+"</td>";
               	   }
               	   $('#ygMsg_tbody').html(str);
               	   
@@ -63,7 +63,13 @@
       }) 	
       }());
         
-        
+  function ifnul(i){
+	  if(i.trim()==''||i==null){
+		 return "--"; 
+	  }else{
+		  return i;
+	  }
+  }      
 var ctx = $("#contextPath").val().trim();	
 $(".btn1").bind("click", function(){ 
 		 	var field=$(".field").val();
@@ -517,7 +523,7 @@ $("#mytab_04").click(function(){
 	    		}
 	    		$(".sal_log").html(str);
 	    	}else{
-	    		layerMsg(res.msg);
+//	    		layerMsg(res.msg);
 	    	}
 	      },
 	      error : function(data){
@@ -758,7 +764,7 @@ $("#mytab_02").click(function(){
 	    		 $("#tab-com2").html(str);
 	    		 
 	    	}else if(res.code=="500"){
-	    		layerMsg(res.msg);
+//	    		layerMsg(res.msg);
 	    	}else{
 	    		 layerMsg("访问失败!");
 	    	}
@@ -769,40 +775,6 @@ $("#mytab_02").click(function(){
 	  });
 })
 
-/**
- * 新增备选模板字段
- * @returns
- */
-/*function addAlter(){
-		var type=$(".field_b").val();
-	   var name=$(".column_b").val();
-	   if(name.length>10){
-		   layerMsg("类型名称长度超出字数限制!");
-		   return ;
-	   }
-	   var category=$(".column_num_b").val();
-	   var temp ={"type":type,"name":name,"category":category}
-		$.ajax({
-	    url : ctx+"/mp/alternative/addAlternative",// 获取自己系统后台用户信息接口
-	    type : "POST",
-	    data:JSON.stringify(temp),
-	    contentType:"application/json",
-	    dataType: "json",
-	    success : function(res) {
-	    	if(res.code=="0"){
-	    		$("#mytab_02").click();
-	    		layerMsg(res.msg);
-	    	}else if(res.code=="500"){
-	    		layerMsg(res.msg);
-	    	}else{
-	    		 layerMsg("访问失败!");
-	    	}
-	      },
-	      error : function(data){
-	    	  layerMsg("访问失败")
-	      }
-	  });
-}*/
 /**
  * 修改备选模板字段
  * @returns
@@ -1030,15 +1002,15 @@ function Edit(a) {
     //	a.innerHTML = toEdit ? '保存' : '编辑';
     	a.innerHTML = '保存';
     	if (toEdit) {//编辑
-    		tr.cells[1].innerHTML = '<input type="text" value="' + tr.cells[1].innerHTML.replace(/"/g, '&quot;') + '"/>'
     		tr.cells[2].innerHTML = '<input type="text" value="' + tr.cells[2].innerHTML.replace(/"/g, '&quot;') + '"/>'
+    		tr.cells[3].innerHTML = '<input type="text" value="' + tr.cells[3].innerHTML.replace(/"/g, '&quot;') + '"/>'
     	}
     	else {//保存
     	    var $row = $(a).parents('tr');  
     	    var $cols = $row.find('td'); 
     	    var id =$cols[0].innerText;
-    	    var name= tr.cells[1].firstChild.value;
-    	    var mobile=tr.cells[2].firstChild.value;
+    	    var name= tr.cells[2].firstChild.value;
+    	    var mobile=tr.cells[3].firstChild.value;
     		if (!/^[1][356789][0-9]{9}$/.test(mobile)) {
     			layerMsg("请输入正确的手机号码.");
     			return;
@@ -1053,8 +1025,8 @@ function Edit(a) {
         	    success : function(res) {
         	    	layerMsg(res.msg);
         	    	if(res.code==0){
-        	    		tr.cells[1].innerHTML = tr.cells[1].firstChild.value.replace(/</g, '&lt;').replace(/>/g, '&gt;')
         	    		tr.cells[2].innerHTML = tr.cells[2].firstChild.value.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        	    		tr.cells[3].innerHTML = tr.cells[3].firstChild.value.replace(/</g, '&lt;').replace(/>/g, '&gt;')
         	    		a.innerHTML = '编辑';
         	    	}
         	    },

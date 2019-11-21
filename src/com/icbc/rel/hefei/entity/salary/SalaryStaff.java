@@ -12,6 +12,9 @@ public class SalaryStaff {
 	private String password;
 	
 	private String openId;
+	
+	private String dept;
+	
 
 	public int getId() {
 		return id;
@@ -59,6 +62,14 @@ public class SalaryStaff {
 
 	public void setOpenId(String openId) {
 		this.openId = openId;
+	}
+
+	public String getDept() {
+		return dept;
+	}
+
+	public void setDept(String dept) {
+		this.dept = dept;
 	}
 	
 }

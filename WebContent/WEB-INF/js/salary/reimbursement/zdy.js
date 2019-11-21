@@ -38,7 +38,7 @@ $(".sunmit-btn").click(function(){
 		 			$("#mytab_03").click();
 		 			layerMsg("自定义模板成功!");
 	        	}else{
-	        		layerMsg('活动失效!');
+	        		layerMsg('请先保存参数配置信息！');
 	        	}
 		 	}
 		 });
