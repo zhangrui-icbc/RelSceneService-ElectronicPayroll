@@ -61,9 +61,9 @@
 		</div>
 	</div>
 </div>
-<script src="${pageContext.request.contextPath}/js/common.js"></script>
-<script src="${pageContext.request.contextPath}/js/salary/jquery-ui.js"></script>
-<script src="${pageContext.request.contextPath}/js/salary/layer.js"></script>
+<script src="../js/common.js"></script>
+<script src="../js/salary/jquery-ui.js"></script>
+<script src="../js/salary/layer.js"></script>
 <script>
 //  选项卡切换
     $(function(){

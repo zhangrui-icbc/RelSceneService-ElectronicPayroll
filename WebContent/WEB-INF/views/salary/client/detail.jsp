@@ -9,8 +9,8 @@
     	<meta content="telephone=no,email=no" name="format-detection" />
     	<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<title>电子工资单查询</title>
-		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/salary/client/common.css">
-		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/salary/client/detail.css">
+		<link rel="stylesheet" href="../../css/salary/client/common.css">
+		<link rel="stylesheet" href="../../css/salary/client/detail.css">
 	</head>
 	<body>
 	<input type="hidden" id="contextPath" name="contextPath"  value="${pageContext.request.contextPath}"/>
@@ -19,7 +19,7 @@
 	<input id="jumpUrl" type="hidden" value="${session.currentUrl}" />
 	<input type="hidden" id="userId" name="userId"  value="${userId}">
 		<h2 class="title">工资单明细</h2>
-		<img src="${pageContext.request.contextPath}/image/salary/client/home.png" class="home-btn" />
+		<img src="../../image/salary/client/home.png" class="home-btn" />
 		<p class="tit">单位：元</p>
 		<div class="total">
 			<table>
@@ -51,6 +51,6 @@
 			</div>
 		</div>
 	</body>
-	<script src="${pageContext.request.contextPath}/js/jquery-3.2.1.min.js"></script>
-	<script src="${pageContext.request.contextPath}/js/salary/client/detail.js"  ></script>
+	<script src="../../js/jquery-3.2.1.min.js"></script>
+	<script src="../../js/salary/client/detail.js"  ></script>
 </html>

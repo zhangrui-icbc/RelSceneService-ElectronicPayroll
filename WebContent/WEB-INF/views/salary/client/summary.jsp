@@ -9,14 +9,14 @@
     	<meta content="telephone=no,email=no" name="format-detection" />
     	<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<title>电子工资单查询</title>
-		<link href="${pageContext.request.contextPath}/css/salary/client/common.css" rel="stylesheet">
-		<link href="${pageContext.request.contextPath}/css/salary/client//summary.css" rel="stylesheet">
+		<link href="../../css/salary/client/common.css" rel="stylesheet">
+		<link href="../../css/salary/client//summary.css" rel="stylesheet">
 	</head>
 	<body>
 	<input type="hidden" id="contextPath" name="contextPath"  value="${pageContext.request.contextPath}"/>
 	<input id="jumpUrl" type="hidden" th:value="${session.currentUrl}" />
 		<h2 class="title">汇总工资单明细</h2>
-		<img src="${pageContext.request.contextPath}/image/salary/client/home.png" class="home-btn" />
+		<img src="../../image/salary/client/home.png" class="home-btn" />
 		<div class="btn-div">
 			<a class="three-btn">近3个月</a>
 			<a class="six-btn">近6个月</a>
@@ -63,9 +63,9 @@
 			</div>
 		</div>
 	</body>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-3.2.1.min.js" ></script>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/js/salary/client/summary.js"  ></script>
-	<script src="${pageContext.request.contextPath}/js/salary/client/layer.js"></script>
+	<script type="text/javascript" src="../../js/jquery-3.2.1.min.js" ></script>
+	<script type="text/javascript" src="../../js/salary/client/summary.js"  ></script>
+	<script src="../../js/salary/client/layer.js"></script>
 	<script type="text/javascript" th:inline="javascript" > 
 	/* 	var s=$(window).height();//是滚动条高度
 //		var h=$(".company-msg").height();//是标签高度

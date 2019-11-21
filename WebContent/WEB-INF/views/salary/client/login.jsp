@@ -9,8 +9,8 @@
     	<meta content="telephone=no,email=no" name="format-detection" />
     	<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<title>电子工资单查询</title>
-		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/salary/client/common.css">
-		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/salary/client/login.css">
+		<link rel="stylesheet" href="../../css/salary/client/common.css">
+		<link rel="stylesheet" href="../../css/salary/client/login.css">
 	</head>
 	<body>
 	 <input type="hidden" id="contextPath" name="contextPath"  value="${pageContext.request.contextPath}"/>
@@ -24,12 +24,12 @@
             <div  class="forget-pwd">忘记密码？</div>
         </div>
         <div id="CheckMsg" class="msg"></div>
-		<script src="${pageContext.request.contextPath}/js/jquery-3.2.1.min.js"></script>
-		<script src="${pageContext.request.contextPath}/js/salary/client/layer.js"  ></script>
-		<script src="${pageContext.request.contextPath}/js/salary/client/login.js"  ></script>
-		<script src="${pageContext.request.contextPath}/js/salary/md5.js"></script>
-		<script src="${pageContext.request.contextPath}/js/ICBCutil.js"></script>
-		<script src="${pageContext.request.contextPath}/js/icbc_core.js"></script>
+		<script src="../../js/jquery-3.2.1.min.js"></script>
+		<script src="../../js/salary/client/layer.js"  ></script>
+		<script src="../../js/salary/client/login.js"  ></script>
+		<script src="../../js/salary/md5.js"></script>
+		<script src="../../js/ICBCutil.js"></script>
+		<script src="../../js/icbc_core.js"></script>
         <script type="text/javascript" th:inline="javascript" > 
         		//当前的客户id
 				ICBCUtil.getEncryptIMUserID({
