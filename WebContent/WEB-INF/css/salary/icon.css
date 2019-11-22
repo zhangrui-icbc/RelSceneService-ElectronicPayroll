@@ -31,3 +31,8 @@
  /*  content: "\e696"; */
  content: "删除";
 }
+
+.icon-shanchu1:before {
+ /*  content: "\e696"; */
+ content: "已选";
+}

@@ -82,7 +82,6 @@ $(".btn1").bind("click", function(){
 					'</button>'+
     				'</div>';
   var alterNewColHtml = '<div class="btn-group pull-right">'+
-/*	'<button id="bEdit" type="button" class="iconfont icon-xiugai btn btn-sm btn-default" onclick="rowEdit(this);">' +*/
 	'<span class="glyphicon glyphicon-pencil" > </span>'+
 	'</button>'+
 	'<button id="bElim" type="button" class="iconfont icon-shanchu btn btn-sm btn-default" onclick="alterRowElim(this);">' +
@@ -95,6 +94,21 @@ $(".btn1").bind("click", function(){
 	'<span class="glyphicon glyphicon-remove" > </span>'+
 	'</button>'+
 	'</div>';
+  
+  var alterNewColHtml1 = '<div class="btn-group pull-right">'+
+	'<span class="glyphicon glyphicon-pencil" > </span>'+
+	'</button>'+
+	'<button id="bElim" type="button" class="iconfont icon-shanchu1 btn btn-sm btn-default" >' +
+	'<span class="glyphicon glyphicon-trash" > </span>'+
+	'</button>'+
+	'<button id="bAcep" type="button" class="iconfont icon-duihao btn btn-sm btn-default" style="display:none;" onclick="alterRowAcep(this);">' + 
+	'<span class="glyphicon glyphicon-ok" > </span>'+
+	'</button>'+
+	'<button id="bCanc" type="button" class="iconfont icon-right btn btn-sm btn-default" style="display:none;" onclick="rowCancel(this);">' + 
+	'<span class="glyphicon glyphicon-remove" > </span>'+
+	'</button>'+
+	'</div>';
+  
   var comColEdicHtml = '<td name="buttons">'+comNewColHtml+'</td>'; 
   var alterColEdicHtml = '<td name="buttons">'+alterNewColHtml+'</td>';
  
@@ -519,6 +533,9 @@ $(document).on('click', '#bElim1', function () {
 $(".clear").click(function(){
 	$(".add .DIY").empty();	
 	$(".alternative span").removeClass("act");
+	var html1="";
+	html1+="<span data-id='1' data-category='11' data-type='报销合计' data-name='报销合计' >报销合计</span>";
+	$(".DIY").html(html1);
 })
 
 
@@ -617,7 +634,7 @@ $(".alter").click(function(){
     			"<td class='hid'>1</td>" +
     			"<td>报销合计</td>" +
     			"<td>汇总项</td>" +
-    			'<td name="buttons">'+alterNewColHtml+"</td>"+
+    			'<td name="buttons">'+alterNewColHtml1+"</td>"+
     			"</tr>";
 	    		var list = res.data.up;
 	    		var data1=res.data.down;
