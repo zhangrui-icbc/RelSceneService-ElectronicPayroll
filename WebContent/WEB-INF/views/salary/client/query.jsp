@@ -8,14 +8,14 @@
     	<meta name="data-spm" content="a215s" />
     	<meta content="telephone=no,email=no" name="format-detection" />
     	<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-		<title>电子工资单查询</title>
+		<title>工资单查询</title>
 		<link href="../../css/salary/client/common.css" rel="stylesheet">
 		<link href="../../css/salary/client/query.css" rel="stylesheet">
 	</head>
 	<body>
 	<input type="hidden" id="contextPath" name="contextPath"   value="${pageContext.request.contextPath}"/>
 	<input id="jumpUrl" type="hidden" th:value="${session.currentUrl}" />
-		<h2 class="title">电子工资单查询<span class="fl-r" ></span></h2>
+		<h2 class="title">工资单查询<span class="fl-r" ></span></h2>
 		<img src="../../image/salary/client/home.png" class="home-btn" />
 		<p class="list-title">日期<span class="fl-r">工资单（元）</span></p>
 		<div class="list" id="list">

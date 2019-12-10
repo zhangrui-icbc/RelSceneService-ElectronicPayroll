@@ -52,7 +52,7 @@
                 		<img src="../image/salary/salary/icon2.png" />
                 	</li>
                		<li class="stitle sc" id="mytab_04" onclick="nTabs('mytab_04');window.open='#mytab_04'">
-               			<span>报销上传</span>
+               			<span>报销单上传</span>
                			<img src="../image/salary/salary/icon3.png" />
                		</li>
            	 	</ul>

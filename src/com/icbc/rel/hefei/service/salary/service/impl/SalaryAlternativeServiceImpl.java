@@ -93,10 +93,10 @@ public class SalaryAlternativeServiceImpl implements SalaryAlternativeService {
 	            @Override  
 	            public int compare(SalaryTemplateAlternative o1, SalaryTemplateAlternative o2) {  
 	                //ÉýÐòÅÅÁÐ  
-	                if (o1.getId() > o2.getId()) {  
+	                if (o1.getCategory() < o2.getCategory()) {  
 	                    return 1;  
 	                }  
-	                if (o1.getId() == o2.getId()) {  
+	                if (o1.getCategory() == o2.getCategory()) {  
 	                    return 0;  
 	                }  
 	                return -1;  

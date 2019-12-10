@@ -37,6 +37,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -91,7 +92,7 @@ public class SalaryServiceImpl implements SalaryService {
 	 * 处理上传的Excel文件
 	 */
 	@Override
-	public AjaxResult uploadSalary(/*HttpServletRequest request,*/File file,String companyId) throws FileNotFoundException, IOException, ParseException, NullPointerException {
+	public AjaxResult uploadSalary(File file,String companyId) throws FileNotFoundException, IOException, ParseException, NullPointerException {
 		String fileName =  file.getName();
         if(!(fileName.contains("xls"))){
         	return AjaxResult.warn("格式错误!仅支持xls格式文件.");
@@ -99,7 +100,7 @@ public class SalaryServiceImpl implements SalaryService {
         //指定文件存放路径，可以是相对路径或者绝对路径
         String filePath = "./src/main/resources/templates/";
         try {
-			uploadFile(File2byte(file), filePath, fileName);
+//			uploadFile(File2byte(file), filePath, fileName);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} 
@@ -122,12 +123,55 @@ public class SalaryServiceImpl implements SalaryService {
        
 	}
 	
+
+	@Override
+	public AjaxResult uploadSalary1(String value, String companyId)throws FileNotFoundException, IOException, ParseException, NullPointerException {
+		 List<SalaryCustomTemplate> templateList = salaryMapper.getSalaryTemplate(companyId);
+		 File serverFile=new File(value);
+		 AjaxResult ajaxResult= read2003Excel(serverFile,templateList);
+	        int code = (int) ajaxResult.get("code");
+	        if(code==500) {
+	        	 return ajaxResult;
+	        }else {
+	        	Salary oaSalary = (Salary)ajaxResult.get("data");  
+	        	oaSalary.setId(UUIDUtils.getGuid());
+	        	if(oaSalary!=null) {
+	        		salaryMapper.insertOaSalary(oaSalary);
+	        		salaryMapper.insertOaSalaryImport(oaSalary);
+	        	}
+	        	 return ajaxResult;
+	        }
+	}
+	
+	
 	/**
 	 * 上传员工信息
 	 */
 	@Override
 	public  List<SalaryStaff> uploadStaff(File file, String companyId) {
-		String fileName = file.getName();
+		HSSFWorkbook hwb;
+		List<SalaryStaff>  staffList = new ArrayList<SalaryStaff>();
+		try {
+			hwb = new HSSFWorkbook(new FileInputStream(file));
+			List<String[]> data = SalaryExcelUtil.ReadExcel(hwb, 0);
+		    for(int i = 1;i< data.size();i++){
+		    	SalaryStaff salaryStaff =new SalaryStaff();
+		    	String[] row = data.get(i);
+		    	salaryStaff.setCompanyId(companyId);
+		    	salaryStaff.setDept(row[0]);
+		    	salaryStaff.setName(row[1]);
+		    	salaryStaff.setMobile(row[2]);
+		    	staffList.add(salaryStaff);
+		    }
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+/*		String fileName = file.getName();
         //指定文件存放路径，可以是相对路径或者绝对路径
         String filePath = "./src/main/resources/templates/";
         try {
@@ -156,7 +200,7 @@ public class SalaryServiceImpl implements SalaryService {
 		    }
         } catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
         return staffList;
 	}
 	
@@ -665,6 +709,7 @@ public class SalaryServiceImpl implements SalaryService {
 		// TODO Auto-generated method stub
 		salaryMapper.updateAddStaffInfo(salaryStaff);
 	}
+
 	  
 	  
 	  

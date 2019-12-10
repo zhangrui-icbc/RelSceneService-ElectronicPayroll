@@ -43,5 +43,6 @@ public interface ReService {
 	void delLog(String salaryId);
 	int delStaff(String userName, String companyId);
 	int updateMobile(String userName, String newUserName, String companyId);
+	AjaxResult uploadSalary1(String value, String companyId) throws FileNotFoundException, IOException, ParseException, NullPointerException;
 
 }

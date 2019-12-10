@@ -47,6 +47,8 @@ import com.icbc.rel.hefei.dao.salary.reimbursement.ReCommonMapper;
 import com.icbc.rel.hefei.dao.salary.reimbursement.ReCustomMapper;
 import com.icbc.rel.hefei.dao.salary.reimbursement.ReMapper;
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
+import com.icbc.rel.hefei.entity.salary.Salary;
+import com.icbc.rel.hefei.entity.salary.SalaryCustomTemplate;
 import com.icbc.rel.hefei.entity.salary.reimbursement.ReCommonTemplate;
 import com.icbc.rel.hefei.entity.salary.reimbursement.ReCustomTemplate;
 import com.icbc.rel.hefei.entity.salary.reimbursement.ReImport;
@@ -106,7 +108,24 @@ public class ReServiceImpl implements ReService {
         }
 	}
 	
-	
+	@Override
+	public AjaxResult uploadSalary1(String value, String companyId)throws FileNotFoundException, IOException, ParseException, NullPointerException {
+		 List<ReCustomTemplate> templateList = reMapper.getReTemplate(companyId);
+		 File serverFile=new File(value);
+		 AjaxResult ajaxResult= read2003Excel(serverFile,templateList);
+	        int code = (int) ajaxResult.get("code");
+	        if(code==500) {
+	        	 return ajaxResult;
+	        }else {
+	        	Reimbursement reimbursement =(Reimbursement)ajaxResult.get("data");  
+	        	reimbursement.setId(UUIDUtils.getGuid());
+	        	if(reimbursement!=null) {
+	        		reMapper.insertReimbursement(reimbursement);
+	        		reMapper.insertReimbursementImport(reimbursement);
+	        	}
+	        	return ajaxResult;
+	        }
+	}
 	/**
 	 * 保存工资信息
 	 */
@@ -179,22 +198,7 @@ public class ReServiceImpl implements ReService {
 			    		ReImport oaSalaryImport =new  ReImport();
 			    		//列号
 			    		int colIndex = templateList.get(j).getColIndex();
-//			    		cell = row.getCell(colIndex);
 			    		oaSalaryImport.setImportAmount(data.get(i)[colIndex]);//具体值
-//			    		switch (cell.getCellType()) {
-//				        	case Cell.CELL_TYPE_NUMERIC:
-//				        		Double toBeString =cell.getNumericCellValue();
-//				        		String temp= String.format("%.2f",toBeString);
-//				        		oaSalaryImport.setImportAmount(temp);//具体值
-//				        		break;
-//				        	case Cell.CELL_TYPE_STRING:
-//				        		oaSalaryImport.setImportAmount(cell.getStringCellValue());//具体值
-//				        		break;
-//				        	default:
-//				        		return AjaxResult.error("excel第"+(colIndex+1)+"列第"+(i+1)+"行格式错误,请检查后再次导入!");
-////				        		oaSalaryImport.setImportAmount("格式错误");
-////				        		break;
-//						}
 			    		oaSalaryImport.setTemplateColName(data.get(0)[colIndex]);//名称
 			    		oaSalaryImport.setReimbursementItemId(j);//元素id
 			    		oaSalaryImport.setTemplateId(templateList.get(j).getCompanyId());//公司id与模板id一致
@@ -470,7 +474,9 @@ public class ReServiceImpl implements ReService {
 	        }
 	        return buffer;
 	    }
-	
+
+
+
 	  
 	  
 	  

@@ -85,7 +85,16 @@ public class SalaryController {
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
     	}
-    	// 1、创建一个DiskFileItemFactory工厂
+    	FileUploadUtil util = new FileUploadUtil();
+		TwoTupleTO to = util.UploadFile(request, SystemConfigUtil.tempPath);
+		String str=to.getName();
+		String format=str.substring(str.indexOf(".")+1);
+		logger.info("format"+format);
+		if(!(format.equals("xls"))) {				
+			return AjaxResult.error("格式错误!仅支持xls格式文件.");
+		}
+		AjaxResult ajaxResult;
+/*    	// 1、创建一个DiskFileItemFactory工厂
 		DiskFileItemFactory factory = new DiskFileItemFactory();
 		// 2、创建一个文件上传解析器
 		ServletFileUpload upload = new ServletFileUpload(factory);
@@ -104,9 +113,10 @@ public class SalaryController {
         }
 		File file = new File(fileName);
 //		list.get(0).write(file);
-    	AjaxResult ajaxResult;
+    	AjaxResult ajaxResult;*/
 		try {
-			ajaxResult = salaryService.uploadSalary(file,companyId);
+		//	ajaxResult = salaryService.uploadSalary(file,companyId);
+			ajaxResult =salaryService.uploadSalary1(to.getValue(), companyId);
 			String mpId=SessionUtil.getMpId(request.getSession());
 			anaylsisXmlUtil t=new anaylsisXmlUtil(); 
 			logger.info("群发图文消息接口------------");
@@ -156,7 +166,17 @@ public class SalaryController {
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
     	}
-    	// 1、创建一个DiskFileItemFactory工厂
+    	
+    	FileUploadUtil util = new FileUploadUtil();
+		TwoTupleTO to = util.UploadFile(request, SystemConfigUtil.tempPath);
+		String str=to.getName();
+		String format=str.substring(str.indexOf(".")+1);
+		logger.info("format"+format);
+		if(!(format.equals("xls"))) {				
+			return AjaxResult.error("格式错误!仅支持xls格式文件.");
+		}
+		File file=new File(to.getValue());
+/*    	// 1、创建一个DiskFileItemFactory工厂
 		DiskFileItemFactory factory = new DiskFileItemFactory();
 		// 2、创建一个文件上传解析器
 		ServletFileUpload upload = new ServletFileUpload(factory);
@@ -174,7 +194,7 @@ public class SalaryController {
         	return AjaxResult.error("格式错误!仅支持xls格式文件.");
         }
 		File file = new File(fileName);
-//		list.get(0).write(file);
+//		list.get(0).write(file);*/
 		List<SalaryStaff> staffList=  salaryService.uploadStaff(file,companyId);
     	AjaxResult  ajaxResult = salaryService.insertStaffInfo(staffList,companyId);
         return ajaxResult;

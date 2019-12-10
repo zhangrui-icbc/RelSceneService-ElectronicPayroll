@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.icbc.rel.hefei.TO.TwoTupleTO;
 import com.icbc.rel.hefei.controller.salary.SalaryController;
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
 import com.icbc.rel.hefei.entity.salary.reimbursement.Reimbursement;
@@ -30,6 +31,7 @@ import com.icbc.rel.hefei.service.rel.MessageHelper;
 import com.icbc.rel.hefei.service.rel.MessageService;
 import com.icbc.rel.hefei.service.salary.reimbursement.service.ReImportService;
 import com.icbc.rel.hefei.service.salary.reimbursement.service.ReService;
+import com.icbc.rel.hefei.util.FileUploadUtil;
 import com.icbc.rel.hefei.util.SessionParamConstant;
 import com.icbc.rel.hefei.util.SessionUtil;
 import com.icbc.rel.hefei.util.SystemConfigUtil;
@@ -72,7 +74,7 @@ public class ReController {
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
     	}
-    	// 1、创建一个DiskFileItemFactory工厂
+/*    	// 1、创建一个DiskFileItemFactory工厂
 		DiskFileItemFactory factory = new DiskFileItemFactory();
 		// 2、创建一个文件上传解析器
 		ServletFileUpload upload = new ServletFileUpload(factory);
@@ -91,9 +93,19 @@ public class ReController {
         }
 		File file = new File(fileName);
 //		list.get(0).write(file);
+*/    	
+    	FileUploadUtil util = new FileUploadUtil();
+		TwoTupleTO to = util.UploadFile(request, SystemConfigUtil.tempPath);
+		String str=to.getName();
+		String format=str.substring(str.indexOf(".")+1);
+		logger.info("format"+format);
+		if(!(format.equals("xls"))) {				
+			return AjaxResult.error("格式错误!仅支持xls格式文件.");
+		}
     	AjaxResult ajaxResult;
 		try {
-			ajaxResult = reService.uploadSalary(file,companyId);
+//			ajaxResult = reService.uploadSalary(file,companyId);
+			ajaxResult =reService.uploadSalary1(to.getValue(), companyId);
 			String mpId=SessionUtil.getMpId(request.getSession());
 			anaylsisXmlUtil t=new anaylsisXmlUtil(); 
 			logger.info("群发图文消息接口示例");

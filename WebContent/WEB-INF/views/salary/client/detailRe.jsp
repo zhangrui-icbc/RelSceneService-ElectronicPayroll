@@ -8,7 +8,7 @@
     	<meta name="data-spm" content="a215s" />
     	<meta content="telephone=no,email=no" name="format-detection" />
     	<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
-		<title>电子报销单查询</title>
+		<title>报销单查询</title>
 		<link rel="stylesheet" href="../../css/salary/client/common.css">
 		<link rel="stylesheet" href="../../css/salary/client/detail.css">
 	</head>

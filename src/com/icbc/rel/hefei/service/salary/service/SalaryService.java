@@ -72,5 +72,6 @@ public interface SalaryService {
 	int delStaff(int id);
 	int updateMobile(String userName, String newUserName, String companyId);
 	void updateAddStaffInfo(SalaryStaff salaryStaff);
+	AjaxResult uploadSalary1(String value, String companyId) throws FileNotFoundException, IOException, ParseException, NullPointerException;
 	
 }
