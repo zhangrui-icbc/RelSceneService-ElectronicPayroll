@@ -27,7 +27,7 @@ $(".btn1").bind("click", function(){
 	   }else{
 			  var type=$(".field_b").val();
 			   var name=$(".column_b").val();
-			   if(name.length>10){
+			   if(name.length>20){
 				   layerMsg("类型名称长度超出字数限制!");
 				   return ;
 			   }
