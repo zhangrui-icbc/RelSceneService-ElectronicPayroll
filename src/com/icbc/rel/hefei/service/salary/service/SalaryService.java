@@ -49,10 +49,12 @@ public interface SalaryService {
 	 List<SalaryStaff> uploadStaff(File file, String companyId);
 	 /**
 	  * 保存员工信息
+	 * @param response 
+	 * @param request 
 	  * @param staffList
 	 * @param companyId 
 	  */
-	 AjaxResult insertStaffInfo(List<SalaryStaff> staffList, String companyId);
+	 AjaxResult insertStaffInfo( List<SalaryStaff> staffList, String companyId);
 	/**
 	 * 修改员工密码
 	 * @param id
@@ -73,5 +75,6 @@ public interface SalaryService {
 	int updateMobile(String userName, String newUserName, String companyId);
 	void updateAddStaffInfo(SalaryStaff salaryStaff);
 	AjaxResult uploadSalary1(String value, String companyId) throws FileNotFoundException, IOException, ParseException, NullPointerException;
+	void exportErrPhone(HttpServletRequest request, HttpServletResponse response, List<String> errList);
 	
 }

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -211,6 +212,9 @@ public class SalaryServiceImpl implements SalaryService {
 	  */
 	 	@Override
 	 	public AjaxResult insertStaffInfo(List<SalaryStaff> staffList, String companyId) {
+	 		Map<String, Object> resultMap = new HashMap<String, Object>();
+	 		List<String> errList = new ArrayList<String>();
+	 		errList.add("错误手机号码");
 	 		//判断导入的手机号是否重复
 	 		for (int i = 0; i < staffList.size(); i++) {
 	 			for (int j = staffList.size()-1; j >i; j--) {
@@ -234,6 +238,7 @@ public class SalaryServiceImpl implements SalaryService {
 					
 					//手机号码格式校验,过滤非手机号
 					if(!MobileUtil.checkGeneralPhone(staffList.get(j).getMobile())) {
+						errList.add(staffList.get(j).getMobile());
 						staffList.remove(j);
 						j--;
 					}
@@ -243,7 +248,9 @@ public class SalaryServiceImpl implements SalaryService {
 	 		if(staffList.size()>0) {
 	 			salaryMapper.insertStaffInfo(staffList);
 	 		}
-	 		return AjaxResult.success("上传成功！本次新增"+staffList.size()+"个员工手机号码。",staffList);
+	 		resultMap.put("errList" , errList);
+	 		resultMap.put("staffList" , staffList);
+	 		return AjaxResult.success("上传成功！本次新增"+staffList.size()+"个员工手机号码。",resultMap);
 	 	}
 	 	
 	
@@ -390,7 +397,6 @@ public class SalaryServiceImpl implements SalaryService {
 	 */
 	@Override
 	public void export(HttpServletRequest request,HttpServletResponse response,String companyId) {
-		// TODO Auto-generated method stub
 		List<SalaryCustomTemplate> oaSalaryImportTemplates =salaryMapper.getSalaryTemplate(companyId);
 		List<SalaryCommonTemplate>  salaryCommonTemplate=salaryCommonMapper.getCommonTemplate();
 		sort(oaSalaryImportTemplates);
@@ -425,6 +431,67 @@ public class SalaryServiceImpl implements SalaryService {
 		}
 		
 	}
+	
+	/**
+	 * 错误手机号码导出
+	 */
+	@Override
+	public  void exportErrPhone(HttpServletRequest request,HttpServletResponse response,List<String> errList) {
+		ServletOutputStream os = null;
+		try {
+			String name="错误手机号码"+DateUtils.parseDateToStr("yyyyMMddHHmmss",new Date())+".xls";
+			String userAgent = request.getHeader("user-agent").toLowerCase();  
+			  
+			if (userAgent.contains("msie") || userAgent.contains("like gecko") ) {  
+			        // win10 ie edge 浏览器 和其他系统的ie  
+				name = URLEncoder.encode(name, "UTF-8");  
+			} else {  
+			        // fe  
+				name = new String(name.getBytes("UTF-8"), "iso-8859-1");  
+			}
+			 response.setContentType("text/html;charset=UTF-8");
+			 response.addHeader("content-type", "application/x-msdownload");
+			 response.addHeader("Content-Disposition", "attachment;filename="+ name);
+			os = response.getOutputStream();
+			createErrWorkbook(errList).write(os);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				if(os!=null){
+					os.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	/**
+	 * 错误手机号码
+	 * @param salaryCommonTemplate
+	 * @param oaSalaryImportTemplates
+	 * @return
+	 */
+	private  HSSFWorkbook createErrWorkbook(List<String> errList){
+			HSSFWorkbook workBook = new HSSFWorkbook();
+//			HSSFFont font = workBook.createFont();//创建字体对象
+//			font.setFontHeightInPoints((short) 12);//设置字体大小      
+//			font.setFontName("仿宋_GB2312");
+			HSSFCellStyle cellStyle = workBook.createCellStyle();//创建列的样式对象
+//			cellStyle.setFont(font);
+			HSSFSheet sheet = workBook.createSheet("Page");//使用workbook对象创建sheet对象
+			for (int i = 0; i < errList.size(); i++) {
+				HSSFCell cell = sheet.createRow((short) i).createCell(0);
+				cell.setCellStyle(cellStyle);
+				cell.setCellValue(errList.get(i));
+			}
+		return workBook;
+	}
+	
+	
+	
+	
 	private HSSFWorkbook createWorkbook(List<SalaryCommonTemplate> salaryCommonTemplate,List<SalaryCustomTemplate> oaSalaryImportTemplates){
 		HSSFWorkbook workBook = new HSSFWorkbook();
 		

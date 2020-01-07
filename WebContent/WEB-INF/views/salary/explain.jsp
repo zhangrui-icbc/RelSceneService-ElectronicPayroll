@@ -29,7 +29,8 @@ h2{
  	<p>首次使用需要先上传本企业员工信息，上传之后企业员工才可使用。点击“员工管理”下载员工信息模版，根据模版格式上传企业员工信息，填写完成后保存文件并上传。上传成功后下方会展示出上传员工 信息明细，管理员可以后期具体查询某个员工信息进行修改、删除、初始化密码。</p>
 <p>工资单模版：企业管理员可以创建本企业自己的工资单明细，支持新增类型、明细内容、可以用通过鼠标移动明细名称来调整前后顺序。调整好后可以下载工资单模板，根据模板内容填写企业要发的内容，再次上传即可。</p>
 <p>报销单模板：报销单的模板创建和上传跟工资单模板功能使用一样。</p>
-<a style="text-decoration: none;" href="../file/Instructions.pptx" class="excel" ><button type="button" style="position: relative;
+ <input type="hidden" id="contextPath" name="contextPath"  value="${pageContext.request.contextPath}"/>
+<div style="text-decoration: none;"  class="explain1" ><button class="explain" type="button" style="position: relative;
     width: 200px;
     color: #FFF;
     text-decoration: none;
@@ -39,6 +40,8 @@ h2{
     text-align: center;
     padding: 7px 30px;
     left: 43.5%;
-    box-shadow: 0px 8px 0px #84261a;">点此下载详细使用说明</button></a>
+    box-shadow: 0px 8px 0px #84261a;">点此下载详细使用说明</button></div>
+    <script src="../js/jquery-3.2.1.min.js"></script>
+    <script src="../js/salary/salary/explain.js"></script>
  </body>
 </html>

@@ -2,15 +2,26 @@ package com.icbc.rel.hefei.controller.salary;
 
 
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.URLEncoder;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -53,7 +65,7 @@ import com.icbc.rel.hefei.util.anaylsisXmlUtil;
 /**
  * 
  * @author ft
- * ¹¤×Êexcel
+ * å·¥èµ„excel
  *
  */
 @RequestMapping("/mp")
@@ -63,7 +75,7 @@ public class SalaryController {
 	@Autowired
 	private SalaryService salaryService;
 	/**
-	 * Ìø×ª¹¤×ÊÌõÒ³Ãæ
+	 * è·³è½¬å·¥èµ„æ¡é¡µé¢
 	 * @return
 	 */
 	@RequestMapping("/salary/jumpSalary")
@@ -72,7 +84,7 @@ public class SalaryController {
 	    return  "salary/salary";
 	}
 	/**
-	 * ÉÏ´«¹¤×ÊExcel
+	 * ä¸Šä¼ å·¥èµ„Excel
 	 * @param request
 	 * @param file
 	 * @return
@@ -83,7 +95,7 @@ public class SalaryController {
     public AjaxResult uploadSalary(HttpServletRequest request) throws Exception{
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("ÇëÏÈ±£´æ²ÎÊıÅäÖÃĞÅÏ¢£¡");
+    		return AjaxResult.error("è¯·å…ˆä¿å­˜å‚æ•°é…ç½®ä¿¡æ¯ï¼");
     	}
     	FileUploadUtil util = new FileUploadUtil();
 		TwoTupleTO to = util.UploadFile(request, SystemConfigUtil.tempPath);
@@ -91,25 +103,25 @@ public class SalaryController {
 		String format=str.substring(str.indexOf(".")+1);
 		logger.info("format"+format);
 		if(!(format.equals("xls"))) {				
-			return AjaxResult.error("¸ñÊ½´íÎó!½öÖ§³Öxls¸ñÊ½ÎÄ¼ş.");
+			return AjaxResult.error("æ ¼å¼é”™è¯¯!ä»…æ”¯æŒxlsæ ¼å¼æ–‡ä»¶.");
 		}
 		AjaxResult ajaxResult;
-/*    	// 1¡¢´´½¨Ò»¸öDiskFileItemFactory¹¤³§
+/*    	// 1ã€åˆ›å»ºä¸€ä¸ªDiskFileItemFactoryå·¥å‚
 		DiskFileItemFactory factory = new DiskFileItemFactory();
-		// 2¡¢´´½¨Ò»¸öÎÄ¼şÉÏ´«½âÎöÆ÷
+		// 2ã€åˆ›å»ºä¸€ä¸ªæ–‡ä»¶ä¸Šä¼ è§£æå™¨
 		ServletFileUpload upload = new ServletFileUpload(factory);
-		// ½â¾öÉÏ´«ÎÄ¼şÃûµÄÖĞÎÄÂÒÂë
+		// è§£å†³ä¸Šä¼ æ–‡ä»¶åçš„ä¸­æ–‡ä¹±ç 
 		upload.setHeaderEncoding("UTF-8");
-		// 3¡¢ÅĞ¶ÏÌá½»ÉÏÀ´µÄÊı¾İÊÇ·ñÊÇÉÏ´«±íµ¥µÄÊı¾İ
+		// 3ã€åˆ¤æ–­æäº¤ä¸Šæ¥çš„æ•°æ®æ˜¯å¦æ˜¯ä¸Šä¼ è¡¨å•çš„æ•°æ®
 		if (!ServletFileUpload.isMultipartContent(request)) {
-			// °´ÕÕ´«Í³·½Ê½»ñÈ¡Êı¾İ
+			// æŒ‰ç…§ä¼ ç»Ÿæ–¹å¼è·å–æ•°æ®
 			return null;
 		}
-		// 4¡¢Ê¹ÓÃServletFileUpload½âÎöÆ÷½âÎöÉÏ´«Êı¾İ£¬½âÎö½á¹û·µ»ØµÄÊÇÒ»¸öList<FileItem>¼¯ºÏ£¬Ã¿Ò»¸öFileItem¶ÔÓ¦Ò»¸öForm±íµ¥µÄÊäÈëÏî
+		// 4ã€ä½¿ç”¨ServletFileUploadè§£æå™¨è§£æä¸Šä¼ æ•°æ®ï¼Œè§£æç»“æœè¿”å›çš„æ˜¯ä¸€ä¸ªList<FileItem>é›†åˆï¼Œæ¯ä¸€ä¸ªFileItemå¯¹åº”ä¸€ä¸ªFormè¡¨å•çš„è¾“å…¥é¡¹
 		List<FileItem> list = upload.parseRequest(request);
 		String fileName = list.get(0).getName();
         if(!(fileName.contains("xls"))){
-        	return AjaxResult.error("¸ñÊ½´íÎó!½öÖ§³Öxls¸ñÊ½ÎÄ¼ş.");
+        	return AjaxResult.error("æ ¼å¼é”™è¯¯!ä»…æ”¯æŒxlsæ ¼å¼æ–‡ä»¶.");
         }
 		File file = new File(fileName);
 //		list.get(0).write(file);
@@ -119,41 +131,41 @@ public class SalaryController {
 			ajaxResult =salaryService.uploadSalary1(to.getValue(), companyId);
 			String mpId=SessionUtil.getMpId(request.getSession());
 			anaylsisXmlUtil t=new anaylsisXmlUtil(); 
-			logger.info("Èº·¢Í¼ÎÄÏûÏ¢½Ó¿Ú------------");
-			String content;//ÉÏËÍµÄÏûÏ¢ÄÚÈİ£¬ĞèÒªÊÇstring
+			logger.info("ç¾¤å‘å›¾æ–‡æ¶ˆæ¯æ¥å£------------");
+			String content;//ä¸Šé€çš„æ¶ˆæ¯å†…å®¹ï¼Œéœ€è¦æ˜¯string
 			String fanalXmlStr;
 			String domainUrl = SystemConfigUtil.domainName;
-			String title = "Ğ½×ÊÏûÏ¢";//Í¼ÎÄÏûÏ¢ÏÔÊ¾µÄ±êÌâ
-			String picurl = domainUrl + "RelSceneService/image/salary/salary/salary.png";//Í¼ÎÄÏûÏ¢µÄÍ¼Æ¬µØÖ·
-			String url = domainUrl + "RelSceneService/com/salaryWebUser/jumpLogin?activityUid="+companyId+"&67f977b1ad597511737fff13a2909c1614c41391=0";//Í¼ÎÄÏûÏ¢µÄÕıÎÄÁ´½Ó
+			String title = "è–ªèµ„æ¶ˆæ¯";//å›¾æ–‡æ¶ˆæ¯æ˜¾ç¤ºçš„æ ‡é¢˜
+			String picurl = domainUrl + "RelSceneService/image/salary/salary/salary.png";//å›¾æ–‡æ¶ˆæ¯çš„å›¾ç‰‡åœ°å€
+			String url = domainUrl + "RelSceneService/com/salaryWebUser/jumpLogin?activityUid="+companyId+"&67f977b1ad597511737fff13a2909c1614c41391=0";//å›¾æ–‡æ¶ˆæ¯çš„æ­£æ–‡é“¾æ¥
 			JSONObject picMessage = MessageHelper.getPicArticlesForHF005(title, picurl, url);
 			content = picMessage.toString();
 			fanalXmlStr = t.makeXmlByHf005(mpId, "1","","", "news", content);
-			logger.info("ÉÏËÍµÃxml×Ö·û");
+			logger.info("ä¸Šé€å¾—xmlå­—ç¬¦");
 			logger.info(fanalXmlStr);
             int i=0;
 			while(i<5) {
 				Boolean isSend=MessageService.sendRtfByHf500(fanalXmlStr);
 				if(isSend) {
 					i=5;
-					logger.info("------------ÍÆËÍÏûÏ¢³É¹¦!-------------");
+					logger.info("------------æ¨é€æ¶ˆæ¯æˆåŠŸ!-------------");
 					break;
 				}else {
-					logger.info("ÍÆËÍÏûÏ¢Ê§°ÜÖØÊÔÖĞ----------------µÚ"+(i+1)+"´Î");
+					logger.info("æ¨é€æ¶ˆæ¯å¤±è´¥é‡è¯•ä¸­----------------ç¬¬"+(i+1)+"æ¬¡");
 					i++;
 				}
 			}
 			return ajaxResult;
 		} catch (NullPointerException e) {
 			e.printStackTrace();
-			return AjaxResult.warn("Ä£°å¸ñÊ½²»ÕıÈ·»òÕß±í¸ñÄÚÓĞ¿ÕÖµ(²»ÔÊĞíÓĞ¿ÕÖµ,ÈçÎŞ´ËÏîÇëÌîĞ´0!)");
+			return AjaxResult.warn("æ¨¡æ¿æ ¼å¼ä¸æ­£ç¡®æˆ–è€…è¡¨æ ¼å†…æœ‰ç©ºå€¼(ä¸å…è®¸æœ‰ç©ºå€¼,å¦‚æ— æ­¤é¡¹è¯·å¡«å†™0!)");
 		} catch (Exception e) {
 			e.printStackTrace();
-			return AjaxResult.error("ÉÏ´«Ê§°Ü!");
+			return AjaxResult.error("ä¸Šä¼ å¤±è´¥!");
 		} 
     }
 	/**
-	 * ÉÏ´«Ô±¹¤ĞÅÏ¢Excel
+	 * ä¸Šä¼ å‘˜å·¥ä¿¡æ¯Excel
 	 * @param request
 	 * @param file
 	 * @return
@@ -161,10 +173,10 @@ public class SalaryController {
 	 */
     @RequestMapping(value="/salary/uploadStaff")
     @ResponseBody
-    public AjaxResult uploadStaff(HttpServletRequest request) throws Exception{
+    public AjaxResult uploadStaff(HttpServletRequest request,HttpServletResponse response) throws Exception{
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("ÇëÏÈ±£´æ²ÎÊıÅäÖÃĞÅÏ¢£¡");
+    		return AjaxResult.error("è¯·å…ˆä¿å­˜å‚æ•°é…ç½®ä¿¡æ¯ï¼");
     	}
     	
     	FileUploadUtil util = new FileUploadUtil();
@@ -173,38 +185,49 @@ public class SalaryController {
 		String format=str.substring(str.indexOf(".")+1);
 		logger.info("format"+format);
 		if(!(format.equals("xls"))) {				
-			return AjaxResult.error("¸ñÊ½´íÎó!½öÖ§³Öxls¸ñÊ½ÎÄ¼ş.");
+			return AjaxResult.error("æ ¼å¼é”™è¯¯!ä»…æ”¯æŒxlsæ ¼å¼æ–‡ä»¶.");
 		}
 		File file=new File(to.getValue());
-/*    	// 1¡¢´´½¨Ò»¸öDiskFileItemFactory¹¤³§
+/*    	// 1ã€åˆ›å»ºä¸€ä¸ªDiskFileItemFactoryå·¥å‚
 		DiskFileItemFactory factory = new DiskFileItemFactory();
-		// 2¡¢´´½¨Ò»¸öÎÄ¼şÉÏ´«½âÎöÆ÷
+		// 2ã€åˆ›å»ºä¸€ä¸ªæ–‡ä»¶ä¸Šä¼ è§£æå™¨
 		ServletFileUpload upload = new ServletFileUpload(factory);
-		// ½â¾öÉÏ´«ÎÄ¼şÃûµÄÖĞÎÄÂÒÂë
+		// è§£å†³ä¸Šä¼ æ–‡ä»¶åçš„ä¸­æ–‡ä¹±ç 
 		upload.setHeaderEncoding("UTF-8");
-		// 3¡¢ÅĞ¶ÏÌá½»ÉÏÀ´µÄÊı¾İÊÇ·ñÊÇÉÏ´«±íµ¥µÄÊı¾İ
+		// 3ã€åˆ¤æ–­æäº¤ä¸Šæ¥çš„æ•°æ®æ˜¯å¦æ˜¯ä¸Šä¼ è¡¨å•çš„æ•°æ®
 		if (!ServletFileUpload.isMultipartContent(request)) {
-			// °´ÕÕ´«Í³·½Ê½»ñÈ¡Êı¾İ
+			// æŒ‰ç…§ä¼ ç»Ÿæ–¹å¼è·å–æ•°æ®
 			return null;
 		}
-		// 4¡¢Ê¹ÓÃServletFileUpload½âÎöÆ÷½âÎöÉÏ´«Êı¾İ£¬½âÎö½á¹û·µ»ØµÄÊÇÒ»¸öList<FileItem>¼¯ºÏ£¬Ã¿Ò»¸öFileItem¶ÔÓ¦Ò»¸öForm±íµ¥µÄÊäÈëÏî
+		// 4ã€ä½¿ç”¨ServletFileUploadè§£æå™¨è§£æä¸Šä¼ æ•°æ®ï¼Œè§£æç»“æœè¿”å›çš„æ˜¯ä¸€ä¸ªList<FileItem>é›†åˆï¼Œæ¯ä¸€ä¸ªFileItemå¯¹åº”ä¸€ä¸ªFormè¡¨å•çš„è¾“å…¥é¡¹
 		List<FileItem> list = upload.parseRequest(request);
 		String fileName = list.get(0).getName();
         if(!(fileName.contains("xls"))){
-        	return AjaxResult.error("¸ñÊ½´íÎó!½öÖ§³Öxls¸ñÊ½ÎÄ¼ş.");
+        	return AjaxResult.error("æ ¼å¼é”™è¯¯!ä»…æ”¯æŒxlsæ ¼å¼æ–‡ä»¶.");
         }
 		File file = new File(fileName);
 //		list.get(0).write(file);*/
 		List<SalaryStaff> staffList=  salaryService.uploadStaff(file,companyId);
     	AjaxResult  ajaxResult = salaryService.insertStaffInfo(staffList,companyId);
+    	int code = (int) ajaxResult.get("code");
+    	if (code!=301) {
+    		Map<String,Object> map = (Map<String, Object>) ajaxResult.get("data");
+    		List<String> list = (List<String>) map.get("errList");
+    		request.getSession().setAttribute("errList", list);
+    	}
         return ajaxResult;
     }
     
-    
+    @RequestMapping("/salary/exportErrPhone")
+    public void export1(HttpServletRequest request,HttpServletResponse response){
+    	List<String> list =  (List<String>) request.getSession().getAttribute("errList");
+    	salaryService.exportErrPhone(request,response,list);
+    	request.getSession().removeAttribute("errList");
+    }
 
     
     /**
-     * ¹¤×ÊÄ£°åÏÂÔØ
+     * å·¥èµ„æ¨¡æ¿ä¸‹è½½
      * @param request
      * @param companyId
      */
@@ -215,7 +238,7 @@ public class SalaryController {
     }
     
     /**
-     * Ô±¹¤ĞÅÏ¢Ä£°åÏÂÔØ
+     * å‘˜å·¥ä¿¡æ¯æ¨¡æ¿ä¸‹è½½
      * @param request
      * @param companyId
      */
@@ -224,100 +247,137 @@ public class SalaryController {
     	salaryService.staffExport(request,response);
     }
     /**
-     * Ô±¹¤ÃÜÂë³õÊ¼»¯
+     * å‘˜å·¥å¯†ç åˆå§‹åŒ–
      */
     @RequestMapping("/salary/updatePwd")
     @ResponseBody
     public AjaxResult updatePwd(HttpServletRequest request){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("ÇëÏÈ±£´æ²ÎÊıÅäÖÃĞÅÏ¢£¡");
+    		return AjaxResult.error("è¯·å…ˆä¿å­˜å‚æ•°é…ç½®ä¿¡æ¯ï¼");
     	}
     	String id = request.getParameter("id");
     	salaryService.updatePwd(Integer.valueOf(id));
-    	return AjaxResult.success("ÃÜÂë³õÊ¼»¯³É¹¦!");
+    	return AjaxResult.success("å¯†ç åˆå§‹åŒ–æˆåŠŸ!");
     }  
     
     /**
-     * É¾³ıÔ±¹¤ÊÖ»úºÅÂë
+     * åˆ é™¤å‘˜å·¥æ‰‹æœºå·ç 
      */
     @RequestMapping("/salary/delStaff")
     @ResponseBody
     public AjaxResult delStaff(HttpServletRequest request){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("ÇëÏÈ±£´æ²ÎÊıÅäÖÃĞÅÏ¢£¡");
+    		return AjaxResult.error("è¯·å…ˆä¿å­˜å‚æ•°é…ç½®ä¿¡æ¯ï¼");
     	}
     	String id = request.getParameter("id");
     	salaryService.delStaff(Integer.valueOf(id));
-    	return AjaxResult.success("É¾³ı³É¹¦!");
+    	return AjaxResult.success("åˆ é™¤æˆåŠŸ!");
     }  
     
     /**
-     * ĞÂÔö/¸ü»»ÊÖ»úºÅÂë
+     * æ–°å¢/æ›´æ¢æ‰‹æœºå·ç 
      */
     @RequestMapping("/salary/updateStaffInfo")
     @ResponseBody
     public AjaxResult exchangeMobile(HttpServletRequest request,SalaryStaff salaryStaff){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("ÇëÏÈ±£´æ²ÎÊıÅäÖÃĞÅÏ¢£¡");
+    		return AjaxResult.error("è¯·å…ˆä¿å­˜å‚æ•°é…ç½®ä¿¡æ¯ï¼");
     	}
     	List<SalaryStaff> staffList = salaryService.getStaffInfo(companyId,salaryStaff.getMobile());
     	if(staffList.size()>0 && staffList.get(0).getId()!=salaryStaff.getId()) {
-    		return AjaxResult.error("ÊÖ»úºÅ:"+salaryStaff.getMobile()+"ÒÑ´æÔÚ");
+    		return AjaxResult.error("æ‰‹æœºå·:"+salaryStaff.getMobile()+"å·²å­˜åœ¨");
     	}
     	salaryService.updateAddStaffInfo(salaryStaff);
-    	return AjaxResult.success("²Ù×÷³É¹¦!");
+    	return AjaxResult.success("æ“ä½œæˆåŠŸ!");
     } 
     
     
     
     
     /**
-     * ²éÑ¯¹¤×Êµ¥ÉÏ´«ÈÕÖ¾
+     * æŸ¥è¯¢å·¥èµ„å•ä¸Šä¼ æ—¥å¿—
      */
     @RequestMapping("/salary/upLoadLog")
     @ResponseBody
     public AjaxResult upLoadLog(HttpServletRequest request){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("ÇëÏÈ±£´æ²ÎÊıÅäÖÃĞÅÏ¢£¡");
+    		return AjaxResult.error("è¯·å…ˆä¿å­˜å‚æ•°é…ç½®ä¿¡æ¯ï¼");
     	}
     	Map<String, Object> paramsMap =new HashMap<String, Object>();
     	paramsMap.put("companyId" , companyId);
     	List<Salary>  oaSalaryList= salaryService.getUpLoadLog(paramsMap);
-    	return AjaxResult.success("³É¹¦", oaSalaryList);
+    	return AjaxResult.success("æˆåŠŸ", oaSalaryList);
     }  
     
     /**
-     * É¾³ı¹¤×Êµ¥ÉÏ´«ÈÕÖ¾
+     * åˆ é™¤å·¥èµ„å•ä¸Šä¼ æ—¥å¿—
      */
     @RequestMapping("/salary/delLog")
     @ResponseBody
     public AjaxResult delLog(HttpServletRequest request){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("ÇëÏÈ±£´æ²ÎÊıÅäÖÃĞÅÏ¢£¡");
+    		return AjaxResult.error("è¯·å…ˆä¿å­˜å‚æ•°é…ç½®ä¿¡æ¯ï¼");
     	}
     	String salaryId = request.getParameter("salaryId");
         salaryService.delLog(salaryId);
-    	return AjaxResult.success("É¾³ı³É¹¦!");
+    	return AjaxResult.success("åˆ é™¤æˆåŠŸ!");
     }
     
     /**
-     * ²éÑ¯¹«Ë¾Ô±¹¤ĞÅÏ¢
+     * æŸ¥è¯¢å…¬å¸å‘˜å·¥ä¿¡æ¯
      */
     @RequestMapping("/salary/getAllStaff")
     @ResponseBody
     public AjaxResult getAllStaff(HttpServletRequest request){
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
-    		return AjaxResult.error("ÇëÏÈ±£´æ²ÎÊıÅäÖÃĞÅÏ¢£¡");
+    		return AjaxResult.error("è¯·å…ˆä¿å­˜å‚æ•°é…ç½®ä¿¡æ¯ï¼");
     	}
     	String mobile =request.getParameter("mobile");
     	List<SalaryStaff> staffList = salaryService.getStaffInfo(companyId,mobile);
-    	return AjaxResult.success("²éÑ¯³É¹¦", staffList);
+    	return AjaxResult.success("æŸ¥è¯¢æˆåŠŸ", staffList);
     }  
+    /**
+     * æ–‡ä»¶ä¸‹è½½æ–¹æ³•
+     * @param response
+     * @param filePath
+     * @param encode
+     */
+    @RequestMapping("/salary/explain")
+    public void download(HttpServletResponse response,HttpServletRequest request) {
+        try {
+           String path= request.getSession().getServletContext().getRealPath("/WEB-INF/file/Instructions.pptx");
+          // pathæ˜¯æŒ‡æ¬²ä¸‹è½½çš„æ–‡ä»¶çš„è·¯å¾„ã€‚
+          File file = new File(path);
+          // å–å¾—æ–‡ä»¶åã€‚
+          String filename = file.getName();
+          // å–å¾—æ–‡ä»¶çš„åç¼€åã€‚
+          String ext = filename.substring(filename.lastIndexOf(".") + 1).toUpperCase();
+     
+          // ä»¥æµçš„å½¢å¼ä¸‹è½½æ–‡ä»¶ã€‚
+          InputStream fis = new BufferedInputStream(new FileInputStream(path));
+          byte[] buffer = new byte[fis.available()];
+          fis.read(buffer);
+          fis.close();
+          // æ¸…ç©ºresponse
+          response.reset();
+          // è®¾ç½®responseçš„Header
+          response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes()));
+          response.addHeader("Content-Length", "" + file.length());
+          OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
+          response.setContentType("application/octet-stream");
+          toClient.write(buffer);
+          toClient.flush();
+          toClient.close();
+        } catch (IOException ex) {
+          ex.printStackTrace();
+        }
+      }
+    
     
 }
