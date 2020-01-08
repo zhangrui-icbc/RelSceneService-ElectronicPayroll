@@ -212,15 +212,15 @@ public class SalaryController {
     	int code = (int) ajaxResult.get("code");
     	if (code!=301) {
     		Map<String,Object> map = (Map<String, Object>) ajaxResult.get("data");
-    		List<String> list = (List<String>) map.get("errList");
+    		List<SalaryStaff> list = (List<SalaryStaff>) map.get("errList");
     		request.getSession().setAttribute("errList", list);
     	}
         return ajaxResult;
     }
     
     @RequestMapping("/salary/exportErrPhone")
-    public void export1(HttpServletRequest request,HttpServletResponse response){
-    	List<String> list =  (List<String>) request.getSession().getAttribute("errList");
+    public void exportErrPhone(HttpServletRequest request,HttpServletResponse response){
+    	List<SalaryStaff> list =  (List<SalaryStaff>) request.getSession().getAttribute("errList");
     	salaryService.exportErrPhone(request,response,list);
     	request.getSession().removeAttribute("errList");
     }

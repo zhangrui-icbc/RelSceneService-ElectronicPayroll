@@ -35,6 +35,7 @@ import org.apache.poi.hssf.usermodel.HSSFFormulaEvaluator;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.formula.functions.Rows;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DateUtil;
@@ -72,6 +73,7 @@ import com.icbc.rel.hefei.util.SalaryExcelUtil;
 import com.icbc.rel.hefei.util.SessionParamConstant;
 import com.icbc.rel.hefei.util.SystemConfigUtil;
 import com.icbc.rel.hefei.util.UUIDUtils;
+import com.mysql.cj.result.Row;
 
 /**
  * 文件上传处理
@@ -213,8 +215,7 @@ public class SalaryServiceImpl implements SalaryService {
 	 	@Override
 	 	public AjaxResult insertStaffInfo(List<SalaryStaff> staffList, String companyId) {
 	 		Map<String, Object> resultMap = new HashMap<String, Object>();
-	 		List<String> errList = new ArrayList<String>();
-	 		errList.add("错误手机号码");
+	 		List<SalaryStaff> errList = new ArrayList<SalaryStaff>();
 	 		//判断导入的手机号是否重复
 	 		for (int i = 0; i < staffList.size(); i++) {
 	 			for (int j = staffList.size()-1; j >i; j--) {
@@ -229,21 +230,20 @@ public class SalaryServiceImpl implements SalaryService {
 	 		for (int i = 0; i < mobileList.size(); i++) {
 				for (int j = 0; j < staffList.size(); j++) {
 					if(mobileList.get(i).getMobile().equals(staffList.get(j).getMobile())) {
-//						return AjaxResult.warn("手机号:"+mobileList.get(i).getMobile()+"已经存在");
 						//去除已存在的员工手机号码
 						staffList.remove(j);
 						j--;
 						continue;
 					}
-					
-					//手机号码格式校验,过滤非手机号
-					if(!MobileUtil.checkGeneralPhone(staffList.get(j).getMobile())) {
-						errList.add(staffList.get(j).getMobile());
-						staffList.remove(j);
-						j--;
-					}
-					
 				}
+			}
+	 		for (int j = 0; j < staffList.size(); j++) {
+	 			//手机号码格式校验,过滤非手机号
+	 			if(!MobileUtil.checkGeneralPhone(staffList.get(j).getMobile())) {
+	 				errList.add(staffList.get(j));
+	 				staffList.remove(j);
+	 				j--;
+	 			}
 			}
 	 		if(staffList.size()>0) {
 	 			salaryMapper.insertStaffInfo(staffList);
@@ -436,7 +436,7 @@ public class SalaryServiceImpl implements SalaryService {
 	 * 错误手机号码导出
 	 */
 	@Override
-	public  void exportErrPhone(HttpServletRequest request,HttpServletResponse response,List<String> errList) {
+	public  void exportErrPhone(HttpServletRequest request,HttpServletResponse response,List<SalaryStaff> errList) {
 		ServletOutputStream os = null;
 		try {
 			String name="错误手机号码"+DateUtils.parseDateToStr("yyyyMMddHHmmss",new Date())+".xls";
@@ -473,18 +473,35 @@ public class SalaryServiceImpl implements SalaryService {
 	 * @param oaSalaryImportTemplates
 	 * @return
 	 */
-	private  HSSFWorkbook createErrWorkbook(List<String> errList){
+	private  HSSFWorkbook createErrWorkbook(List<SalaryStaff> errList){
 			HSSFWorkbook workBook = new HSSFWorkbook();
-//			HSSFFont font = workBook.createFont();//创建字体对象
-//			font.setFontHeightInPoints((short) 12);//设置字体大小      
-//			font.setFontName("仿宋_GB2312");
+			HSSFFont font = workBook.createFont();//创建字体对象
+			font.setFontHeightInPoints((short) 12);//设置字体大小      
+			font.setFontName("仿宋_GB2312");
 			HSSFCellStyle cellStyle = workBook.createCellStyle();//创建列的样式对象
-//			cellStyle.setFont(font);
+			cellStyle.setFont(font);
 			HSSFSheet sheet = workBook.createSheet("Page");//使用workbook对象创建sheet对象
+			HSSFRow rowsTitle = sheet.createRow((short) 0);
+			HSSFCell cellTitle = rowsTitle.createCell(0);
+			cellTitle.setCellStyle(cellStyle);
+			cellTitle.setCellValue("部门");
+			HSSFCell cellTitle1 = rowsTitle.createCell(1);
+			cellTitle1.setCellStyle(cellStyle);
+			cellTitle1.setCellValue("员工");
+			HSSFCell cellTitle2 = rowsTitle.createCell(2);
+			cellTitle2.setCellStyle(cellStyle);
+			cellTitle2.setCellValue("手机号码");
 			for (int i = 0; i < errList.size(); i++) {
-				HSSFCell cell = sheet.createRow((short) i).createCell(0);
+				HSSFRow rows = sheet.createRow((short) i+1);
+				HSSFCell cell = rows.createCell(0);
 				cell.setCellStyle(cellStyle);
-				cell.setCellValue(errList.get(i));
+				cell.setCellValue(errList.get(i).getDept());
+				HSSFCell cell1 = rows.createCell(1);
+				cell1.setCellStyle(cellStyle);
+				cell1.setCellValue(errList.get(i).getName());
+				HSSFCell cell2 = rows.createCell(2);
+				cell2.setCellStyle(cellStyle);
+				cell2.setCellValue(errList.get(i).getMobile());
 			}
 		return workBook;
 	}

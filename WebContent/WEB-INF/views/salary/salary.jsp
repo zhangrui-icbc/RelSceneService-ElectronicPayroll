@@ -203,7 +203,7 @@ layui.use(['element','laydate','table','form','upload'],function(){
 				type:0,
 				content:data.msg
 			   });
-			if(data.data.errList.length>1){
+			if(data.data.errList.length>0){
 				window.location.href="../mp/salary/exportErrPhone";
 			}
 		},
