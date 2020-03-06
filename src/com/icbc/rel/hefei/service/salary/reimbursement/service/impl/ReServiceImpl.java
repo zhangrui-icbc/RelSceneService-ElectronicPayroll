@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,10 +44,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.icbc.rel.hefei.dao.salary.SalaryUserMapper;
 import com.icbc.rel.hefei.dao.salary.reimbursement.ReCommonMapper;
 import com.icbc.rel.hefei.dao.salary.reimbursement.ReCustomMapper;
 import com.icbc.rel.hefei.dao.salary.reimbursement.ReMapper;
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
+import com.icbc.rel.hefei.entity.salary.ErrorInfo;
 import com.icbc.rel.hefei.entity.salary.Salary;
 import com.icbc.rel.hefei.entity.salary.SalaryCustomTemplate;
 import com.icbc.rel.hefei.entity.salary.reimbursement.ReCommonTemplate;
@@ -57,6 +60,7 @@ import com.icbc.rel.hefei.service.salary.reimbursement.service.ReService;
 import com.icbc.rel.hefei.util.DateUtils;
 import com.icbc.rel.hefei.util.ExcelUtil;
 import com.icbc.rel.hefei.util.SalaryExcelUtil;
+import com.icbc.rel.hefei.util.SessionParamConstant;
 import com.icbc.rel.hefei.util.UUIDUtils;
 
 /**
@@ -74,6 +78,8 @@ public class ReServiceImpl implements ReService {
 	ReCustomMapper reCustomMapper;
 	@Autowired
 	ReCommonMapper reCommonMapper;
+	@Autowired
+	SalaryUserMapper salaryUserMapper;
 	
 	/**
 	 * 处理上传的Excel文件
@@ -93,7 +99,8 @@ public class ReServiceImpl implements ReService {
 		} 
         //根据公司id取出该公司对面的模板信息
         List<ReCustomTemplate> templateList = reMapper.getReTemplate(companyId);
-        AjaxResult ajaxResult= read2003Excel(file,templateList);
+        List<String> staffMobList = salaryUserMapper.getMobByCompanyId(companyId);	
+        AjaxResult ajaxResult= read2003Excel(file,templateList,staffMobList);
         int code = (int) ajaxResult.get("code");
         if(code==500) {
         	 return ajaxResult;
@@ -112,12 +119,14 @@ public class ReServiceImpl implements ReService {
 	public AjaxResult uploadSalary1(String value, String companyId)throws FileNotFoundException, IOException, ParseException, NullPointerException {
 		 List<ReCustomTemplate> templateList = reMapper.getReTemplate(companyId);
 		 File serverFile=new File(value);
-		 AjaxResult ajaxResult= read2003Excel(serverFile,templateList);
+	     List<String> staffMobList = salaryUserMapper.getMobByCompanyId(companyId);	
+		 AjaxResult ajaxResult= read2003Excel(serverFile,templateList,staffMobList);
 	        int code = (int) ajaxResult.get("code");
 	        if(code==500) {
 	        	 return ajaxResult;
 	        }else {
-	        	Reimbursement reimbursement =(Reimbursement)ajaxResult.get("data");  
+	        	Map<String,Object> map = (Map<String, Object>) ajaxResult.get("data");
+	        	Reimbursement reimbursement =(Reimbursement)map.get("reimbursement");  
 	        	reimbursement.setId(UUIDUtils.getGuid());
 	        	if(reimbursement!=null) {
 	        		reMapper.insertReimbursement(reimbursement);
@@ -157,13 +166,16 @@ public class ReServiceImpl implements ReService {
 		
 		 /**
 	     * 读取 office 2003 excel
+		 * @param staffMobList 
 	     * @throws IOException
 	     * @throws FileNotFoundException 
 		 * @throws ParseException */
-	    private static AjaxResult read2003Excel(File file,List<ReCustomTemplate> templateList) throws FileNotFoundException, IOException, ParseException, NullPointerException {
-	    	HSSFWorkbook hwb;
-	        Reimbursement oaSalary =new Reimbursement();
-	        List<ReImport>  oaSalaryImportList = new ArrayList<ReImport>();
+	    private static AjaxResult read2003Excel(File file,List<ReCustomTemplate> templateList, List<String> staffMobList) throws FileNotFoundException, IOException, ParseException, NullPointerException {
+	    		HSSFWorkbook hwb;
+	    		Reimbursement oaRe =new Reimbursement();
+	    		Map<String, Object> resultMap = new HashMap<String, Object>();
+	    		List<ReImport>  oaReImportList = new ArrayList<ReImport>();
+	    		List<ErrorInfo>  errorReList = new ArrayList<ErrorInfo>();
 				hwb = new HSSFWorkbook(new FileInputStream(file));
 				List<String[]> data = SalaryExcelUtil.ReadExcel(hwb, 0);
 		        if((data.get(0).length-2)!=templateList.size()) {
@@ -175,42 +187,59 @@ public class ReServiceImpl implements ReService {
 						}
 					}
 		        }
-			    oaSalary.setImportTime(new Date());//创建时间
+		        if(data.size()>SessionParamConstant.rowsLimit) {
+		        	return AjaxResult.error("该功能仅支持单次最多上传三万条数据!");
+		        }
+		        oaRe.setImportTime(new Date());//创建时间
 			    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 			    Date issueTime;
 			    issueTime = sdf.parse(data.get(1)[1]);
-			    oaSalary.setIssueTime(issueTime);//工资发放时间
+			    oaRe.setIssueTime(issueTime);//工资发放时间
 			    String fileName = file.getName();
 			    String arr[] = fileName.split("\\.");
 			    String excelName = arr[0];
-			    oaSalary.setExcelName(excelName);
+			    oaRe.setExcelName(excelName);
 			    List<Long> mobileList = new ArrayList<Long>();
 			    //根据excel的行数循环
 			    for(int i = 1;i< data.size();i++){
+			    	ErrorInfo eInfo  = new  ErrorInfo();
 			    	long mobile = Long.valueOf(data.get(i)[0]);
 					if(mobileList.contains(mobile)) {
-						return AjaxResult.error("手机号:"+mobile+"在excel中有重复!");
+						eInfo.setMobile(String.valueOf(mobile));
+						eInfo.setReason("重复手机号码！");
+						errorReList.add(eInfo);
+						continue;
 					}else {
 						mobileList.add(mobile);
 					}
+					boolean flag = checkStaffIsExist(staffMobList,mobile);
+					if(flag) {
+						eInfo.setMobile(String.valueOf(mobile));
+						eInfo.setReason("不存在该手机号码的关联员工信息！");
+						errorReList.add(eInfo);
+						continue;
+					}
 			    	//根据模板信息去取想要的信息
 			    	for(int j=0;j<templateList.size();j++) {
-			    		ReImport oaSalaryImport =new  ReImport();
+			    		ReImport oaReImport =new  ReImport();
 			    		//列号
 			    		int colIndex = templateList.get(j).getColIndex();
-			    		oaSalaryImport.setImportAmount(data.get(i)[colIndex]);//具体值
-			    		oaSalaryImport.setTemplateColName(data.get(0)[colIndex]);//名称
-			    		oaSalaryImport.setReimbursementItemId(j);//元素id
-			    		oaSalaryImport.setTemplateId(templateList.get(j).getCompanyId());//公司id与模板id一致
-			    		oaSalaryImport.setUserId(Long.valueOf(data.get(i)[0]));//员工编号(固定且具体的某一列)
-			    		oaSalaryImport.setColIndex(colIndex);
+			    		oaReImport.setImportAmount(data.get(i)[colIndex]);//具体值
+			    		oaReImport.setTemplateColName(data.get(0)[colIndex]);//名称
+			    		oaReImport.setReimbursementItemId(j);//元素id
+			    		oaReImport.setTemplateId(templateList.get(j).getCompanyId());//公司id与模板id一致
+			    		oaReImport.setUserId(Long.valueOf(data.get(i)[0]));//员工编号(固定且具体的某一列)
+			    		oaReImport.setColIndex(colIndex);
 			    		int category = getCategory(templateList,data.get(0)[colIndex]);
-			    		oaSalaryImport.setCategory(category);
-			    		oaSalaryImportList.add(oaSalaryImport);
+			    		oaReImport.setCategory(category);
+			    		oaReImportList.add(oaReImport);
 			    	}
 			    }
-	        oaSalary.setImportList(oaSalaryImportList);
-	        return AjaxResult.success("导入成功!", oaSalary);
+			    oaRe.setImportList(oaReImportList);
+		 		resultMap.put("errorReList" , errorReList);
+		 		resultMap.put("reimbursement" , oaRe);
+		 		int rightRowsCount = oaReImportList.size()/templateList.size();
+		 		return AjaxResult.success("本次上传成功"+rightRowsCount+"条记录。",resultMap);    
 	    }
 	    /**
 	     * 获取字段分组
@@ -475,9 +504,92 @@ public class ReServiceImpl implements ReService {
 	        return buffer;
 	    }
 
+	  	private static boolean checkStaffIsExist(List<String> staffMobList,long mobile) {
+	  		String mob = String.valueOf(mobile); 
+	  		for (int i = 0; i < staffMobList.size(); i++) {
+	  			if(mob.equals(staffMobList.get(i))) {
+	  				return false;
+	  			}
+			}
+	  		return true;
+	  	}
 
+		@Override
+		public void exportErrReInfo(HttpServletRequest request, HttpServletResponse response, List<ErrorInfo> errList) {
+			ServletOutputStream os = null;
+			try {
+				String name="错误报销单上传信息"+DateUtils.parseDateToStr("yyyyMMddHHmmss",new Date())+".xls";
+				String userAgent = request.getHeader("user-agent").toLowerCase();  
+				  
+				if (userAgent.contains("msie") || userAgent.contains("like gecko") ) {  
+				        // win10 ie edge 浏览器 和其他系统的ie  
+					name = URLEncoder.encode(name, "UTF-8");  
+				} else {  
+				        // fe  
+					name = new String(name.getBytes("UTF-8"), "iso-8859-1");  
+				}
+				 response.setContentType("text/html;charset=UTF-8");
+				 response.addHeader("content-type", "application/x-msdownload");
+				 response.addHeader("Content-Disposition", "attachment;filename="+ name);
+				os = response.getOutputStream();
+				createReWorkbook(errList).write(os);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}finally{
+				try {
+					if(os!=null){
+						os.close();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}
 
-	  
+		/**
+		 * 错误报销单信息
+		 * @param salaryCommonTemplate
+		 * @param oaSalaryImportTemplates
+		 * @return
+		 */
+		private  HSSFWorkbook createReWorkbook(List<ErrorInfo> errList){
+				HSSFWorkbook workBook = new HSSFWorkbook();
+				HSSFFont font = workBook.createFont();//创建字体对象
+				font.setFontHeightInPoints((short) 12);//设置字体大小      
+				font.setFontName("仿宋_GB2312");
+				HSSFCellStyle cellStyle = workBook.createCellStyle();//创建列的样式对象
+				cellStyle.setFont(font);
+				cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);//左右居中    
+				HSSFSheet sheet = workBook.createSheet("Page");//使用workbook对象创建sheet对象
+				
+				HSSFRow rowsTitle = sheet.createRow((short) 0);
+				HSSFCell cellTitle = rowsTitle.createCell(0);
+				cellTitle.setCellStyle(cellStyle);
+				cellTitle.setCellValue("手机号码");
+				HSSFCell cellTitle1 = rowsTitle.createCell(1);
+				cellTitle1.setCellStyle(cellStyle);
+				cellTitle1.setCellValue("错误原因");
+				for (int i = 0; i < errList.size(); i++) {
+					//设置列的宽度 
+					sheet.setColumnWidth((short) (i), (short) 10000) ;
+					HSSFRow rows = sheet.createRow((short) i+1);
+					rows.setHeightInPoints(25);  
+					HSSFCell cell = rows.createCell(0);
+					cell.setCellStyle(cellStyle);
+					cell.setCellValue(errList.get(i).getMobile());
+					HSSFCell cell1 = rows.createCell(1);
+					cell1.setCellStyle(cellStyle);
+					cell1.setCellValue(errList.get(i).getReason());
+				}
+			return workBook;
+		}
+
+		@Override
+		public List<String> getExcelNameList(String companyId) {
+			// TODO Auto-generated method stub
+			return reMapper.getExcelNameList(companyId);
+		}
 	  
 	  
 }

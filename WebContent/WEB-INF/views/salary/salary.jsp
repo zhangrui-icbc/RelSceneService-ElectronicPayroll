@@ -225,13 +225,15 @@ layui.use(['element','laydate','table','form','upload'],function(){
 			if(data.code==1){
 				data.msg="上传成功";
 			}
+			$("#mytab_04").click();
 			layer.open({
 				title:'提示',
 				type:0,
 				content:data.msg
 			   });
-	//		menuTable.reload({});
-			$("#mytab_04").click();
+			if(data.data.errorSalaryList.length>0){
+				window.location.href="../mp/salary/exportErrSalaryInfo";
+			}
 		},
 		error:function(){
 			layer.open({

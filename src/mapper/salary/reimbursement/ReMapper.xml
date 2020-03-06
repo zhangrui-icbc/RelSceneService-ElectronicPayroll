@@ -58,5 +58,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    			</foreach>
    	</insert>
    	
-	
+	<select id="getExcelNameList" resultType="java.lang.String">
+		SELECT r.excel_name AS excel_name  FROM reimbursement r LEFT JOIN  reimbursement_import ri  ON r.`id`=ri.`reimbursement_id` where ri.template_id =#{companyId}	
+    </select>
 </mapper>

@@ -55,8 +55,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.icbc.rel.hefei.dao.salary.SalaryCommonMapper;
 import com.icbc.rel.hefei.dao.salary.SalaryCustomMapper;
 import com.icbc.rel.hefei.dao.salary.SalaryMapper;
+import com.icbc.rel.hefei.dao.salary.SalaryUserMapper;
 import com.icbc.rel.hefei.entity.SysActivityInfo;
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
+import com.icbc.rel.hefei.entity.salary.ErrorInfo;
 import com.icbc.rel.hefei.entity.salary.Salary;
 import com.icbc.rel.hefei.entity.salary.SalaryCommonTemplate;
 import com.icbc.rel.hefei.entity.salary.SalaryCustomTemplate;
@@ -85,11 +87,12 @@ import com.mysql.cj.result.Row;
 public class SalaryServiceImpl implements SalaryService {
 	@Autowired
 	SalaryMapper salaryMapper;
-	
 	@Autowired
 	SalaryCustomMapper salaryCustomMapper;
 	@Autowired
 	SalaryCommonMapper salaryCommonMapper;
+	@Autowired
+	SalaryUserMapper salaryUserMapper;
 	
 	/**
 	 * 处理上传的Excel文件
@@ -110,7 +113,8 @@ public class SalaryServiceImpl implements SalaryService {
         File serverFile=new File(filePath+fileName);
         //根据公司id取出该公司对面的模板信息
         List<SalaryCustomTemplate> templateList = salaryMapper.getSalaryTemplate(companyId);
-        AjaxResult ajaxResult= read2003Excel(serverFile,templateList);
+        List<String> staffMobList = salaryUserMapper.getMobByCompanyId(companyId);	
+        AjaxResult ajaxResult= read2003Excel(serverFile,templateList,staffMobList);
         int code = (int) ajaxResult.get("code");
         if(code==500) {
         	 return ajaxResult;
@@ -131,12 +135,14 @@ public class SalaryServiceImpl implements SalaryService {
 	public AjaxResult uploadSalary1(String value, String companyId)throws FileNotFoundException, IOException, ParseException, NullPointerException {
 		 List<SalaryCustomTemplate> templateList = salaryMapper.getSalaryTemplate(companyId);
 		 File serverFile=new File(value);
-		 AjaxResult ajaxResult= read2003Excel(serverFile,templateList);
+  		 List<String> staffMobList = salaryUserMapper.getMobByCompanyId(companyId);	
+		 AjaxResult ajaxResult= read2003Excel(serverFile,templateList,staffMobList);
 	        int code = (int) ajaxResult.get("code");
 	        if(code==500) {
 	        	 return ajaxResult;
 	        }else {
-	        	Salary oaSalary = (Salary)ajaxResult.get("data");  
+	    		Map<String,Object> map = (Map<String, Object>) ajaxResult.get("data");
+	        	Salary oaSalary = (Salary)map.get("oaSalary");  
 	        	oaSalary.setId(UUIDUtils.getGuid());
 	        	if(oaSalary!=null) {
 	        		salaryMapper.insertOaSalary(oaSalary);
@@ -151,12 +157,15 @@ public class SalaryServiceImpl implements SalaryService {
 	 * 上传员工信息
 	 */
 	@Override
-	public  List<SalaryStaff> uploadStaff(File file, String companyId) {
+	public  AjaxResult uploadStaff(File file, String companyId) {
 		HSSFWorkbook hwb;
 		List<SalaryStaff>  staffList = new ArrayList<SalaryStaff>();
 		try {
 			hwb = new HSSFWorkbook(new FileInputStream(file));
 			List<String[]> data = SalaryExcelUtil.ReadExcel(hwb, 0);
+	        if(data.get(0).length!=3) {
+	        	return AjaxResult.error("上传文件内容格式不正确！");
+	        }
 		    for(int i = 1;i< data.size();i++){
 		    	SalaryStaff salaryStaff =new SalaryStaff();
 		    	String[] row = data.get(i);
@@ -167,44 +176,11 @@ public class SalaryServiceImpl implements SalaryService {
 		    	staffList.add(salaryStaff);
 		    }
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-/*		String fileName = file.getName();
-        //指定文件存放路径，可以是相对路径或者绝对路径
-        String filePath = "./src/main/resources/templates/";
-        try {
-			uploadFile(File2byte(file), filePath, fileName);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-        File serverFile=new File(filePath+fileName);
-        HSSFWorkbook hwb;
-        HSSFSheet sheet=null;
-        List<SalaryStaff>  staffList = new ArrayList<SalaryStaff>();
-        try {
-			hwb = new HSSFWorkbook(new FileInputStream(serverFile));
-		    sheet = hwb.getSheetAt(0);
-		    HSSFRow row = null;
-		    int temp =sheet.getLastRowNum();
-		    //根据excel的行数循环
-		    for(int i = 1;i<= temp;i++){
-		    	SalaryStaff salaryStaff =new SalaryStaff();
-		    	row = sheet.getRow(i);
-		    	salaryStaff.setCompanyId(companyId);
-		    	salaryStaff.setDept(getCellValue(row.getCell(0)));
-		    	salaryStaff.setName(getCellValue(row.getCell(1)));
-		    	salaryStaff.setMobile(getCellValue(row.getCell(2)));
-		    	staffList.add(salaryStaff);
-		    }
-        } catch (Exception e) {
-			e.printStackTrace();
-		}*/
-        return staffList;
+        return AjaxResult.success("解析员工信息成功!", staffList);
 	}
 	
 	
@@ -222,7 +198,7 @@ public class SalaryServiceImpl implements SalaryService {
 	 				String  sPhone = staffList.get(i).getMobile();
 	 				String  ePhone = staffList.get(j).getMobile();
 	 	           if  (ePhone.equals(sPhone))  {  
-	 	        	  return AjaxResult.warn("Excel中手机号:"+ePhone+"重复,请检查后导入!");
+	 	        	  return AjaxResult.error("Excel中手机号:"+ePhone+"重复,请检查后导入!");
 	 	            } 
 				}
 			}
@@ -271,16 +247,20 @@ public class SalaryServiceImpl implements SalaryService {
 			}
 	    }
 	  
-		
+
+	  
 		 /**
 	     * 读取 office 2003 excel
+		 * @param staffMobList 
 	     * @throws IOException
 	     * @throws FileNotFoundException 
 		 * @throws ParseException */
-	    private static AjaxResult read2003Excel(File file,List<SalaryCustomTemplate> templateList) throws FileNotFoundException, IOException, ParseException, NullPointerException {
+	    private static AjaxResult read2003Excel(File file,List<SalaryCustomTemplate> templateList, List<String> staffMobList) throws FileNotFoundException, IOException, ParseException, NullPointerException {
 	    	HSSFWorkbook hwb;
 	        Salary oaSalary =new Salary();
+	        Map<String, Object> resultMap = new HashMap<String, Object>();
 	        List<SalaryImport>  oaSalaryImportList = new ArrayList<SalaryImport>();
+	        List<ErrorInfo>  errorSalaryList = new ArrayList<ErrorInfo>();
 	        List<Long> mobileList = new ArrayList<Long>();
 	        hwb = new HSSFWorkbook(new FileInputStream(file));
 	        List<String[]> data = SalaryExcelUtil.ReadExcel(hwb, 0);
@@ -293,6 +273,9 @@ public class SalaryServiceImpl implements SalaryService {
 					}
 				}
 	        }
+	        if(data.size()>SessionParamConstant.rowsLimit) {
+	        	return AjaxResult.error("该功能仅支持单次最多上传三万条数据!");
+	        }
 			oaSalary.setImportTime(new Date());//创建时间
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 			Date issueTime;
@@ -304,30 +287,45 @@ public class SalaryServiceImpl implements SalaryService {
 			oaSalary.setExcelName(excelName);
 			//根据excel的行数循环
 			for(int i = 1;i< data.size();i++){
+				ErrorInfo eInfo  = new  ErrorInfo();
 				long mobile = Long.valueOf(data.get(i)[0]);
 				if(mobileList.contains(mobile)) {
-					return AjaxResult.error("手机号:"+mobile+"在excel中有重复!");
+					eInfo.setMobile(String.valueOf(mobile));
+					eInfo.setReason("重复手机号码！");
+					errorSalaryList.add(eInfo);
+					continue;
 				}else {
 					mobileList.add(mobile);
+			 }
+			boolean flag = checkStaffIsExist(staffMobList,mobile);
+			if(flag) {
+				eInfo.setMobile(String.valueOf(mobile));
+				eInfo.setReason("不存在该手机号码的关联员工信息！");
+				errorSalaryList.add(eInfo);
+				continue;
+			}
+				
+			//根据模板信息去取想要的信息
+			for(int j=0;j<templateList.size();j++) {
+				SalaryImport oaSalaryImport =new  SalaryImport();
+				//列号
+				int colIndex = templateList.get(j).getColIndex();
+				oaSalaryImport.setImportAmount(data.get(i)[colIndex]);//具体值
+				oaSalaryImport.setTemplateColName(data.get(0)[colIndex]);//名称
+				oaSalaryImport.setSalaryItemId(j);//元素id
+				oaSalaryImport.setTemplateId(templateList.get(j).getCompanyId());//公司id与模板id一致
+				oaSalaryImport.setUserId(mobile);//员工编号(固定且具体的某一列)
+				oaSalaryImport.setColIndex(colIndex);
+				int category = getCategory(templateList,data.get(0)[colIndex]);
+				oaSalaryImport.setCategory(category);
+				oaSalaryImportList.add(oaSalaryImport);
 				}
-				//根据模板信息去取想要的信息
-				for(int j=0;j<templateList.size();j++) {
-					SalaryImport oaSalaryImport =new  SalaryImport();
-					//列号
-					int colIndex = templateList.get(j).getColIndex();
-					oaSalaryImport.setImportAmount(data.get(i)[colIndex]);//具体值
-					oaSalaryImport.setTemplateColName(data.get(0)[colIndex]);//名称
-					oaSalaryImport.setSalaryItemId(j);//元素id
-					oaSalaryImport.setTemplateId(templateList.get(j).getCompanyId());//公司id与模板id一致
-					oaSalaryImport.setUserId(mobile);//员工编号(固定且具体的某一列)
-					oaSalaryImport.setColIndex(colIndex);
-					int category = getCategory(templateList,data.get(0)[colIndex]);
-					oaSalaryImport.setCategory(category);
-					oaSalaryImportList.add(oaSalaryImport);
-			    	}
-			    }
+			}
 	        oaSalary.setImportList(oaSalaryImportList);
-	        return AjaxResult.success("导入成功!", oaSalary);
+	 		resultMap.put("errorSalaryList" , errorSalaryList);
+	 		resultMap.put("oaSalary" , oaSalary);
+	 		int rightRowsCount = oaSalaryImportList.size()/templateList.size();
+	 		return AjaxResult.success("本次上传成功"+rightRowsCount+"条记录。",resultMap);
 	    }
 	    /**
 	     * 获取字段分组
@@ -467,6 +465,48 @@ public class SalaryServiceImpl implements SalaryService {
 		}
 		
 	}
+	
+	
+	
+	/**
+	 * 错误工资单信息导出
+	 */
+	@Override
+	public  void exportErrSalInfo(HttpServletRequest request,HttpServletResponse response,List<ErrorInfo> errList) {
+		ServletOutputStream os = null;
+		try {
+			String name="错误工资单上传信息"+DateUtils.parseDateToStr("yyyyMMddHHmmss",new Date())+".xls";
+			String userAgent = request.getHeader("user-agent").toLowerCase();  
+			  
+			if (userAgent.contains("msie") || userAgent.contains("like gecko") ) {  
+			        // win10 ie edge 浏览器 和其他系统的ie  
+				name = URLEncoder.encode(name, "UTF-8");  
+			} else {  
+			        // fe  
+				name = new String(name.getBytes("UTF-8"), "iso-8859-1");  
+			}
+			 response.setContentType("text/html;charset=UTF-8");
+			 response.addHeader("content-type", "application/x-msdownload");
+			 response.addHeader("Content-Disposition", "attachment;filename="+ name);
+			os = response.getOutputStream();
+			createSalWorkbook(errList).write(os);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally{
+			try {
+				if(os!=null){
+					os.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	
+	
+	
 	/**
 	 * 错误手机号码
 	 * @param salaryCommonTemplate
@@ -505,7 +545,43 @@ public class SalaryServiceImpl implements SalaryService {
 			}
 		return workBook;
 	}
-	
+	/**
+	 * 错误工资单信息
+	 * @param salaryCommonTemplate
+	 * @param oaSalaryImportTemplates
+	 * @return
+	 */
+	private  HSSFWorkbook createSalWorkbook(List<ErrorInfo> errList){
+			HSSFWorkbook workBook = new HSSFWorkbook();
+			HSSFFont font = workBook.createFont();//创建字体对象
+			font.setFontHeightInPoints((short) 12);//设置字体大小      
+			font.setFontName("仿宋_GB2312");
+			HSSFCellStyle cellStyle = workBook.createCellStyle();//创建列的样式对象
+			cellStyle.setFont(font);
+			cellStyle.setAlignment(HSSFCellStyle.ALIGN_CENTER);//左右居中    
+			HSSFSheet sheet = workBook.createSheet("Page");//使用workbook对象创建sheet对象
+			
+			HSSFRow rowsTitle = sheet.createRow((short) 0);
+			HSSFCell cellTitle = rowsTitle.createCell(0);
+			cellTitle.setCellStyle(cellStyle);
+			cellTitle.setCellValue("手机号码");
+			HSSFCell cellTitle1 = rowsTitle.createCell(1);
+			cellTitle1.setCellStyle(cellStyle);
+			cellTitle1.setCellValue("错误原因");
+			for (int i = 0; i < errList.size(); i++) {
+				//设置列的宽度 
+				sheet.setColumnWidth((short) (i), (short) 10000) ;
+				HSSFRow rows = sheet.createRow((short) i+1);
+				rows.setHeightInPoints(25);  
+				HSSFCell cell = rows.createCell(0);
+				cell.setCellStyle(cellStyle);
+				cell.setCellValue(errList.get(i).getMobile());
+				HSSFCell cell1 = rows.createCell(1);
+				cell1.setCellStyle(cellStyle);
+				cell1.setCellValue(errList.get(i).getReason());
+			}
+		return workBook;
+	}
 	
 	
 	
@@ -794,7 +870,22 @@ public class SalaryServiceImpl implements SalaryService {
 		salaryMapper.updateAddStaffInfo(salaryStaff);
 	}
 
-	  
+  	private static boolean checkStaffIsExist(List<String> staffMobList,long mobile) {
+  		String mob = String.valueOf(mobile); 
+  		for (int i = 0; i < staffMobList.size(); i++) {
+  			if(mob.equals(staffMobList.get(i))) {
+  				return false;
+  			}
+		}
+  		return true;
+  	}
+
+
+	@Override
+	public List<String> getExcelNameList(String companyId) {
+		return salaryMapper.getExcelNameList(companyId);
+	}
+    
 	  
 	  
 }

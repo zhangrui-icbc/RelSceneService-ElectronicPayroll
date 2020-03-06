@@ -79,6 +79,7 @@ public interface ReMapper{
 	int updateMobile(@Param("userName")String userName,@Param("newUserName") String newUserName,@Param("companyId") String companyId);
 	
 	void delLog1(@Param("reId")String salaryId);
+	List<String> getExcelNameList(@Param("companyId")String companyId);
 	
 
 	

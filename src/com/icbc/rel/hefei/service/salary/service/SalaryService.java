@@ -11,6 +11,7 @@ import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
+import com.icbc.rel.hefei.entity.salary.ErrorInfo;
 import com.icbc.rel.hefei.entity.salary.Salary;
 import com.icbc.rel.hefei.entity.salary.SalaryStaff;
 
@@ -46,7 +47,7 @@ public interface SalaryService {
 	 * @param companyId 
 	 * @return
 	 */
-	 List<SalaryStaff> uploadStaff(File file, String companyId);
+	AjaxResult uploadStaff(File file, String companyId);
 	 /**
 	  * 保存员工信息
 	 * @param response 
@@ -76,5 +77,7 @@ public interface SalaryService {
 	void updateAddStaffInfo(SalaryStaff salaryStaff);
 	AjaxResult uploadSalary1(String value, String companyId) throws FileNotFoundException, IOException, ParseException, NullPointerException;
 	void exportErrPhone(HttpServletRequest request, HttpServletResponse response, List<SalaryStaff> list);
+	void exportErrSalInfo(HttpServletRequest request, HttpServletResponse response, List<ErrorInfo> list);
+	List<String> getExcelNameList(String companyId);
 	
 }

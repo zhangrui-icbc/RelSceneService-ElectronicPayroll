@@ -80,6 +80,7 @@ public interface SalaryMapper{
 	
 	void delLog1(@Param("salaryId")String salaryId);
 	void updateAddStaffInfo(SalaryStaff salaryStaff);
+	List<String> getExcelNameList(@Param("companyId")String companyId);
 	
 
 	

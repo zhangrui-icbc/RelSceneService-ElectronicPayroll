@@ -11,6 +11,7 @@ import java.util.Map;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
+import com.icbc.rel.hefei.entity.salary.ErrorInfo;
 import com.icbc.rel.hefei.entity.salary.reimbursement.Reimbursement;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,5 +45,7 @@ public interface ReService {
 	int delStaff(String userName, String companyId);
 	int updateMobile(String userName, String newUserName, String companyId);
 	AjaxResult uploadSalary1(String value, String companyId) throws FileNotFoundException, IOException, ParseException, NullPointerException;
+	void exportErrReInfo(HttpServletRequest request, HttpServletResponse response, List<ErrorInfo> list);
+	List<String> getExcelNameList(String companyId);
 
 }

@@ -147,103 +147,6 @@ layui.use(['element','laydate','table','form','upload'],function(){
 	var table = layui.table;
 	var form=layui.form;
 	var upload=layui.upload;
-/* 	 var nowTime=new Date(); 
-	 
-	 var orderType=0;
-	 var date=new Date();
-	 var minTime={
-			 year:date.getFullYear(),
-     	     month:date.getMonth(),//关键
-           date:date.getDate(),
-           hours:0,
-           minutes:0,
-           seconds:0}
-	  var maxTime={
-		   year:date.getFullYear(),
-     	   month:date.getMonth(),
-         date:date.getDate(),
-         hours:23,
-         minutes:59,
-         seconds:59
-	  }
-	  
-	 var startTime=laydate.render({
-	    	elem:'#orderBeginTime',
-	    	type:'time',
-	    	format:'HH:mm:ss',
-	    	btns: ['confirm'],
-	    	//max:'nowTime',//默认最大值为当前日期
-	    	done:function(value,date){
-	    		console.log(value); //得到日期生成的值，如：2017-08-18
-//	    	    console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
-	    	    if(orderType==0){
-	    	    	endTime.config.max=maxTime;
-	    	    	endTime.config.min={  
-	    	    	year:date.year,
-	        	    month:date.month-1,//关键
-	                date:date.date,
-	                hours:date.hours,
-	                minutes:date.minutes,
-	                seconds:date.seconds
-	    	    };}else{
-	    	    	endTime.config.min=minTime;
-	    	    	endTime.config.max={  
-	    	    	    	year:date.year,
-	    	        	    month:date.month-1,//关键
-	    	                date:date.date,
-	    	                hours:date.hours,
-	    	                minutes:date.minutes,
-	    	                seconds:date.seconds
-	    	    };}
-	    	    
-	    	}
-	    });
-	    var endTime=laydate.render({
-	    	elem:'#orderEndTime',
-	    	type:'time',
-	    	btns: ['confirm'],
-	    	format:'HH:mm:ss', 
-	    	//max:'nowTime',
-	    	done:function(value,date){
-	    		console.log(value); //得到日期生成的值，如：2017-08-18
-//	    	    console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}    	   
-	    	    if(orderType==0){
-	    	    	startTime.config.min=minTime;
-	    	    	startTime.config.max={
-		    	    		year:date.year,
-			        	    month:date.month-1,//关键
-			                date:date.date,
-		                    hours:date.hours,
-		                    minutes:date.minutes,
-		                    seconds:date.seconds
-		    	    };}else{
-		    	    	startTime.config.max=maxTime;
-		    	    	startTime.config.min={
-			    	    		year:date.year,
-				        	    month:date.month-1,//关键
-				                date:date.date,
-			                    hours:date.hours,
-			                    minutes:date.minutes,
-			                    seconds:date.seconds
-			    	    };
-		    	    }
-	    	    }
-	    });
-	  form.on('select(filterOrderTimeType)',function(data){
-		  orderType=data.value;
-		  $("#orderBeginTime").val('');
-		  $("#orderEndTime").val('');
-		  
-		  startTime.config.min=minTime;
-		  startTime.config.max=maxTime;
-		  endTime.config.min=minTime;
-		  endTime.config.max=maxTime;
-		});
-	laydate.render({
-		elem:'#cancelTime',
-		type:'time',
-		format:'HH:mm:ss',
-	}); */
 	//报销信息上传
  	upload.render({
 		elem:"#sal_sub",
@@ -260,6 +163,9 @@ layui.use(['element','laydate','table','form','upload'],function(){
 				content:data.msg
 			   });
 			$("#mytab_04").click();
+			if(data.data.errorReList.length>0){
+				window.location.href="../mp/reimbursement/exportErrReInfo";
+			}
 		},
 		error:function(){
 			layer.open({
@@ -270,9 +176,6 @@ layui.use(['element','laydate','table','form','upload'],function(){
 		}
 	});
 }); 
-
-
-
 	
 //返回上一步
 function returnLast(){

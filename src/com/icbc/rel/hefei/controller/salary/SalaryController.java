@@ -49,6 +49,7 @@ import com.ibm.nws.ffdc.FFDC;
 import com.icbc.rel.hefei.TO.Msg;
 import com.icbc.rel.hefei.TO.TwoTupleTO;
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
+import com.icbc.rel.hefei.entity.salary.ErrorInfo;
 import com.icbc.rel.hefei.entity.salary.Salary;
 import com.icbc.rel.hefei.entity.salary.SalaryStaff;
 import com.icbc.rel.hefei.service.rel.MessageHelper;
@@ -105,29 +106,16 @@ public class SalaryController {
 		if(!(format.equals("xls"))) {				
 			return AjaxResult.error("格式错误!仅支持xls格式文件.");
 		}
-		AjaxResult ajaxResult;
-/*    	// 1、创建一个DiskFileItemFactory工厂
-		DiskFileItemFactory factory = new DiskFileItemFactory();
-		// 2、创建一个文件上传解析器
-		ServletFileUpload upload = new ServletFileUpload(factory);
-		// 解决上传文件名的中文乱码
-		upload.setHeaderEncoding("UTF-8");
-		// 3、判断提交上来的数据是否是上传表单的数据
-		if (!ServletFileUpload.isMultipartContent(request)) {
-			// 按照传统方式获取数据
-			return null;
+		String excelName = new File(to.getValue()).getName().split("\\.")[0];
+		List<String> nameList  = salaryService.getExcelNameList(companyId);
+		if(nameList.size()>0||nameList!=null) {
+			if(nameList.contains(excelName)) {
+				return AjaxResult.error("名称为\""+excelName+"\"的excel已经上传。");
+			}
+			
 		}
-		// 4、使用ServletFileUpload解析器解析上传数据，解析结果返回的是一个List<FileItem>集合，每一个FileItem对应一个Form表单的输入项
-		List<FileItem> list = upload.parseRequest(request);
-		String fileName = list.get(0).getName();
-        if(!(fileName.contains("xls"))){
-        	return AjaxResult.error("格式错误!仅支持xls格式文件.");
-        }
-		File file = new File(fileName);
-//		list.get(0).write(file);
-    	AjaxResult ajaxResult;*/
+		AjaxResult ajaxResult;
 		try {
-		//	ajaxResult = salaryService.uploadSalary(file,companyId);
 			ajaxResult =salaryService.uploadSalary1(to.getValue(), companyId);
 			String mpId=SessionUtil.getMpId(request.getSession());
 			anaylsisXmlUtil t=new anaylsisXmlUtil(); 
@@ -155,6 +143,12 @@ public class SalaryController {
 					i++;
 				}
 			}
+	    	int code = (int) ajaxResult.get("code");
+	    	if (code!=500) {
+	    		Map<String,Object> map = (Map<String, Object>) ajaxResult.get("data");
+	    		List<ErrorInfo> list = (List<ErrorInfo>) map.get("errorSalaryList");
+	    		request.getSession().setAttribute("errorSalaryList", list);
+	    	}
 			return ajaxResult;
 		} catch (NullPointerException e) {
 			e.printStackTrace();
@@ -188,36 +182,29 @@ public class SalaryController {
 			return AjaxResult.error("格式错误!仅支持xls格式文件.");
 		}
 		File file=new File(to.getValue());
-/*    	// 1、创建一个DiskFileItemFactory工厂
-		DiskFileItemFactory factory = new DiskFileItemFactory();
-		// 2、创建一个文件上传解析器
-		ServletFileUpload upload = new ServletFileUpload(factory);
-		// 解决上传文件名的中文乱码
-		upload.setHeaderEncoding("UTF-8");
-		// 3、判断提交上来的数据是否是上传表单的数据
-		if (!ServletFileUpload.isMultipartContent(request)) {
-			// 按照传统方式获取数据
-			return null;
-		}
-		// 4、使用ServletFileUpload解析器解析上传数据，解析结果返回的是一个List<FileItem>集合，每一个FileItem对应一个Form表单的输入项
-		List<FileItem> list = upload.parseRequest(request);
-		String fileName = list.get(0).getName();
-        if(!(fileName.contains("xls"))){
-        	return AjaxResult.error("格式错误!仅支持xls格式文件.");
-        }
-		File file = new File(fileName);
-//		list.get(0).write(file);*/
-		List<SalaryStaff> staffList=  salaryService.uploadStaff(file,companyId);
-    	AjaxResult  ajaxResult = salaryService.insertStaffInfo(staffList,companyId);
+		AjaxResult ajaxResult=  salaryService.uploadStaff(file,companyId);
     	int code = (int) ajaxResult.get("code");
-    	if (code!=301) {
-    		Map<String,Object> map = (Map<String, Object>) ajaxResult.get("data");
+    	if (code==500) {
+    		return ajaxResult;
+    	}
+		List<SalaryStaff> staffList = (List<SalaryStaff>)ajaxResult.get("data");
+        if(staffList.size()>SessionParamConstant.rowsLimit) {
+        	return AjaxResult.error("该功能仅支持单次最多上传三万条数据!");
+        }
+    	AjaxResult  ajaxRes = salaryService.insertStaffInfo(staffList,companyId);
+    	int code1 = (int) ajaxRes.get("code");
+    	if (code1!=500) {
+    		Map<String,Object> map = (Map<String, Object>) ajaxRes.get("data");
     		List<SalaryStaff> list = (List<SalaryStaff>) map.get("errList");
     		request.getSession().setAttribute("errList", list);
     	}
-        return ajaxResult;
+        return ajaxRes;
     }
-    
+ /**
+  * 导出错误的员工信息   
+  * @param request
+  * @param response
+  */
     @RequestMapping("/salary/exportErrPhone")
     public void exportErrPhone(HttpServletRequest request,HttpServletResponse response){
     	List<SalaryStaff> list =  (List<SalaryStaff>) request.getSession().getAttribute("errList");
@@ -225,7 +212,18 @@ public class SalaryController {
     	request.getSession().removeAttribute("errList");
     }
 
-    
+    /**
+     * 导出错误的工资单信息   
+     * @param request
+     * @param response
+     */
+       @RequestMapping("/salary/exportErrSalaryInfo")
+       public void exportErrSalInfo(HttpServletRequest request,HttpServletResponse response){
+       	List<ErrorInfo> list =  (List<ErrorInfo>) request.getSession().getAttribute("errorSalaryList");
+       	salaryService.exportErrSalInfo(request,response,list);
+       	request.getSession().removeAttribute("errorSalaryList");
+       }
+       
     /**
      * 工资模板下载
      * @param request

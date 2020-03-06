@@ -1,5 +1,7 @@
 package com.icbc.rel.hefei.dao.salary;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
 
@@ -15,6 +17,8 @@ public interface SalaryUserMapper{
 	void resetPassword(@Param("username") String username,  @Param("password1") String newPassword1);
 
 	String getCompanyIdByMobile(@Param("username") String username);
+
+	List<String> getMobByCompanyId(@Param("companyId")String companyId);
 
 	
 	

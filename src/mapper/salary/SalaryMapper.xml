@@ -97,6 +97,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		update salary_user  set mobile = #{mobile}, name =#{name} 	 where id=#{id}  
    	</insert>
 	
-	
+	 <select id="getExcelNameList" resultType="java.lang.String">
+		SELECT a.excel_name AS excel_name  FROM salary a LEFT JOIN  salary_import oai  ON a.`id`=oai.`salary_id` where oai.template_id =#{companyId}	
+    </select>
 	
 </mapper>

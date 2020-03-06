@@ -26,6 +26,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.icbc.rel.hefei.TO.TwoTupleTO;
 import com.icbc.rel.hefei.controller.salary.SalaryController;
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
+import com.icbc.rel.hefei.entity.salary.ErrorInfo;
 import com.icbc.rel.hefei.entity.salary.reimbursement.Reimbursement;
 import com.icbc.rel.hefei.service.rel.MessageHelper;
 import com.icbc.rel.hefei.service.rel.MessageService;
@@ -74,26 +75,6 @@ public class ReController {
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
     	}
-/*    	// 1、创建一个DiskFileItemFactory工厂
-		DiskFileItemFactory factory = new DiskFileItemFactory();
-		// 2、创建一个文件上传解析器
-		ServletFileUpload upload = new ServletFileUpload(factory);
-		// 解决上传文件名的中文乱码
-		upload.setHeaderEncoding("UTF-8");
-		// 3、判断提交上来的数据是否是上传表单的数据
-		if (!ServletFileUpload.isMultipartContent(request)) {
-			// 按照传统方式获取数据
-			return null;
-		}
-		// 4、使用ServletFileUpload解析器解析上传数据，解析结果返回的是一个List<FileItem>集合，每一个FileItem对应一个Form表单的输入项
-		List<FileItem> list = upload.parseRequest(request);
-		String fileName = list.get(0).getName();
-        if(!(fileName.contains("xls"))){
-        	return AjaxResult.error("格式错误!仅支持xls格式文件.");
-        }
-		File file = new File(fileName);
-//		list.get(0).write(file);
-*/    	
     	FileUploadUtil util = new FileUploadUtil();
 		TwoTupleTO to = util.UploadFile(request, SystemConfigUtil.tempPath);
 		String str=to.getName();
@@ -102,9 +83,16 @@ public class ReController {
 		if(!(format.equals("xls"))) {				
 			return AjaxResult.error("格式错误!仅支持xls格式文件.");
 		}
+		String excelName = new File(to.getValue()).getName().split("\\.")[0];
+		List<String> nameList  = reService.getExcelNameList(companyId);
+		if(nameList.size()>0||nameList!=null) {
+			if(nameList.contains(excelName)) {
+				return AjaxResult.error("名称为\""+excelName+"\"的excel已经上传。");
+			}
+			
+		}
     	AjaxResult ajaxResult;
 		try {
-//			ajaxResult = reService.uploadSalary(file,companyId);
 			ajaxResult =reService.uploadSalary1(to.getValue(), companyId);
 			String mpId=SessionUtil.getMpId(request.getSession());
 			anaylsisXmlUtil t=new anaylsisXmlUtil(); 
@@ -133,6 +121,12 @@ public class ReController {
 				}
 			}
 			
+	    	int code = (int) ajaxResult.get("code");
+	    	if (code!=500) {
+	    		Map<String,Object> map = (Map<String, Object>) ajaxResult.get("data");
+	    		List<ErrorInfo> list = (List<ErrorInfo>) map.get("errorReList");
+	    		request.getSession().setAttribute("errorReList", list);
+	    	}
 			return ajaxResult;
 		} catch (NullPointerException e) {
 			e.printStackTrace();
@@ -211,5 +205,15 @@ public class ReController {
     	reService.delLog(salaryId);
     	return AjaxResult.success("删除成功!");
     }
-    
+    /**
+     * 导出错误的报销单信息   
+     * @param request
+     * @param response
+     */
+       @RequestMapping("/reimbursement/exportErrReInfo")
+       public void exportErrReInfo(HttpServletRequest request,HttpServletResponse response){
+       	List<ErrorInfo> list =  (List<ErrorInfo>) request.getSession().getAttribute("errorReList");
+       	reService.exportErrReInfo(request,response,list);
+       	request.getSession().removeAttribute("errorReList");
+       }
 }

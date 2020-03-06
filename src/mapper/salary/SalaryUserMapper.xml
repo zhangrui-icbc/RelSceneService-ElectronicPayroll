@@ -12,4 +12,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getCompanyIdByMobile"  resultType = "java.lang.String">
 		select company_id from  salary_user where mobile = #{username}
 	</select>
+	
+	<select id="getMobByCompanyId" resultType = "java.lang.String">
+		select mobile from  salary_user where company_id = #{companyId}
+	</select>
 </mapper>
