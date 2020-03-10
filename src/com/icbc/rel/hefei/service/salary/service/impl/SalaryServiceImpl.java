@@ -144,7 +144,7 @@ public class SalaryServiceImpl implements SalaryService {
 	    		Map<String,Object> map = (Map<String, Object>) ajaxResult.get("data");
 	        	Salary oaSalary = (Salary)map.get("oaSalary");  
 	        	oaSalary.setId(UUIDUtils.getGuid());
-	        	if(oaSalary!=null) {
+	        	if(oaSalary.getImportList()!=null&&oaSalary.getImportList().size()>0) {
 	        		salaryMapper.insertOaSalary(oaSalary);
 	        		salaryMapper.insertOaSalaryImport(oaSalary);
 	        	}
@@ -325,7 +325,10 @@ public class SalaryServiceImpl implements SalaryService {
 	 		resultMap.put("errorSalaryList" , errorSalaryList);
 	 		resultMap.put("oaSalary" , oaSalary);
 	 		int rightRowsCount = oaSalaryImportList.size()/templateList.size();
-	 		return AjaxResult.success("本次上传成功"+rightRowsCount+"条记录。",resultMap);
+	 		if(oaSalaryImportList!=null&&oaSalaryImportList.size()>0) {
+	 			return AjaxResult.success("本次上传成功"+rightRowsCount+"条记录。",resultMap);
+	 		}
+	 		return AjaxResult.warn("本次上传成功"+rightRowsCount+"条记录。",resultMap);
 	    }
 	    /**
 	     * 获取字段分组
@@ -570,7 +573,8 @@ public class SalaryServiceImpl implements SalaryService {
 			cellTitle1.setCellValue("错误原因");
 			for (int i = 0; i < errList.size(); i++) {
 				//设置列的宽度 
-				sheet.setColumnWidth((short) (i), (short) 10000) ;
+				sheet.setColumnWidth((short) 0, (short) 10000) ;
+				sheet.setColumnWidth((short) 1, (short) 10000) ;
 				HSSFRow rows = sheet.createRow((short) i+1);
 				rows.setHeightInPoints(25);  
 				HSSFCell cell = rows.createCell(0);

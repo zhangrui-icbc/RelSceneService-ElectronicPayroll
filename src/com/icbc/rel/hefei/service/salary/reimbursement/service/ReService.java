@@ -44,7 +44,7 @@ public interface ReService {
 	void delLog(String salaryId);
 	int delStaff(String userName, String companyId);
 	int updateMobile(String userName, String newUserName, String companyId);
-	AjaxResult uploadSalary1(String value, String companyId) throws FileNotFoundException, IOException, ParseException, NullPointerException;
+	AjaxResult uploadRe1(String value, String companyId) throws FileNotFoundException, IOException, ParseException, NullPointerException;
 	void exportErrReInfo(HttpServletRequest request, HttpServletResponse response, List<ErrorInfo> list);
 	List<String> getExcelNameList(String companyId);
 

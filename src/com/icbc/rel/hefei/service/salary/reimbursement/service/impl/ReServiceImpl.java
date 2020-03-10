@@ -116,7 +116,7 @@ public class ReServiceImpl implements ReService {
 	}
 	
 	@Override
-	public AjaxResult uploadSalary1(String value, String companyId)throws FileNotFoundException, IOException, ParseException, NullPointerException {
+	public AjaxResult uploadRe1(String value, String companyId)throws FileNotFoundException, IOException, ParseException, NullPointerException {
 		 List<ReCustomTemplate> templateList = reMapper.getReTemplate(companyId);
 		 File serverFile=new File(value);
 	     List<String> staffMobList = salaryUserMapper.getMobByCompanyId(companyId);	
@@ -128,7 +128,7 @@ public class ReServiceImpl implements ReService {
 	        	Map<String,Object> map = (Map<String, Object>) ajaxResult.get("data");
 	        	Reimbursement reimbursement =(Reimbursement)map.get("reimbursement");  
 	        	reimbursement.setId(UUIDUtils.getGuid());
-	        	if(reimbursement!=null) {
+	        	if(reimbursement.getImportList()!=null&&reimbursement.getImportList().size()>0) {
 	        		reMapper.insertReimbursement(reimbursement);
 	        		reMapper.insertReimbursementImport(reimbursement);
 	        	}
@@ -239,7 +239,10 @@ public class ReServiceImpl implements ReService {
 		 		resultMap.put("errorReList" , errorReList);
 		 		resultMap.put("reimbursement" , oaRe);
 		 		int rightRowsCount = oaReImportList.size()/templateList.size();
-		 		return AjaxResult.success("本次上传成功"+rightRowsCount+"条记录。",resultMap);    
+		 		if(oaReImportList!=null&&oaReImportList.size()>0) {
+		 			return AjaxResult.success("本次上传成功"+rightRowsCount+"条记录。",resultMap);    
+		 		}
+		 		return AjaxResult.warn("本次上传成功"+rightRowsCount+"条记录。",resultMap);
 	    }
 	    /**
 	     * 获取字段分组
@@ -572,7 +575,8 @@ public class ReServiceImpl implements ReService {
 				cellTitle1.setCellValue("错误原因");
 				for (int i = 0; i < errList.size(); i++) {
 					//设置列的宽度 
-					sheet.setColumnWidth((short) (i), (short) 10000) ;
+					sheet.setColumnWidth((short) 0, (short) 10000) ;
+					sheet.setColumnWidth((short) 1, (short) 10000) ;
 					HSSFRow rows = sheet.createRow((short) i+1);
 					rows.setHeightInPoints(25);  
 					HSSFCell cell = rows.createCell(0);
