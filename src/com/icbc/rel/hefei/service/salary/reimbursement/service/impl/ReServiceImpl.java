@@ -213,7 +213,7 @@ public class ReServiceImpl implements ReService {
 						mobileList.add(mobile);
 					}
 					boolean flag = checkStaffIsExist(staffMobList,mobile);
-					if(flag) {
+					if(flag) {  
 						eInfo.setMobile(String.valueOf(mobile));
 						eInfo.setReason("不存在该手机号码的关联员工信息！");
 						errorReList.add(eInfo);
