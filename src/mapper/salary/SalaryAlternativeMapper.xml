@@ -5,12 +5,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.icbc.rel.hefei.dao.salary.SalaryAlternativeMapper">
 	<!-- 查询备选信息 -->
 	<select id="getAlternativeInfo"    resultType="com.icbc.rel.hefei.entity.salary.SalaryTemplateAlternative">
-		SELECT * FROM salary_template_alternative 
+		SELECT * FROM salary_template_alternative where company_id=#{companyId}
 	</select>
 	
 	<!-- 插入备选字段 -->
 	<insert id="addAlternative"   useGeneratedKeys="true" keyProperty="id" parameterType = "com.icbc.rel.hefei.entity.salary.SalaryTemplateAlternative">
-		insert into salary_template_alternative ( name , category ) values  (#{name},#{category})
+		insert into salary_template_alternative ( company_id ,name , category ) values  (#{companyId},#{name},#{category})
 	</insert>
 	
 	<!-- 删除备选字段 -->
@@ -25,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 是否存在 -->
 	<select id="judge"   resultType="com.icbc.rel.hefei.entity.salary.SalaryTemplateAlternative">
-		select * from salary_template_alternative where  name = #{name}
+		select * from salary_template_alternative where  name = #{name} and company_id=#{companyId}
 	</select>
 	<!-- 查询备选字段 -->
 	<select id="getAlternativeInfoAlone" resultType="com.icbc.rel.hefei.entity.salary.SalaryTemplateAlternative">

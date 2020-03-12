@@ -48,6 +48,7 @@ public class AlternativeTemplateController {
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
     	}
+    	oaSalaryTemplateAlternative.setCompanyId(companyId);
         oaSalaryTemplateAlternative= salaryAlternativeService.addAlternative(oaSalaryTemplateAlternative);
         if(oaSalaryTemplateAlternative!=null) {
         	return  AjaxResult.success("添加成功!", oaSalaryTemplateAlternative);

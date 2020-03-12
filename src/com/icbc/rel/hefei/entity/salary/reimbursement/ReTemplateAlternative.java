@@ -10,7 +10,7 @@ package com.icbc.rel.hefei.entity.salary.reimbursement;
  */
 public class ReTemplateAlternative 
 {
-	
+	private String companyId;
 	/** Ö÷¼üid */
 	private Integer id;
 	/** ÁÐÃû³Æ */
@@ -44,5 +44,14 @@ public class ReTemplateAlternative
 	public void setCategory(Integer category) {
 		this.category = category;
 	}
+
+	public String getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
+	}
+	
 
 }

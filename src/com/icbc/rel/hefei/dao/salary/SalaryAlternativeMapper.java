@@ -10,7 +10,7 @@ import com.icbc.rel.hefei.entity.salary.SalaryTemplateAlternative;
 
 
 public interface SalaryAlternativeMapper {
-	List<SalaryTemplateAlternative> getAlternativeInfo();
+	List<SalaryTemplateAlternative> getAlternativeInfo(@Param("companyId")String companyId);
 	
 	void addAlternative(SalaryTemplateAlternative oaSalaryTemplateAlternative);
 	

@@ -32,7 +32,7 @@ public class ReAlternativeServiceImpl implements ReAlternativeService {
     	List<ReCustomTemplate> downList= reCustomMapper.getCustomTemplate(companyId);
     	result.put("down", downList);
     	//查询出所有的备选字段
-    	List<ReTemplateAlternative> upList = reAlternativeMapper.getAlternativeInfo();
+    	List<ReTemplateAlternative> upList = reAlternativeMapper.getAlternativeInfo(companyId);
     	for (int i = 0; i < upList.size(); i++) {
     		if(upList.get(i).getName().equals("实际收入")) {
     			upList.get(i).setId(-3);

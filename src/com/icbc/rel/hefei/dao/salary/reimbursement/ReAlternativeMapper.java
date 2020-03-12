@@ -10,7 +10,7 @@ import com.icbc.rel.hefei.entity.salary.reimbursement.ReTemplateAlternative;
 
 
 public interface ReAlternativeMapper {
-	List<ReTemplateAlternative> getAlternativeInfo();
+	List<ReTemplateAlternative> getAlternativeInfo(@Param("companyId")String  companyId);
 	
 	void addAlternative(ReTemplateAlternative reTemplateAlternative);
 	
