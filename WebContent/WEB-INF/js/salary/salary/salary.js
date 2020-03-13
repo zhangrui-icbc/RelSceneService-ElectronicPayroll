@@ -772,6 +772,26 @@ $("#mytab_02").click(function(){
     			"<td>" + salType(33) + "</td>" +
     			'<td name="buttons">'+alterNewColHtml1+"</td>"+
     			"</tr>";
+	    		
+	    		
+	    		str +="<tr>" +  // id
+	    		"<td class='hid'>1</td>" +
+    			"<td>专项附加扣除</td>" +
+    			"<td>" + salType(44) + "</td>" +
+    			'<td name="buttons">'+alterNewColHtml1+"</td>"+
+    			"</tr>";
+	    		str +="<tr>" +  // id
+	    		"<td class='hid'>1</td>" +
+    			"<td>单位支出</td>" +
+    			"<td>" + salType(55) + "</td>" +
+    			'<td name="buttons">'+alterNewColHtml1+"</td>"+
+    			"</tr>";
+	    		str +="<tr>" +  // id
+	    		"<td class='hid'>1</td>" +
+    			"<td>备注</td>" +
+    			"<td>" + salType(66) + "</td>" +
+    			'<td name="buttons">'+alterNewColHtml1+"</td>"+
+    			"</tr>";
 	    		var list = res.data.up;
 	    		var data1=res.data.down;
 	    		 $("#tab-com2").children().remove();
@@ -987,11 +1007,6 @@ function salType(type){
      return	"支出"
        break;
     case 4:
-        return	"单位支出"
-          break;
-    case 5:
-        return	"备注"
-    case 6:
         return	"专项附加扣除"
           break;
     default:

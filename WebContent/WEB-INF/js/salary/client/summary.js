@@ -66,12 +66,18 @@ $(function() {
 				 	       $(".total_list").children().eq(2).html(list.importAmount);
 				 	       
 				 	          }
-			//	 	     单位支出
+			//	 	          专项附加扣除
 				 	      if(category==44){
 				 	       $(".list-box").eq(3).prepend(txt);
 				 	          }
-				 	      
+				 	    
+			//	 	        单位支出 
+				 	      if(category==55){
+				 	       $(".list-box").eq(4).prepend(txt);
+				 	          }
+				 	     
 				 	     var str = $(".list-box").eq(3).children().length;
+				 	     var str1 = $(".list-box").eq(4).children().length;
 				 	      if(category==1){
 				 	       $(".list-box").eq(1).append(txt); 
 				 	      }
@@ -86,6 +92,14 @@ $(function() {
 					    		}
 				 	    	  $(".list-box").eq(3).append(txt)
 				 	      }
+				 	     if(category==5){
+					    		if(str==0){
+					    			$(".list-box").eq(4).hide();
+					    		}else{
+					    			$(".list-box").eq(4).show();
+					    		}
+				 	    	  $(".list-box").eq(4).append(txt)
+				 	      }
 						}
 					}
 					var str = $(".list-box").eq(3).children().length;
@@ -94,6 +108,14 @@ $(function() {
 		    		}else{
 		    			$(".list-box").eq(3).show();
 		    		}
+		    		
+					var str1 = $(".list-box").eq(4).children().length;
+		    		if(str==0){
+		    			$(".list-box").eq(4).hide();
+		    		}else{
+		    			$(".list-box").eq(4).show();
+		    		}
+		    		
 				}
 
 		      },

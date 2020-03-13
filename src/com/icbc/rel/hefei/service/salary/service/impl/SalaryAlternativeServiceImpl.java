@@ -94,12 +94,12 @@ public class SalaryAlternativeServiceImpl implements SalaryAlternativeService {
 	            public int compare(SalaryTemplateAlternative o1, SalaryTemplateAlternative o2) {  
 	                //…˝–Ú≈≈¡–  
 	                if (o1.getCategory() < o2.getCategory()) {  
-	                    return 1;  
+	                    return -1;  
 	                }  
 	                if (o1.getCategory() == o2.getCategory()) {  
 	                    return 0;  
 	                }  
-	                return -1;  
+	                return 1;  
 	            }  
 	        }); 
 	}

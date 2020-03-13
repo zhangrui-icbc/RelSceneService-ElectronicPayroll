@@ -38,16 +38,16 @@ function  detail(){
 			 	       $(".total_list").children().eq(2).html(list.importAmount);
 			 	       
 			 	          }
-//			 	      单位支出
-			 	      if(category==44){
-			 	       $(".list-box").eq(3).prepend(txt);
-			 	          }
 //			 	     专项附加扣除
-			 	      if(category==66){
+			 	      if(category==44){
+			 	    	  $(".list-box").eq(3).prepend(txt);
+			 	      }
+//			 	      单位支出
+			 	      if(category==55){
 			 	    	  $(".list-box").eq(4).prepend(txt);
 			 	      }
 //			 	      备注
-			 	      if(category==55){
+			 	      if(category==66){
 			 	       txt="<p><span>"+list.templateColName+"</span>&nbsp;<span>"+list.importAmount+"</span></p>";
 			 	       $(".list-box").eq(5).prepend(txt);
 			 	       

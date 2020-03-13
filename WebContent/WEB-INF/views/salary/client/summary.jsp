@@ -61,6 +61,8 @@
 			</div>
 			<div class="list-box">
 			</div>
+			<div class="list-box">
+			</div>
 		</div>
 	</body>
 	<script type="text/javascript" src="../../js/jquery-3.2.1.min.js" ></script>
