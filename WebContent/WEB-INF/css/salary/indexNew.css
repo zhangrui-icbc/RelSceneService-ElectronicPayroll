@@ -507,7 +507,7 @@ table thead{
         } 
         #selector .arrow{
         	position: absolute;
-		    right: 12px;
+		    right: 20px;
 		    top: 12px;
 		    display: block;
 		    height: 0;
