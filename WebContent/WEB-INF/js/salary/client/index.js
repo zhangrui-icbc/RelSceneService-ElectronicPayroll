@@ -1,15 +1,14 @@
-var ctx = $("#contextPath").val().trim();	
 var accountId = $("#accountId").val();	
 $("#query").click(function(){
-		window.location.href = ctx+"/com/salaryWebUser/query";
+		window.location.href = "./query";
 	})
 	
 	$("#summary").click(function(){
-		window.location.href = ctx+"/com/salaryWebUser/jumpSummary";
+		window.location.href = "./jumpSummary";
 	})
 	
 		$("#reimbursement").click(function(){
-		window.location.href = ctx+"/com/salaryWebUser/queryRe";
+		window.location.href = "./queryRe";
 	})
 	
 	$("#reset").click(function(){
@@ -41,7 +40,7 @@ $("#query").click(function(){
 	  
 	//这里为用ajax获取用户信息并进行验证，如果账户密码不匹配则登录失败，如不需要验证用户信息，这段可不写
 		 $.ajax({
-		    url : ctx+"/com/salaryWebUser/resetPassword",// 获取自己系统后台用户信息接口
+		    url : "./resetPassword",// 获取自己系统后台用户信息接口
 		    data :{"newPassword1":hex_md5(password1),"newPassword2":hex_md5(password2)},
 		    type : "POST",
 		    dataType: "json",
@@ -51,7 +50,7 @@ $("#query").click(function(){
 		    		     content: '修改成功,请重新登录!'
 		    		     ,btn: ['确认']
 		    		     ,yes: function(index){
-		    		    	 window.location.href = ctx+"/com/salaryWebUser/jumpLogin1";
+		    		    	 window.location.href = "./jumpLogin1";
 		    		     }
 		    		 })
 		        }else{

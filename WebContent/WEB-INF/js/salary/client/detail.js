@@ -1,4 +1,3 @@
-var ctx = $("#contextPath").val().trim();	
 var salaryId = $("#salaryId").val();
 var issueTime = $("#issueTime").val();
 var userId = $("#userId").val();
@@ -8,7 +7,7 @@ $(function() {
 	
 function  detail(){
 	$.ajax({
-	    url : ctx+"/com/salary/getSalaryDetail",// 获取自己系统后台用户信息接口
+	    url : "../salary/getSalaryDetail",// 获取自己系统后台用户信息接口
 	    data :{"salaryId":salaryId,"issueTime":issueTime,"userId":userId},
 	    type : "POST",
 	    dataType: "json",
@@ -101,7 +100,7 @@ function  detail(){
 			}
 //回首页
 $(".home-btn").click(function(){
-	window.location.href = ctx+"/com/salaryWebUser/jumpIndex1";
+	window.location.href = "../salaryWebUser/jumpIndex1";
 })
 function actAlert(msg){
 	 layer.open({

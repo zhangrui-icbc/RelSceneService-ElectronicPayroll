@@ -13,7 +13,6 @@
 		<link href="../../css/salary/client//summary.css" rel="stylesheet">
 	</head>
 	<body>
-	<input type="hidden" id="contextPath" name="contextPath"  value="${pageContext.request.contextPath}"/>
 	<input id="jumpUrl" type="hidden" th:value="${session.currentUrl}" />
 		<h2 class="title">汇总工资单明细</h2>
 		<img src="../../image/salary/client/home.png" class="home-btn" />
@@ -69,14 +68,6 @@
 	<script type="text/javascript" src="../../js/salary/client/summary.js"  ></script>
 	<script src="../../js/salary/client/layer.js"></script>
 	<script type="text/javascript" th:inline="javascript" > 
-	/* 	var s=$(window).height();//是滚动条高度
-//		var h=$(".company-msg").height();//是标签高度
-		var t=$(".list").offset().top;
-		console.log(s);
-		console.log(t);
-		$(".list").height(s-t-30);
-		console.log(s-t-50); */
-		
 		var ddd = new Date();
                 var day =ddd.getDate();
 
@@ -91,9 +82,5 @@
                 var datew = ddd.getFullYear()+"-"+month+"-"+day;
                 var datew = datew.toString();
 		 $(".input1").val(datew);
-		
-		
-		
-		
 	</script>
 </html>

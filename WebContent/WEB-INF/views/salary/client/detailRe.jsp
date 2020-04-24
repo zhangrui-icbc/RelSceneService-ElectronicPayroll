@@ -13,7 +13,6 @@
 		<link rel="stylesheet" href="../../css/salary/client/detail.css">
 	</head>
 	<body>
-	<input type="hidden" id="contextPath" name="contextPath"  value="${pageContext.request.contextPath}"/>
 	<input type="hidden" id="salaryId" name="salaryId"  value="${salaryId}">
 	<input type="hidden" id="issueTime" name="issueTime"  value="${issueTime}">
 	<input id="jumpUrl" type="hidden" value="${session.currentUrl}" />
@@ -40,13 +39,4 @@
 	<script src="../../js/jquery-3.2.1.min.js"></script>
 	<script src="../../js/salary/client/detailRe.js"></script>
 	<script src="../../js/salary/client/layer.js"></script>
-	<script type="text/javascript" th:inline="javascript" > 
-/* 		var s=$(window).height();//是滚动条高度
-//		var h=$(".company-msg").height();//是标签高度
-		var t=$(".list").offset().top;
-		console.log(s);
-		console.log(t);
-		$(".list").height(s-t-30);
-		console.log(s-t-50); */
-	</script>
 </html>

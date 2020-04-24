@@ -13,7 +13,6 @@
 		<link rel="stylesheet" href="../../css/salary/client/detail.css">
 	</head>
 	<body>
-	<input type="hidden" id="contextPath" name="contextPath"  value="${pageContext.request.contextPath}"/>
 	<input type="hidden" id="salaryId" name="salaryId"  value="${salaryId}">
 	<input type="hidden" id="issueTime" name="issueTime"  value="${issueTime}">
 	<input id="jumpUrl" type="hidden" value="${session.currentUrl}" />

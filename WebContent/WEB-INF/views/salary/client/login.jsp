@@ -13,7 +13,6 @@
 		<link rel="stylesheet" href="../../css/salary/client/login.css">
 	</head>
 	<body>
-	 <input type="hidden" id="contextPath" name="contextPath"  value="${pageContext.request.contextPath}"/>
 		<input id="accountId" type="hidden" th:value="${session.accountId}" />
 		<input id="jumpUrl" type="hidden" th:value="${session.currentUrl}" />
 		<!--登陆框-->

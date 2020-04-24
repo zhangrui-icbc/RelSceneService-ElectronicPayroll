@@ -16,7 +16,6 @@
 		<link rel="stylesheet" href="../../css/salary/client/index.css">
 	</head>
 	<body>
-	<input type="hidden" id="contextPath" name="contextPath"  value="${pageContext.request.contextPath}"/>
 	<input id="accountId" type="hidden" th:value="${session.accountId}" />
 	<input id="jumpUrl" type="hidden" th:value="${session.currentUrl}" />
 		<div class="btn-box">
@@ -40,7 +39,6 @@
 		<script src="../../js/salary/client/index.js"  ></script>
 		<script src="../../js/salary/md5.js"></script>
         <script type="text/javascript" th:inline="javascript" > 
-			//var ctx = [[@{/}]],page=[[${page}]],website=[[${website}]];
 				function show(){
 					$(".alert-pwd").show();
 				}

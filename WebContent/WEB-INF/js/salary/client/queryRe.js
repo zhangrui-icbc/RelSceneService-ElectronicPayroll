@@ -1,4 +1,3 @@
-var ctx = $("#contextPath").val().trim();	
 $(function() {
 		getReInfo();
 	})
@@ -8,7 +7,7 @@ $(function() {
 	 */
 	function  getReInfo(){
 		 $.ajax({
-			    url : ctx+"/com/reimbursement/getReInfo",// 获取自己系统后台用户信息接口
+			    url : "../reimbursement/getReInfo",// 获取自己系统后台用户信息接口
 			    data :{},
 			    type : "POST",
 			    dataType: "json",
@@ -56,12 +55,12 @@ $(function() {
 	 * @returns
 	 */
 	function jumpDetail(salaryId,issueTime,userId){
-		window.location.href = ctx+"/com/salaryWebUser/jumpReDetail?salaryId="+salaryId+"&&issueTime="+issueTime+"&&userId="+userId;
+		window.location.href = "../salaryWebUser/jumpReDetail?salaryId="+salaryId+"&&issueTime="+issueTime+"&&userId="+userId;
 	}
 	//回首页
 	$(".home-btn").click(function(){
 		//window.location.href = ctx+"/salaryWebUser/jumpIndex";
-		window.location.href = ctx+"/com/salaryWebUser/jumpIndex1";
+		window.location.href = "../salaryWebUser/jumpIndex1";
 	})
 	function actAlert(msg){
 		 layer.open({

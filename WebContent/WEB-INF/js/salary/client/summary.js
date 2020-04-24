@@ -1,4 +1,3 @@
-var ctx = $("#contextPath").val().trim();	
 $(function() {
 	$(".three-btn").click();
 	})
@@ -24,7 +23,7 @@ $(function() {
 		 document.getElementById("total_income").innerHTML = "0.00";
 		 document.getElementById("total_expenditure").innerHTML = "0.00";
 		$.ajax({
-		    url : ctx+"/com/salary/getSalaryInfo",// 获取自己系统后台用户信息接口
+		    url : "../salary/getSalaryInfo",// 获取自己系统后台用户信息接口
 		    data :{"startDate":startDate,"endDate":endDate},
 		    type : "POST",
 		    dataType: "json",
@@ -186,7 +185,7 @@ var this_year=year.toString()+'-'+month.toString()
 		
 		//回首页
 		$(".home-btn").click(function(){
-			window.location.href = ctx+"/com/salaryWebUser/jumpIndex1";
+			window.location.href = "../salaryWebUser/jumpIndex1";
 		})
 		
 		
