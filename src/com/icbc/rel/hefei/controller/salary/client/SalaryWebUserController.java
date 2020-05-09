@@ -1,4 +1,7 @@
 package com.icbc.rel.hefei.controller.salary.client;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -42,7 +45,6 @@ public class SalaryWebUserController {
 	private SysActivityService sysActivityService;
 	@Autowired
 	private SceneSwitchService sceneSwitchService;
-	
 	/**
 	 * 跳转工资条登录页面
 	 * @return
@@ -59,6 +61,7 @@ public class SalaryWebUserController {
 		info.setPublicNumberId(sysActivityInfo.getMpId());
 		info = PublicNumberInfoService.FetchPubAddrInfo(info);
 		SceneSwitch sceneSwitch =  sceneSwitchService.selectByScene("salary");
+		String mpid = sysActivityInfo.getMpId();
 		if(sceneSwitch.getStatus()==1) {
 			logger.info("工资单场景全部可见");
 		    return  "salary/client/login";	
@@ -66,8 +69,13 @@ public class SalaryWebUserController {
 			logger.info("工资单场景已关闭");
 			return  "empty";
 		}else {
+			List<String> idList = new ArrayList<String>();
+			idList.add("10087544");
+			idList.add("10103441");
 			logger.info("工资单场景部分可见");
-			if(!sceneSwitch.getVisibleAreas().contains(info.getStru_ID())) {
+			if(idList.contains(mpid)){
+				return  "salary/client/login";
+			}else if(!sceneSwitch.getVisibleAreas().contains(info.getStru_ID())) {
 				return  "empty";
 			}else {
 			    return  "salary/client/login";	
