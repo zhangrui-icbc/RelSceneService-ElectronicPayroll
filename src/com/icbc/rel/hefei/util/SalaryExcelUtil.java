@@ -279,7 +279,8 @@ public class SalaryExcelUtil {
 			// 获得当前sheet的结束行
 			int lastRowNum = sheet.getPhysicalNumberOfRows();
 			int lastCellNum=0;
-			lastCellNum = sheet.getRow(1).getPhysicalNumberOfCells();
+//			lastCellNum = sheet.getRow(1).getPhysicalNumberOfCells();
+			lastCellNum = sheet.getRow(0).getPhysicalNumberOfCells();
 			// 循环除了第一行的所有行
 			for (int rowNum = firstRowNum; rowNum <= lastRowNum; rowNum++) {
 				// 获得当前行

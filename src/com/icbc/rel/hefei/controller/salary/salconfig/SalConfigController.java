@@ -1,6 +1,7 @@
 package com.icbc.rel.hefei.controller.salary.salconfig;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -118,8 +119,15 @@ public class SalConfigController {
 			mav.addObject("activityUid","\""+activityUid+"\"");
 			mav.setViewName("salary/salReim");
 		}else {
+			List<String> idList = new ArrayList<String>();
+			idList.add("10087544");
+			idList.add("10103441");
 			if(!sceneSwitch.getVisibleAreas().contains(paramStruId)) {
 				mav.setViewName("notOpen");
+			}else if(idList.contains(info.getPublicNumberId())){
+				mav.addObject("flag", flag);
+				mav.addObject("activityUid","\""+activityUid+"\"");
+				mav.setViewName("salary/salReim");
 			}else {
 				mav.addObject("flag", flag);
 				mav.addObject("activityUid","\""+activityUid+"\"");

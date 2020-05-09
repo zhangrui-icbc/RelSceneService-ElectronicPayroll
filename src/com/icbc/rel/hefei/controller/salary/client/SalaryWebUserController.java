@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.icbc.rel.hefei.entity.SceneSwitch;
 import com.icbc.rel.hefei.entity.SysActivityInfo;
 import com.icbc.rel.hefei.entity.SysPublicNumberInfo;
@@ -34,6 +35,7 @@ import com.icbc.rel.hefei.util.SessionUtil;
 @RequestMapping("/com")
 @Controller
 public class SalaryWebUserController {
+	private static Logger logger = Logger.getLogger(SalaryWebUserController.class);
 	@Autowired
 	private SalaryWebUserService salaryWebUserService;
 	@Autowired
@@ -58,17 +60,16 @@ public class SalaryWebUserController {
 		info = PublicNumberInfoService.FetchPubAddrInfo(info);
 		SceneSwitch sceneSwitch =  sceneSwitchService.selectByScene("salary");
 		if(sceneSwitch.getStatus()==1) {
-			String openId = (String) request.getSession().getAttribute(SessionParamConstant.SESSION_PARAM_USERKEY);
-			SalaryUser user = salaryWebUserService.getUserByOpenId(activityUid,openId);
-			request.getSession().setAttribute("user", user);
+			logger.info("工资单场景全部可见");
 		    return  "salary/client/login";	
+		}else if(sceneSwitch.getStatus()==-1){
+			logger.info("工资单场景已关闭");
+			return  "empty";
 		}else {
+			logger.info("工资单场景部分可见");
 			if(!sceneSwitch.getVisibleAreas().contains(info.getStru_ID())) {
 				return  "empty";
 			}else {
-				String openId = (String) request.getSession().getAttribute(SessionParamConstant.SESSION_PARAM_USERKEY);
-				SalaryUser user = salaryWebUserService.getUserByOpenId(activityUid,openId);
-				request.getSession().setAttribute("user", user);
 			    return  "salary/client/login";	
 			}
 		}
@@ -150,15 +151,16 @@ public class SalaryWebUserController {
     public AjaxResult login(HttpServletRequest request, String password){
     	String IMUserId=SessionUtil.getImUserId(request.getSession()); //正确的获取openid方式
 //    	String IMUserId="123";
+    	logger.info("用户的openid为："+IMUserId);
 		//拉取用户详情
 		UserDetailInfo userinfo=ImUserService.FetchUserInfo(IMUserId);
+		logger.info("拉取用户详情为："+JSON.toJSON(userinfo));
 		String username = userinfo.getMobileNo();
-		//TODO 这步骤不对,万一场景删除了不存在了,就有问题了,待改
 		String  companyId = (String) request.getSession().getAttribute(SessionParamConstant.SESSION_PARAM_COMPANYID);
     	if(StringUtils.isEmpty(password)) {
+    		logger.error("密码为空,请检查后重新输入");
     		return AjaxResult.error("密码为空,请检查后重新输入");
     	}else {
-    		//TODO IMUserId即openid问题  是否要加一个公司id参数(场景id)
     		AjaxResult ajaxResult = salaryWebUserService.login(username,password,companyId,IMUserId);
     		int code = (int) ajaxResult.get("code");
     		if(code!=0) {
@@ -178,10 +180,12 @@ public class SalaryWebUserController {
     @ResponseBody
     public AjaxResult resetPassword(HttpServletRequest request,String newPassword1,String newPassword2){
     	 if(!newPassword1.equals(newPassword2)) {
+    		logger.error("新密码两次输入不一致!,请检查后重新输入");
     		return AjaxResult.error("新密码两次输入不一致!,请检查后重新输入");
     	}else {
     		SalaryUser user =  (SalaryUser) request.getSession().getAttribute("user");
 			if(user.getPassword().equals(newPassword1)) {
+				logger.error("新密码不能与旧密码一致,请重新输入");
 				return AjaxResult.error("新密码不能与旧密码一致,请重新输入");
 			}
 			return salaryWebUserService.resetPassword(user.getMobile(),newPassword1);

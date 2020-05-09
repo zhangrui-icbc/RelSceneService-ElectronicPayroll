@@ -7,12 +7,14 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.ibm.math.BigDecimal;
+import com.icbc.rel.hefei.controller.salary.client.SalaryWebUserController;
 import com.icbc.rel.hefei.dao.salary.client.SalaryWebMapper;
 import com.icbc.rel.hefei.entity.salary.client.SalaryImportVO;
 import com.icbc.rel.hefei.entity.salary.client.SalaryVO;
@@ -26,6 +28,7 @@ import com.icbc.rel.hefei.service.salary.client.service.SalaryWebService;
 @Transactional
 @Service
 public class SalaryWebServiceImpl implements SalaryWebService {
+	private static Logger logger = Logger.getLogger(SalaryWebServiceImpl.class);
 	@Autowired
 	SalaryWebMapper salaryWebMapper;
 	    
@@ -34,6 +37,7 @@ public class SalaryWebServiceImpl implements SalaryWebService {
 	 */
 	@Override
 	public List<SalaryVO> getSalaryInfo(Map<String, Object> paramsMap) {
+		logger.info("获取工资信息 ");
 		String startDate = (String) paramsMap.get("startDate");
 		String endDate = (String) paramsMap.get("endDate");
 		List<SalaryVO> list  = new ArrayList<SalaryVO>();
@@ -72,6 +76,7 @@ public class SalaryWebServiceImpl implements SalaryWebService {
 	 */
 	@Override
 	public List<SalaryImportVO> getSalaryInfoList(Map<String, Object> paramsMap) {
+		logger.info("查询工资信息/汇总 ");
 		String startDate = (String) paramsMap.get("startDate");
 		String endDate = (String) paramsMap.get("endDate");
 		List<SalaryImportVO> list  = new ArrayList<SalaryImportVO>();

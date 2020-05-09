@@ -33,7 +33,7 @@ public class ImUserService {
 		if (SystemConfigUtil.isDebug) {
 			if (imUserId.equals("123")) {
 				userDetail.setImUserId("123");
-				userDetail.setMobileNo("15056938758");
+				userDetail.setMobileNo("18888888001");
 			}else if(imUserId.equals("456")) {
 				userDetail.setImUserId("456");
 				userDetail.setMobileNo("13546987452");

@@ -91,10 +91,13 @@ public class SalaryController {
 	 * @return
 	 * @throws Exception 
 	 */
-    @RequestMapping(value="/salary/uploadSalary")
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value="/salary/uploadSalary")
     @ResponseBody
     public AjaxResult uploadSalary(HttpServletRequest request) throws Exception{
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
+    	List<Long> mobileList = new ArrayList<Long>();
+    	Map<String,Object> map = new HashMap<String,Object>();
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
     	}
@@ -112,13 +115,15 @@ public class SalaryController {
 			if(nameList.contains(excelName)) {
 				return AjaxResult.error("名称为\""+excelName+"\"的excel已经上传。");
 			}
-			
 		}
 		AjaxResult ajaxResult;
 		try {
 			ajaxResult =salaryService.uploadSalary1(to.getValue(), companyId);
+			map = (Map<String, Object>) ajaxResult.get("data");
 			int code = (int) ajaxResult.get("code");
 			if(code==0) {
+	    		List<ErrorInfo> list = (List<ErrorInfo>) map.get("errorSalaryList");
+	    		request.getSession().setAttribute("errorSalaryList", list);
 				String mpId=SessionUtil.getMpId(request.getSession());
 				anaylsisXmlUtil t=new anaylsisXmlUtil(); 
 				logger.info("群发图文消息接口------------");
@@ -128,6 +133,8 @@ public class SalaryController {
 				String title = "薪资消息";//图文消息显示的标题
 				String picurl = domainUrl + "RelSceneService/image/salary/salary/salary.png";//图文消息的图片地址
 				String url = domainUrl + "RelSceneService/com/salaryWebUser/jumpLogin?activityUid="+companyId+"&67f977b1ad597511737fff13a2909c1614c41391=0";//图文消息的正文链接
+				//上传员工手机号码集合
+				mobileList = (List<Long>) map.get("mobileList");
 				JSONObject picMessage = MessageHelper.getPicArticlesForHF005(title, picurl, url);
 				content = picMessage.toString();
 				fanalXmlStr = t.makeXmlByHf005(mpId, "1","","", "news", content);
@@ -145,12 +152,13 @@ public class SalaryController {
 						i++;
 					}
 				}
-			}
-	    	if (code!=500) {
-	    		Map<String,Object> map = (Map<String, Object>) ajaxResult.get("data");
+			}else if(code!=500){
 	    		List<ErrorInfo> list = (List<ErrorInfo>) map.get("errorSalaryList");
 	    		request.getSession().setAttribute("errorSalaryList", list);
-	    	}
+			}else {//500
+				String msString = (String)ajaxResult.get("msg");
+				return AjaxResult.error(msString);
+			}
 			return ajaxResult;
 		} catch (NullPointerException e) {
 			e.printStackTrace();
@@ -167,7 +175,8 @@ public class SalaryController {
 	 * @return
 	 * @throws Exception 
 	 */
-    @RequestMapping(value="/salary/uploadStaff")
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value="/salary/uploadStaff")
     @ResponseBody
     public AjaxResult uploadStaff(HttpServletRequest request,HttpServletResponse response) throws Exception{
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
@@ -207,7 +216,8 @@ public class SalaryController {
   * @param request
   * @param response
   */
-    @RequestMapping("/salary/exportErrPhone")
+    @SuppressWarnings("unchecked")
+	@RequestMapping("/salary/exportErrPhone")
     public void exportErrPhone(HttpServletRequest request,HttpServletResponse response){
     	List<SalaryStaff> list =  (List<SalaryStaff>) request.getSession().getAttribute("errList");
     	salaryService.exportErrPhone(request,response,list);

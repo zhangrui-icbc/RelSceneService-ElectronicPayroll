@@ -652,8 +652,8 @@ $(".clear").click(function(){
 	html1+="<span data-id='1' data-category='11' data-type='实际收入' data-name='实际收入' >实际收入</span>";
 	html1+="<span data-id='2' data-category='22' data-type='收入合计' data-name='收入合计' >收入合计</span>";
 	html1+="<span data-id='3' data-category='33' data-type='支出合计' data-name='支出合计' >支出合计</span>";
-	html1+="<span data-id='4' data-category='44' data-type='专项附加扣除' data-name='专项附加扣除' >专项附加扣除</span>";
-	html1+="<span data-id='5' data-category='55' data-type='单位支出' data-name='单位支出' >单位支出</span>";
+/*	html1+="<span data-id='4' data-category='44' data-type='专项附加扣除' data-name='专项附加扣除' >专项附加扣除</span>";
+	html1+="<span data-id='5' data-category='55' data-type='单位支出' data-name='单位支出' >单位支出</span>";*/
 	html1+="<span data-id='6' data-category='66' data-type='备注' data-name='备注' >备注</span>";
 	$(".DIY").html(html1);
 })
@@ -1011,6 +1011,9 @@ function salType(type){
 	       break;
 	    case 4:
 	        return	"专项附加扣除"
+	          break;
+	    case 5:
+	        return	"单位支出"
 	          break;
 	    default:
 	    return  "汇总项";

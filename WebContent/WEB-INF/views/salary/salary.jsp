@@ -81,6 +81,7 @@
 					            <option value="1">收入</option>
 					            <option value="2">支出</option>
 					            <option value="4">专项附加扣除</option>
+					            <option value="5">单位支出</option>
 					        </select>
 					        <span class="mr-selector" style="margin-right: 10%;">收入</span>
 					        <span class="arrow"></span>
@@ -88,6 +89,7 @@
 					            <li>收入</li>
 					            <li>支出</li>
 					            <li>专项附加扣除</li>
+					            <li>单位支出</li>
 					        </ul>
 					    </div>
 	            		<a href="##" class="add-btn btn2" style="margin-left: 4%;">确定提交</a>

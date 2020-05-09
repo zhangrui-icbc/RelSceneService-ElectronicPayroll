@@ -47,13 +47,14 @@ function  detail(){
 			 	      }
 //			 	      备注
 			 	      if(category==66){
-			 	       txt="<p><span>"+list.templateColName+"</span>&nbsp;<span>"+list.importAmount+"</span></p>";
+			 	       var remark = list.importAmount.replace(/。/g,"。<br>");
+			 	       txt="<p><span style='float: left;'>"+list.templateColName+"</span>&nbsp;<span>"+remark+"</span></p>";
 			 	       $(".list-box").eq(5).prepend(txt);
 			 	       
 			 	          }
 			 	      
 			 	     var str = $(".list-box").eq(3).children().length;
-			 	    
+			 	     var str2 = $(".list-box").eq(4).children().length;
 			 	      if(category==1){
 			 	       $(".list-box").eq(1).append(txt); 
 			 	      }
@@ -67,15 +68,18 @@ function  detail(){
 			 	    	  $(".list-box").eq(3).append(txt)
 			 	      }
 			 	    if(category==5){
-			 	    	  $(".list-box").eq(5).append(txt)
-			 	      }
-			 	    var str2 = $(".list-box").eq(4).children().length;
-			 	    if(category==6){
 			    		if(str2==0){
 			    			$(".list-box").eq(4).hide();
 			    		}
 			 	    	  $(".list-box").eq(4).append(txt)
 			 	      }
+	/*			 	    var str2 = $(".list-box").eq(4).children().length;
+				 	    if(category==6){
+				    		if(str2==0){
+				    			$(".list-box").eq(4).hide();
+				    		}
+				 	    	  $(".list-box").eq(4).append(txt)
+				 	      }*/
 					}
 		        
 		        	//循环外
@@ -85,11 +89,11 @@ function  detail(){
 		    		if(str2==0){
 		    			$(".list-box").eq(4).hide();
 		    		}
-		    		
-		        	var str1 = $(".list-box").eq(5).children().length;
+		    		//备注没选，隐藏页面元素
+/*		        	var str1 = $(".list-box").eq(5).children().length;
 		    		if(str1==0){
 		    			$(".list-box").eq(5).hide();
-		    		}
+		    		}*/
 		        } else {
 		            return false;
 		          }

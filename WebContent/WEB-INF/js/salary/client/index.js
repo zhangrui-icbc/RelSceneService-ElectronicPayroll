@@ -69,12 +69,12 @@ $("#query").click(function(){
  * @returns
  */
 function trans (str) {
-	  let before = ''
-	  let len = 0
-	  let order = null
-	  let matched = []
-	  for (let i = 0, length = str.length; i < length; i++) {
-	    let cur = str[i]
+	  var before = ''
+	  var len = 0
+	  var order = null
+	  var matched = []
+	  for (var i = 0, length = str.length; i < length; i++) {
+	    var cur = str[i]
 	    if (len === 0) {
 	      before = cur
 	      len = 1
@@ -82,7 +82,7 @@ function trans (str) {
 	      continue
 	    }
 
-	    let diff = cur.charCodeAt(0) - before.charCodeAt(0)
+	    var diff = cur.charCodeAt(0) - before.charCodeAt(0)
 	    if (Math.abs(diff) === 1) {
 	      order = order || diff
 	      if (order === diff) {

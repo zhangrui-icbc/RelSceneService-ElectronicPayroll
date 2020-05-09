@@ -264,11 +264,11 @@ public class SalaryServiceImpl implements SalaryService {
 	        List<Long> mobileList = new ArrayList<Long>();
 	        hwb = new HSSFWorkbook(new FileInputStream(file));
 	        List<String[]> data = SalaryExcelUtil.ReadExcel(hwb, 0);
-	        if((data.get(0).length-2)!=templateList.size()) {
+	        if((data.get(0).length-2)!=templateList.size()) {//标头列数判断
 	        	return AjaxResult.error("上传文件内容格式不正确！");
 	        }else {
 		        for (int i = 0; i < (data.get(0).length-2); i++) {
-					if(!data.get(0)[i+2].equals(templateList.get(i).getName())) {
+					if(!data.get(0)[i+2].equals(templateList.get(i).getName())) {//标头文字判断
 						return AjaxResult.error("上传文件内容格式不正确！123");
 					}
 				}
@@ -288,29 +288,42 @@ public class SalaryServiceImpl implements SalaryService {
 			//根据excel的行数循环
 			for(int i = 1;i< data.size();i++){
 				ErrorInfo eInfo  = new  ErrorInfo();
+				String mbl = data.get(i)[0];
+				if (StringUtils.isEmpty(mbl)) {
+					return AjaxResult.error("第"+i+"行手机号为空，请填写后重新上传！");
+				}
 				long mobile = Long.valueOf(data.get(i)[0]);
 				if(mobileList.contains(mobile)) {
 					eInfo.setMobile(String.valueOf(mobile));
 					eInfo.setReason("重复手机号码！");
 					errorSalaryList.add(eInfo);
 					continue;
+				}else if(!MobileUtil.checkGeneralPhone(mbl)){
+					eInfo.setMobile(String.valueOf(mobile));
+					eInfo.setReason("手机号码格式不正确！");
+					errorSalaryList.add(eInfo);
+					continue;
 				}else {
 					mobileList.add(mobile);
 			 }
-			boolean flag = checkStaffIsExist(staffMobList,mobile);
+/*			boolean flag = checkStaffIsExist(staffMobList,mobile);
 			if(flag) {
 				eInfo.setMobile(String.valueOf(mobile));
 				eInfo.setReason("不存在该手机号码的关联员工信息！");
 				errorSalaryList.add(eInfo);
 				continue;
-			}
+			}*/
 				
 			//根据模板信息去取想要的信息
 			for(int j=0;j<templateList.size();j++) {
 				SalaryImport oaSalaryImport =new  SalaryImport();
 				//列号
 				int colIndex = templateList.get(j).getColIndex();
-				oaSalaryImport.setImportAmount(data.get(i)[colIndex]);//具体值
+				String  value = data.get(i)[colIndex];
+				if(!data.get(0)[colIndex].equals("备注")&&StringUtils.isEmpty(value)) {
+					value="0";
+				}
+				oaSalaryImport.setImportAmount(value);//具体值
 				oaSalaryImport.setTemplateColName(data.get(0)[colIndex]);//名称
 				oaSalaryImport.setSalaryItemId(j);//元素id
 				oaSalaryImport.setTemplateId(templateList.get(j).getCompanyId());//公司id与模板id一致
@@ -324,6 +337,7 @@ public class SalaryServiceImpl implements SalaryService {
 	        oaSalary.setImportList(oaSalaryImportList);
 	 		resultMap.put("errorSalaryList" , errorSalaryList);
 	 		resultMap.put("oaSalary" , oaSalary);
+	 		resultMap.put("mobileList" , mobileList);
 	 		int rightRowsCount = oaSalaryImportList.size()/templateList.size();
 	 		if(oaSalaryImportList!=null&&oaSalaryImportList.size()>0) {
 	 			return AjaxResult.success("本次上传成功"+rightRowsCount+"条记录。",resultMap);

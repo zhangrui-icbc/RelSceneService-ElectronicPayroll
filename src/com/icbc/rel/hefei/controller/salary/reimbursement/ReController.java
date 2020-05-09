@@ -68,9 +68,12 @@ public class ReController {
 	 * @return
 	 * @throws Exception 
 	 */
-    @RequestMapping(value="/reimbursement/uploadRe")
+    @SuppressWarnings("unchecked")
+	@RequestMapping(value="/reimbursement/uploadRe")
     @ResponseBody
     public AjaxResult uploadSalary(HttpServletRequest request) throws Exception{
+    	List<Long> mobileList = new ArrayList<Long>();
+    	Map<String,Object> map = new HashMap<String,Object>();
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
@@ -94,8 +97,11 @@ public class ReController {
     	AjaxResult ajaxResult;
 		try {
 			ajaxResult =reService.uploadRe1(to.getValue(), companyId);
+			map = (Map<String, Object>) ajaxResult.get("data");
 			int code = (int) ajaxResult.get("code");
 			if(code==0) {
+				List<ErrorInfo> list = (List<ErrorInfo>) map.get("errorReList");
+	    		request.getSession().setAttribute("errorReList", list);
 				String mpId=SessionUtil.getMpId(request.getSession());
 				anaylsisXmlUtil t=new anaylsisXmlUtil(); 
 				logger.info("群发图文消息接口示例");
@@ -105,6 +111,8 @@ public class ReController {
 				String title = "报销消息";//图文消息显示的标题
 				String picurl = domainUrl + "RelSceneService/image/salary/reimbursement/reimbursement.png";//图文消息的图片地址
 				String url = domainUrl + "RelSceneService/com/salaryWebUser/jumpLogin?activityUid="+companyId+"&67f977b1ad597511737fff13a2909c1614c41391=0";//图文消息的正文链接
+				//上传员工手机号码集合
+				mobileList = (List<Long>) map.get("mobileList");
 				JSONObject picMessage = MessageHelper.getPicArticlesForHF005(title, picurl, url);
 				content = picMessage.toString();
 				fanalXmlStr = t.makeXmlByHf005(mpId, "1", "","", "news", content);
@@ -122,12 +130,13 @@ public class ReController {
 						i++;
 					}
 				}
-			}
-	    	if (code!=500) {
-	    		Map<String,Object> map = (Map<String, Object>) ajaxResult.get("data");
-	    		List<ErrorInfo> list = (List<ErrorInfo>) map.get("errorReList");
+			}else if(code!=500){
+				List<ErrorInfo> list = (List<ErrorInfo>) map.get("errorReList");
 	    		request.getSession().setAttribute("errorReList", list);
-	    	}
+			}else {//500
+				String msString = (String)ajaxResult.get("msg");
+				return AjaxResult.error(msString);
+			}
 			return ajaxResult;
 		} catch (NullPointerException e) {
 			e.printStackTrace();

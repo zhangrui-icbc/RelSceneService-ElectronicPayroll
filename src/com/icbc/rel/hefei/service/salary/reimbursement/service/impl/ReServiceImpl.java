@@ -59,6 +59,7 @@ import com.icbc.rel.hefei.entity.salary.reimbursement.Reimbursement;
 import com.icbc.rel.hefei.service.salary.reimbursement.service.ReService;
 import com.icbc.rel.hefei.util.DateUtils;
 import com.icbc.rel.hefei.util.ExcelUtil;
+import com.icbc.rel.hefei.util.MobileUtil;
 import com.icbc.rel.hefei.util.SalaryExcelUtil;
 import com.icbc.rel.hefei.util.SessionParamConstant;
 import com.icbc.rel.hefei.util.UUIDUtils;
@@ -203,28 +204,41 @@ public class ReServiceImpl implements ReService {
 			    //根据excel的行数循环
 			    for(int i = 1;i< data.size();i++){
 			    	ErrorInfo eInfo  = new  ErrorInfo();
-			    	long mobile = Long.valueOf(data.get(i)[0]);
+					String mbl = data.get(i)[0];
+					if (StringUtils.isEmpty(mbl)) {
+						return AjaxResult.error("第"+i+"行手机号为空，请填写后重新上传！");
+					}
+			    	long mobile = Long.valueOf(mbl);
 					if(mobileList.contains(mobile)) {
 						eInfo.setMobile(String.valueOf(mobile));
 						eInfo.setReason("重复手机号码！");
 						errorReList.add(eInfo);
 						continue;
+					}else if(!MobileUtil.checkGeneralPhone(mbl)){
+						eInfo.setMobile(String.valueOf(mobile));
+						eInfo.setReason("手机号码格式不正确！");
+						errorReList.add(eInfo);
+						continue;
 					}else {
 						mobileList.add(mobile);
 					}
-					boolean flag = checkStaffIsExist(staffMobList,mobile);
+/*					boolean flag = checkStaffIsExist(staffMobList,mobile);
 					if(flag) {  
 						eInfo.setMobile(String.valueOf(mobile));
 						eInfo.setReason("不存在该手机号码的关联员工信息！");
 						errorReList.add(eInfo);
 						continue;
-					}
+					}*/
 			    	//根据模板信息去取想要的信息
 			    	for(int j=0;j<templateList.size();j++) {
 			    		ReImport oaReImport =new  ReImport();
 			    		//列号
 			    		int colIndex = templateList.get(j).getColIndex();
-			    		oaReImport.setImportAmount(data.get(i)[colIndex]);//具体值
+						String  value = data.get(i)[colIndex];
+						if(StringUtils.isEmpty(value)) {
+							value="0";
+						}
+			    		oaReImport.setImportAmount(value);//具体值
 			    		oaReImport.setTemplateColName(data.get(0)[colIndex]);//名称
 			    		oaReImport.setReimbursementItemId(j);//元素id
 			    		oaReImport.setTemplateId(templateList.get(j).getCompanyId());//公司id与模板id一致
@@ -238,6 +252,7 @@ public class ReServiceImpl implements ReService {
 			    oaRe.setImportList(oaReImportList);
 		 		resultMap.put("errorReList" , errorReList);
 		 		resultMap.put("reimbursement" , oaRe);
+		 		resultMap.put("mobileList" , mobileList);
 		 		int rightRowsCount = oaReImportList.size()/templateList.size();
 		 		if(oaReImportList!=null&&oaReImportList.size()>0) {
 		 			return AjaxResult.success("本次上传成功"+rightRowsCount+"条记录。",resultMap);    
