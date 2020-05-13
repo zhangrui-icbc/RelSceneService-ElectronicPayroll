@@ -91,7 +91,7 @@ public class SalaryController {
 	 * @return
 	 * @throws Exception 
 	 */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "unused" })
 	@RequestMapping(value="/salary/uploadSalary")
     @ResponseBody
     public AjaxResult uploadSalary(HttpServletRequest request) throws Exception{

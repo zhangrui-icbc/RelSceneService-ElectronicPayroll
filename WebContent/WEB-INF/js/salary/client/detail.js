@@ -50,8 +50,7 @@ function  detail(){
 			 	       var remark = list.importAmount.replace(/。/g,"。<br>");
 			 	       txt="<p><span style='float: left;'>"+list.templateColName+"</span>&nbsp;<span>"+remark+"</span></p>";
 			 	       $(".list-box").eq(5).prepend(txt);
-			 	       
-			 	          }
+			 	       }
 			 	      
 			 	     var str = $(".list-box").eq(3).children().length;
 			 	     var str2 = $(".list-box").eq(4).children().length;

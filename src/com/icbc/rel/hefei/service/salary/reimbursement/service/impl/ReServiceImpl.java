@@ -180,11 +180,11 @@ public class ReServiceImpl implements ReService {
 				hwb = new HSSFWorkbook(new FileInputStream(file));
 				List<String[]> data = SalaryExcelUtil.ReadExcel(hwb, 0);
 		        if((data.get(0).length-2)!=templateList.size()) {
-		        	return AjaxResult.error("上传文件内容格式不正确！");
+		        	return AjaxResult.error("请下载最新报销单模板后重新上传！");
 		        }else {
 			        for (int i = 0; i < (data.get(0).length-2); i++) {
 						if(!data.get(0)[i+2].equals(templateList.get(i).getName())) {
-							return AjaxResult.error("上传文件内容格式不正确！123");
+							return AjaxResult.error("请下载最新报销单模板后重新上传！");
 						}
 					}
 		        }
