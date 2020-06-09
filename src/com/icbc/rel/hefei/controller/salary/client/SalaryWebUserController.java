@@ -157,13 +157,24 @@ public class SalaryWebUserController {
     @RequestMapping(value="/salaryWebUser/login",method = RequestMethod.POST)
     @ResponseBody
     public AjaxResult login(HttpServletRequest request, String password){
+    	UserDetailInfo userinfo= new UserDetailInfo();
+    	String username="";
     	String IMUserId=SessionUtil.getImUserId(request.getSession()); //正确的获取openid方式
 //    	String IMUserId="123";
     	logger.info("用户的openid为："+IMUserId);
 		//拉取用户详情
-		UserDetailInfo userinfo=ImUserService.FetchUserInfo(IMUserId);
+    	try {
+    		userinfo = ImUserService.FetchUserInfo(IMUserId);
+    		username = userinfo.getMobileNo();
+    		if(StringUtils.isEmpty(username)) {
+    			logger.error("拉取用户详情失败！");
+    			return AjaxResult.error("拉取用户详情失败！");
+    		}	
+		} catch (Exception e) {
+			logger.error("拉取用户详情失败！");
+			return AjaxResult.error("拉取用户详情失败！");
+		}
 		logger.info("拉取用户详情为："+JSON.toJSON(userinfo));
-		String username = userinfo.getMobileNo();
 		String  companyId = (String) request.getSession().getAttribute(SessionParamConstant.SESSION_PARAM_COMPANYID);
     	if(StringUtils.isEmpty(password)) {
     		logger.error("密码为空,请检查后重新输入");
