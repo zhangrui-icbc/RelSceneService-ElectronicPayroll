@@ -32,8 +32,8 @@ public class SalaryWebUserServiceImpl implements SalaryWebUserService {
 				return AjaxResult.success("登录成功", salaryUser);
 			}else {
 				logger.error("登录失败，用户不存在或者密码不正确！");
+				return AjaxResult.error("请检查密码是否正确或切换网络重新登录！");
 			}
-		return AjaxResult.error("请检查密码是否正确或切换网络重新登录！");
 
 		
 	}
