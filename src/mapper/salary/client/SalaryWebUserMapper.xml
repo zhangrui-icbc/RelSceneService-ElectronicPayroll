@@ -5,7 +5,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.icbc.rel.hefei.dao.salary.client.SalaryWebUserMapper">
 				  
 	<select id="login"    resultType="com.icbc.rel.hefei.entity.salary.client.SalaryUser">
-		select id,mobile,password,company_id as companyId, openId as openId from  salary_user where mobile = #{username} and password =#{password} and company_id =#{companyId}
+		select id,mobile,password,company_id as companyId, openId as openId from  salary_user where mobile = #{username}  and company_id =#{companyId}
  	</select>
  	
 	<update id="resetPassword">
