@@ -20,20 +20,21 @@ public class SalaryWebUserServiceImpl implements SalaryWebUserService {
 	private SalaryWebUserMapper salaryWebUserMapper;
 	@Override
 	public AjaxResult login(String username, String password,String companyId, String iMUserId) {
-		logger.info("username:"+username+",password:"+password+",companyId:"+companyId+",iMUserId:"+iMUserId);
-		SalaryUser salaryUser = salaryWebUserMapper.login(username,password,companyId);
-		if(salaryUser!=null) {
-			//判断是否插入opendid
-			if(StringUtils.isEmpty(salaryUser.getOpenId())) {//不存在openid
-				salaryUser.setOpenId(iMUserId);
-				salaryWebUserMapper.saveUserKey(username,iMUserId, companyId);;
+			logger.info("username:"+username+",password:"+password+",companyId:"+companyId+",iMUserId:"+iMUserId);
+			SalaryUser salaryUser = salaryWebUserMapper.login(username,password,companyId);
+			if(salaryUser!=null) {
+				//判断是否插入opendid
+				if(StringUtils.isEmpty(salaryUser.getOpenId())) {//不存在openid
+					salaryUser.setOpenId(iMUserId);
+					salaryWebUserMapper.saveUserKey(username,iMUserId, companyId);;
+				}
+				logger.info("登录成功");
+				return AjaxResult.success("登录成功", salaryUser);
+			}else {
+				logger.error("登录失败，用户不存在或者密码不正确！");
 			}
-			logger.info("登录成功");
-			return AjaxResult.success("登录成功", salaryUser);
-		}else {
-			logger.error("登录失败，用户不存在或者密码不正确！");
-			return AjaxResult.error("请检查密码是否正确或切换网络重新登录！");
-		}
+		return AjaxResult.error("请检查密码是否正确或切换网络重新登录！");
+
 		
 	}
 	@Override

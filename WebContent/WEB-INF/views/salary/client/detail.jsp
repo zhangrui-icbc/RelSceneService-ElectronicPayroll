@@ -15,7 +15,6 @@
 	<body>
 	<input type="hidden" id="salaryId" name="salaryId"  value="${salaryId}">
 	<input type="hidden" id="issueTime" name="issueTime"  value="${issueTime}">
-	<input id="jumpUrl" type="hidden" value="${session.currentUrl}" />
 	<input type="hidden" id="userId" name="userId"  value="${userId}">
 		<h2 class="title">工资单明细</h2>
 		<img src="../../image/salary/client/home.png" class="home-btn" />

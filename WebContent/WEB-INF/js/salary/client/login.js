@@ -7,7 +7,7 @@
 	  }
 	//这里为用ajax获取用户信息并进行验证，如果账户密码不匹配则登录失败，如不需要验证用户信息，这段可不写
 	 $.ajax({
-	    url : "./login/"+$("#accountId").val(),// 获取自己系统后台用户信息接口
+	    url : "./login",// 获取自己系统后台用户信息接口
 	    data :{"password":hex_md5(password)},
 	    type : "POST",
 	    dataType: "json",
@@ -18,7 +18,10 @@
 	        	  actAlert(data.msg);
 	          }
 	      },
-	      error : function(data){
+	      error : function(XMLHttpRequest, textStatus, errorThrown){
+	    	  alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
+	    	  alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
+	    	  alert("textStatus:"+textStatus);
 	    	  actAlert("网络错误!");
 	      }
 	  });

@@ -161,6 +161,10 @@ public class SalaryWebUserController {
     	String username="";
     	String IMUserId=SessionUtil.getImUserId(request.getSession()); //正确的获取openid方式
 //    	String IMUserId="123";
+    	if(StringUtils.isEmpty(IMUserId)) {
+			logger.error("session失效,获取IMUserId失败！");
+			return AjaxResult.error("页面失效,请重新进入！");
+    	}
     	logger.info("用户的openid为："+IMUserId);
 		//拉取用户详情
     	try {

@@ -13,7 +13,6 @@
 		<link href="../../css/salary/client//summary.css" rel="stylesheet">
 	</head>
 	<body>
-	<input id="jumpUrl" type="hidden" th:value="${session.currentUrl}" />
 		<h2 class="title">汇总工资单明细</h2>
 		<img src="../../image/salary/client/home.png" class="home-btn" />
 		<div class="btn-div">

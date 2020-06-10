@@ -13,8 +13,6 @@
 		<link rel="stylesheet" href="../../css/salary/client/login.css">
 	</head>
 	<body>
-		<input id="accountId" type="hidden" th:value="${session.accountId}" />
-		<input id="jumpUrl" type="hidden" th:value="${session.currentUrl}" />
 		<!--登陆框-->
 		<!-- <img th:src="@{/oa/salary/images/back.png}" /> -->
         <div class="g-shade">

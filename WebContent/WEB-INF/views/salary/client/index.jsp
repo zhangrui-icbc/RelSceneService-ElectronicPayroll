@@ -16,8 +16,6 @@
 		<link rel="stylesheet" href="../../css/salary/client/index.css">
 	</head>
 	<body>
-	<input id="accountId" type="hidden" th:value="${session.accountId}" />
-	<input id="jumpUrl" type="hidden" th:value="${session.currentUrl}" />
 		<div class="btn-box">
 			<button class="btn"  id="query"><img src="../../image/salary/client/xinzi-btn.png" /></button>
 			<button class="btn" id="summary"><img src="../../image/salary/client/huizong-btn.png" /></button>

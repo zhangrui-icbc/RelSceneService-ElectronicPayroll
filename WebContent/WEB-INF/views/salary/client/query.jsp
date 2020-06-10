@@ -13,7 +13,6 @@
 		<link href="../../css/salary/client/query.css" rel="stylesheet">
 	</head>
 	<body>
-	<input id="jumpUrl" type="hidden" th:value="${session.currentUrl}" />
 		<h2 class="title">工资单查询<span class="fl-r" ></span></h2>
 		<img src="../../image/salary/client/home.png" class="home-btn" />
 		<p class="list-title">日期<span class="fl-r">工资单（元）</span></p>

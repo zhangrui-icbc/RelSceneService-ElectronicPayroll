@@ -1,4 +1,3 @@
-var accountId = $("#accountId").val();	
 $("#query").click(function(){
 		window.location.href = "./query";
 	})
