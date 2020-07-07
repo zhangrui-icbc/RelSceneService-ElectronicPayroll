@@ -7,6 +7,8 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.icbc.rel.hefei.entity.salary.SalaryCustomTemplate;
+import com.icbc.rel.hefei.entity.salary.client.ReImportVO;
+import com.icbc.rel.hefei.entity.salary.client.ReVO;
 import com.icbc.rel.hefei.entity.salary.client.SalaryImportVO;
 import com.icbc.rel.hefei.entity.salary.client.SalaryVO;
 
@@ -26,14 +28,14 @@ public interface ReWebMapper{
 	
 	
 	
-	List<SalaryVO> getReInfo(@Param("params")Map<String, Object> paramsMap);
+	List<ReVO> getReInfo(@Param("params")Map<String, Object> paramsMap);
 	
 	/**
 	 * ¹¤×ÊÃ÷Ï¸
 	 * @param paramsMap
 	 * @return
 	 */
-	List<SalaryImportVO> getReDetail(@Param("params")Map<String, Object> paramsMap);
+	List<ReImportVO> getReDetail(@Param("params")Map<String, Object> paramsMap);
 	List<SalaryImportVO> getSumSalaryInfoList(Map<String, Object> paramsMap);
 	List<SalaryImportVO> getSalaryInfoList(Map<String, Object> paramsMap);
 	

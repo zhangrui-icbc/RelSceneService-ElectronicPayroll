@@ -9,5 +9,5 @@ public class SessionParamConstant {
     public static final String SESSION_PARAM_USER = "user";//user
     public static final String SESSION_PARAM_COMPANYID = "companyId";//user
     public static final String PC_SESSION_PARAM_COMPANYID = "pcCompanyId";//user
-    public static final int rowsLimit = 30001;//n+1  上传信息条数限制
+    public static final int rowsLimit = 300001;//n+1  上传信息条数限制
 }

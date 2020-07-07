@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.ibatis.annotations.Case;
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -51,7 +52,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.icbc.rel.hefei.controller.salary.client.ReWebController;
 import com.icbc.rel.hefei.dao.salary.SalaryCommonMapper;
 import com.icbc.rel.hefei.dao.salary.SalaryCustomMapper;
 import com.icbc.rel.hefei.dao.salary.SalaryMapper;
@@ -85,6 +88,7 @@ import com.mysql.cj.result.Row;
 @Transactional
 @Service
 public class SalaryServiceImpl implements SalaryService {
+	private static Logger logger = Logger.getLogger(SalaryServiceImpl.class);
 	@Autowired
 	SalaryMapper salaryMapper;
 	@Autowired
@@ -97,38 +101,38 @@ public class SalaryServiceImpl implements SalaryService {
 	/**
 	 * 处理上传的Excel文件
 	 */
-	@Override
-	public AjaxResult uploadSalary(File file,String companyId) throws FileNotFoundException, IOException, ParseException, NullPointerException {
-		String fileName =  file.getName();
-        if(!(fileName.contains("xls"))){
-        	return AjaxResult.warn("格式错误!仅支持xls格式文件.");
-        }
-        //指定文件存放路径，可以是相对路径或者绝对路径
-        String filePath = "./src/main/resources/templates/";
-        try {
-//			uploadFile(File2byte(file), filePath, fileName);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-        File serverFile=new File(filePath+fileName);
-        //根据公司id取出该公司对面的模板信息
-        List<SalaryCustomTemplate> templateList = salaryMapper.getSalaryTemplate(companyId);
-        List<String> staffMobList = salaryUserMapper.getMobByCompanyId(companyId);	
-        AjaxResult ajaxResult= read2003Excel(serverFile,templateList,staffMobList);
-        int code = (int) ajaxResult.get("code");
-        if(code==500) {
-        	 return ajaxResult;
-        }else {
-        	Salary oaSalary = (Salary)ajaxResult.get("data");  
-        	oaSalary.setId(UUIDUtils.getGuid());
-        	if(oaSalary!=null) {
-        		salaryMapper.insertOaSalary(oaSalary);
-        		salaryMapper.insertOaSalaryImport(oaSalary);
-        	}
-        	 return ajaxResult;
-        }
-       
-	}
+//	@Override
+//	public AjaxResult uploadSalary(File file,String companyId) throws FileNotFoundException, IOException, ParseException, NullPointerException {
+//		String fileName =  file.getName();
+//        if(!(fileName.contains("xls"))){
+//        	return AjaxResult.warn("格式错误!仅支持xls格式文件.");
+//        }
+//        //指定文件存放路径，可以是相对路径或者绝对路径
+//        String filePath = "./src/main/resources/templates/";
+//        try {
+////			uploadFile(File2byte(file), filePath, fileName);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} 
+//        File serverFile=new File(filePath+fileName);
+//        //根据公司id取出该公司对面的模板信息
+//        List<SalaryCustomTemplate> templateList = salaryMapper.getSalaryTemplate(companyId);
+//        List<String> staffMobList = salaryUserMapper.getMobByCompanyId(companyId);	
+//        AjaxResult ajaxResult= read2003Excel(serverFile,templateList,staffMobList);
+//        int code = (int) ajaxResult.get("code");
+//        if(code==500) {
+//        	 return ajaxResult;
+//        }else {
+//        	Salary oaSalary = (Salary)ajaxResult.get("data");  
+//        	oaSalary.setId(UUIDUtils.getGuid());
+//        	if(oaSalary!=null) {
+//        		salaryMapper.insertOaSalary(oaSalary);
+//        		salaryMapper.insertOaSalaryImport(oaSalary);
+//        	}
+//        	 return ajaxResult;
+//        }
+//       
+//	}
 	
 
 	@Override
@@ -137,19 +141,39 @@ public class SalaryServiceImpl implements SalaryService {
 		 File serverFile=new File(value);
   		 List<String> staffMobList = salaryUserMapper.getMobByCompanyId(companyId);	
 		 AjaxResult ajaxResult= read2003Excel(serverFile,templateList,staffMobList);
-	        int code = (int) ajaxResult.get("code");
-	        if(code==500) {
-	        	 return ajaxResult;
-	        }else {
-	    		Map<String,Object> map = (Map<String, Object>) ajaxResult.get("data");
-	        	Salary oaSalary = (Salary)map.get("oaSalary");  
-	        	oaSalary.setId(UUIDUtils.getGuid());
-	        	if(oaSalary.getImportList()!=null&&oaSalary.getImportList().size()>0) {
-	        		salaryMapper.insertOaSalary(oaSalary);
-	        		salaryMapper.insertOaSalaryImport(oaSalary);
-	        	}
-	        	 return ajaxResult;
-	        }
+	     int code = (int) ajaxResult.get("code");
+	     if(code==500) {
+	     	 return ajaxResult;
+	     }else {
+	 	 Map<String,Object> map = (Map<String, Object>) ajaxResult.get("data");
+	     	Salary oaSalary = (Salary)map.get("oaSalary");  
+	     	if(oaSalary.getImportList()!=null&&oaSalary.getImportList().size()>0) {
+	     		Long startTime = System.currentTimeMillis();
+	     		logger.info("开始插入工资信息-----------------------");
+	     		salaryMapper.insertOaSalary(oaSalary);
+	     		List<SalaryImport> importList = oaSalary.getImportList();
+	     		List<SalaryImport> importList1 = oaSalary.getImportList();
+	     		int size = importList.size();
+	     		int index = 0;
+	     		int limit =3000;
+	     		while(true) {
+	     			if(index+limit>=size) {
+	     				importList1 = importList.subList(index, size);
+	     				salaryMapper.insertOaSalaryImport(importList1);
+	     				break;
+	     			}else {
+	     				salaryMapper.insertOaSalaryImport(importList.subList(index, index+limit));
+	     				index = index+limit;
+	     			}
+	     			
+	     		}
+	     		Long endTime = System.currentTimeMillis();
+	     		logger.info("插入工资信息完成-----------------------");
+	     		long count = endTime-startTime;
+	     		logger.info("插入工资信息耗时:"+count+"毫秒");
+	     	}
+	     	 return ajaxResult;
+	     }
 	}
 	
 	
@@ -286,7 +310,16 @@ public class SalaryServiceImpl implements SalaryService {
 			String excelName = arr[0];
 			oaSalary.setExcelName(excelName);
 			//根据excel的行数循环
+			String 	batchNo = UUIDUtils.getGuid();
+			String companyId = templateList.get(0).getCompanyId();
 			for(int i = 1;i< data.size();i++){
+				String specialInfoJson =""; 
+				Map<String, Object> specialInfoMap = new HashMap<String, Object>();
+				Map<String, Object> TRevenue = new HashMap<String, Object>();//收入合计
+				Map<String, Object> TExpenditure = new HashMap<String, Object>();//支出合计
+				Map<String, Object> SDeduction = new HashMap<String, Object>();//专项扣除
+				Map<String, Object> UExpenditure = new HashMap<String, Object>();//单位支出
+				SalaryImport oaSalaryImport =new  SalaryImport();
 				ErrorInfo eInfo  = new  ErrorInfo();
 				String mbl = data.get(i)[0];
 				if (StringUtils.isEmpty(mbl)) {
@@ -305,7 +338,7 @@ public class SalaryServiceImpl implements SalaryService {
 					continue;
 				}else {
 					mobileList.add(mobile);
-			 }
+				}
 /*			boolean flag = checkStaffIsExist(staffMobList,mobile);
 			if(flag) {
 				eInfo.setMobile(String.valueOf(mobile));
@@ -314,31 +347,73 @@ public class SalaryServiceImpl implements SalaryService {
 				continue;
 			}*/
 				
+
 			//根据模板信息去取想要的信息
-			for(int j=0;j<templateList.size();j++) {
-				SalaryImport oaSalaryImport =new  SalaryImport();
-				//列号
-				int colIndex = templateList.get(j).getColIndex();
-				String  value = data.get(i)[colIndex];
-				if(!data.get(0)[colIndex].equals("备注")&&StringUtils.isEmpty(value)) {
-					value="0";
+				for(int j=0;j<templateList.size();j++) {
+					//列号
+					int colIndex = templateList.get(j).getColIndex();
+					String  name = data.get(0)[colIndex];
+					String  value = data.get(i)[colIndex];
+					if(!data.get(0)[colIndex].equals("备注")&&StringUtils.isEmpty(value)) {
+						value="0";
+					}
+					// TODO 加判断次数限制?
+					if(data.get(0)[colIndex].equals("实际收入")) {
+						oaSalaryImport.setRealIncome(value);
+					}else if (data.get(0)[colIndex].equals("收入合计")) {
+						oaSalaryImport.setTotalRevenue(value);
+					}else if (data.get(0)[colIndex].equals("支出合计")) {
+						oaSalaryImport.setTotalExpenditure(value);
+					}else if (data.get(0)[colIndex].equals("专项附加扣除")) {
+						oaSalaryImport.setSpecialDeduction(value);
+					}else if (data.get(0)[colIndex].equals("单位支出")) {
+						oaSalaryImport.setUnitExpenditure(value);
+					}else if (data.get(0)[colIndex].equals("备注")) {
+						oaSalaryImport.setSalaryRemark(value);
+					}
+						
+					//个性化信息分组封装为json {"实际收入":{"area":"北京","smsCheckType":"white"},"收入合计":{"initTotal":"0","whiteEffect":"1"}}
+					int category = getCategory(templateList,data.get(0)[colIndex]);
+					if(category==1) {
+						TRevenue.put(name,value);
+					}else if (category==2) {
+						TExpenditure.put(name,value);
+					}else if (category==4) {
+						SDeduction.put(name,value);
+					}else if (category==5) {
+						UExpenditure.put(name,value);
+					}
+					
 				}
-				oaSalaryImport.setImportAmount(value);//具体值
-				oaSalaryImport.setTemplateColName(data.get(0)[colIndex]);//名称
-				oaSalaryImport.setSalaryItemId(j);//元素id
-				oaSalaryImport.setTemplateId(templateList.get(j).getCompanyId());//公司id与模板id一致
-				oaSalaryImport.setUserId(mobile);//员工编号(固定且具体的某一列)
-				oaSalaryImport.setColIndex(colIndex);
-				int category = getCategory(templateList,data.get(0)[colIndex]);
-				oaSalaryImport.setCategory(category);
+				
+				if (TExpenditure.size()>0) {
+					specialInfoMap.put("totalExpenditure", TExpenditure);
+				}
+				if (SDeduction.size()>0) {
+					specialInfoMap.put("specialDeduction", SDeduction);
+				}
+				if (UExpenditure.size()>0) {
+					specialInfoMap.put("unitExpenditure", UExpenditure);
+				}
+				if (TRevenue.size()>0) {
+					specialInfoMap.put("totalRevenue", TRevenue);
+				}
+				specialInfoJson =JSON.toJSON(specialInfoMap).toString();
+				oaSalaryImport.setSpecialInfo(specialInfoJson);
+				oaSalaryImport.setBatchNo(batchNo);
+				oaSalaryImport.setCreateTime(new Date());
+				oaSalaryImport.setIssueTime(issueTime);
+				oaSalaryImport.setUserId(mbl);
+				oaSalaryImport.setCompanyId(companyId);
 				oaSalaryImportList.add(oaSalaryImport);
-				}
-			}
+		}
+			oaSalary.setCompanyId(companyId);
+			oaSalary.setId(batchNo);
 	        oaSalary.setImportList(oaSalaryImportList);
 	 		resultMap.put("errorSalaryList" , errorSalaryList);
 	 		resultMap.put("oaSalary" , oaSalary);
 	 		resultMap.put("mobileList" , mobileList);
-	 		int rightRowsCount = oaSalaryImportList.size()/templateList.size();
+	 		int rightRowsCount = oaSalaryImportList.size();
 	 		if(oaSalaryImportList!=null&&oaSalaryImportList.size()>0) {
 	 			return AjaxResult.success("本次上传成功"+rightRowsCount+"条记录。",resultMap);
 	 		}
@@ -366,44 +441,44 @@ public class SalaryServiceImpl implements SalaryService {
 	    /**
 	     * 读取Office 2007 excel
 	     * */
-	    private static Salary read2007Excel(File file,List<SalaryCustomTemplate> templateList)  {
-	    	XSSFWorkbook xwb;
-	        XSSFSheet sheet=null;
-	    	Salary oaSalary =new Salary();
-	        List<SalaryImport>  oaSalaryImportList = new ArrayList<SalaryImport>();
-	        try {
-	        	xwb = new XSSFWorkbook(new FileInputStream(file));
-				sheet = xwb.getSheetAt(0);
-				XSSFRow row = null;
-			    XSSFCell cell = null;
-			    oaSalary.setImportTime(new Date());//创建时间
-			    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-			    Date issueTime;
-			    issueTime = sdf.parse(String.valueOf((int)sheet.getRow(1).getCell(4).getNumericCellValue()));
-			    oaSalary.setIssueTime(issueTime);//工资发放时间
-			    //根据excel的行数循环
-			    for(int i = 1;i<= sheet.getLastRowNum();i++){
-			    	row = sheet.getRow(i);
-			    	//根据模板信息去取想要的信息
-			    	for(int j=0;j<templateList.size();j++) {
-			    		SalaryImport oaSalaryImport =new  SalaryImport();
-			    		//列号
-			    		int ColIndex = templateList.get(j).getColIndex();
-			    		cell = row.getCell(ColIndex);
-			    		oaSalaryImport.setImportAmount(cell.getStringCellValue());//具体值
-			    		oaSalaryImport.setTemplateColName(sheet.getRow(0).getCell(ColIndex).getStringCellValue());//名称
-			    		oaSalaryImport.setSalaryItemId(j);//元素id
-			    		oaSalaryImport.setTemplateId(templateList.get(j).getCompanyId());//模板id
-			    		oaSalaryImport.setUserId((long) row.getCell(2).getNumericCellValue());//员工编号(固定且具体的某一列)
-			    		oaSalaryImportList.add(oaSalaryImport);
-			    	}
-			    }
-	        } catch (Exception e) {
-				e.printStackTrace();
-			}
-	        oaSalary.setImportList(oaSalaryImportList);
-	        return oaSalary;
-	    }
+//	    private static Salary read2007Excel(File file,List<SalaryCustomTemplate> templateList)  {
+//	    	XSSFWorkbook xwb;
+//	        XSSFSheet sheet=null;
+//	    	Salary oaSalary =new Salary();
+//	        List<SalaryImport>  oaSalaryImportList = new ArrayList<SalaryImport>();
+//	        try {
+//	        	xwb = new XSSFWorkbook(new FileInputStream(file));
+//				sheet = xwb.getSheetAt(0);
+//				XSSFRow row = null;
+//			    XSSFCell cell = null;
+//			    oaSalary.setImportTime(new Date());//创建时间
+//			    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+//			    Date issueTime;
+//			    issueTime = sdf.parse(String.valueOf((int)sheet.getRow(1).getCell(4).getNumericCellValue()));
+//			    oaSalary.setIssueTime(issueTime);//工资发放时间
+//			    //根据excel的行数循环
+//			    for(int i = 1;i<= sheet.getLastRowNum();i++){
+//			    	row = sheet.getRow(i);
+//			    	//根据模板信息去取想要的信息
+//			    	for(int j=0;j<templateList.size();j++) {
+//			    		SalaryImport oaSalaryImport =new  SalaryImport();
+//			    		//列号
+//			    		int ColIndex = templateList.get(j).getColIndex();
+//			    		cell = row.getCell(ColIndex);
+//			    		oaSalaryImport.setImportAmount(cell.getStringCellValue());//具体值
+//			    		oaSalaryImport.setTemplateColName(sheet.getRow(0).getCell(ColIndex).getStringCellValue());//名称
+//			    		oaSalaryImport.setSalaryItemId(j);//元素id
+//			    		oaSalaryImport.setTemplateId(templateList.get(j).getCompanyId());//模板id
+//			    		oaSalaryImport.setUserId((long) row.getCell(2).getNumericCellValue());//员工编号(固定且具体的某一列)
+//			    		oaSalaryImportList.add(oaSalaryImport);
+//			    	}
+//			    }
+//	        } catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//	        oaSalary.setImportList(oaSalaryImportList);
+//	        return oaSalary;
+//	    }
 	    
 	
 	

@@ -20,6 +20,10 @@ public class Salary {
 	
 	private String excelName;
 	
+	private String companyId;
+	
+	private String remark;
+	
 	private List<SalaryImport> importList;
 
 	public String getId() {
@@ -60,6 +64,22 @@ public class Salary {
 
 	public void setExcelName(String excelName) {
 		this.excelName = excelName;
+	}
+
+	public String getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(String companyId) {
+		this.companyId = companyId;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 	
 	

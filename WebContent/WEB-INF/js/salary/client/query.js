@@ -13,38 +13,18 @@ $(function() {
 			    dataType: "json",
 			    success : function(res) {
 			        if (res.code == "0") { //判断返回值，这里根据的业务内容可做调整
-			        //	$(".year").html(res.data[0].issueTime.substr(0,4));
 			        	var str ="";
 			        	for(var i = 0; i <res.data.length; i++){
-			        		var arr =res.data[i];
-			        		var issueTime= arr.issueTime.substring(0,10);
-			        		var test = new RegExp(/-/g);
-			        		var issueTime = issueTime.replace(test,"");
-			        		var userId=arr.importList[1].userId;
-			        		var aa;
-			        		var bb;
-			        		var cc;
-			        		for(j in arr.importList){
-			        			 //	   	实际收入
-						 	      if(arr.importList[j].category==11){ 
-						 	    	 aa = arr.importList[j].importAmount;
-						 	          }
-//						 	      收入合计
-						 	      if(arr.importList[j].category==22){
-						 	    	  bb=arr.importList[j].importAmount
-						 	          }
-//						 	      支出合计
-						 	      if(arr.importList[j].category==33){
-						 	    	 cc=arr.importList[j].importAmount
-						 	          }
-			        		}
+			        		var importList =res.data[i];
+			        		var issueTime= importList.issueTime.substring(0,10);
+			        		var userId=importList.userId;
 			        		str+="<div class='list-box'>"+
-			        		"<p class='left'><span class='year'>"+arr.issueTime.substr(0,4)+"</span><br><span>"+arr.issueTime.substr(5,6)+"</span><br><a class='detail-btn' onclick=jumpDetail('"+arr.id+"','"+issueTime+"','"+userId+"')>查看详情</a></p>"+
+			        		"<p class='left'><span class='year'>"+issueTime.substr(0,4)+"</span><br><span>"+issueTime.substr(5,5)+"</span><br><a class='detail-btn' onclick=jumpDetail('"+importList.id+"')>查看详情</a></p>"+
 			        		"<div class='right'>"+
-			        		"<p class='total'>实发合计<span>"+aa+"</span></p>"+
+			        		"<p class='total'>实发合计<span>"+importList.realIncome+"</span></p>"+
 			        		"<div>"+
-			        		"<p>收入合计<br><span>"+bb+"</span></p>"+
-			        		"<p>支出合计<br><span>"+cc+"</span></p>"+
+			        		"<p>收入合计<br><span>"+importList.totalRevenue+"</span></p>"+
+			        		"<p>支出合计<br><span>"+importList.totalExpenditure+"</span></p>"+
 			        		"</div>"+
 			        		"</div>"+
 			        		"</div>"
@@ -64,8 +44,8 @@ $(function() {
 	 * 跳转详情页
 	 * @returns
 	 */
-	function jumpDetail(salaryId,issueTime,userId){
-		window.location.href = "../salaryWebUser/jumpDetail?salaryId="+salaryId+"&&issueTime="+issueTime+"&&userId="+userId;
+	function jumpDetail(id){
+		window.location.href = "../salaryWebUser/jumpDetail?id="+id;
 	}
 	/**
 	 * 汇总页面

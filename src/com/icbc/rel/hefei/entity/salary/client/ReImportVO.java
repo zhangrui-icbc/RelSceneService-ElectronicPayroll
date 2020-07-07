@@ -1,4 +1,4 @@
-package com.icbc.rel.hefei.entity.salary.reimbursement;
+package com.icbc.rel.hefei.entity.salary.client;
 
 
 import java.util.Date;
@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  * @author fc
  *
  */
-public class ReImport {
+public class ReImportVO {
 	
 	private int id;
 	
@@ -33,9 +33,6 @@ public class ReImport {
 	
 	//个性化信息
 	private String  specialInfo;
-	
-	//公司id
-	private String companyId;
 
 	public int getId() {
 		return id;
@@ -93,14 +90,6 @@ public class ReImport {
 		this.specialInfo = specialInfo;
 	}
 
-	public String getCompanyId() {
-		return companyId;
-	}
 
-	public void setCompanyId(String companyId) {
-		this.companyId = companyId;
-	}
-
-	
 	
 }

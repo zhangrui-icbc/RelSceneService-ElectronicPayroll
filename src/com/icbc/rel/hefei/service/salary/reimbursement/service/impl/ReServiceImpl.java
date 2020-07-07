@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.ibatis.annotations.Case;
+import org.apache.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
@@ -44,6 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSON;
 import com.icbc.rel.hefei.dao.salary.SalaryUserMapper;
 import com.icbc.rel.hefei.dao.salary.reimbursement.ReCommonMapper;
 import com.icbc.rel.hefei.dao.salary.reimbursement.ReCustomMapper;
@@ -52,11 +54,13 @@ import com.icbc.rel.hefei.entity.salary.AjaxResult;
 import com.icbc.rel.hefei.entity.salary.ErrorInfo;
 import com.icbc.rel.hefei.entity.salary.Salary;
 import com.icbc.rel.hefei.entity.salary.SalaryCustomTemplate;
+import com.icbc.rel.hefei.entity.salary.SalaryImport;
 import com.icbc.rel.hefei.entity.salary.reimbursement.ReCommonTemplate;
 import com.icbc.rel.hefei.entity.salary.reimbursement.ReCustomTemplate;
 import com.icbc.rel.hefei.entity.salary.reimbursement.ReImport;
 import com.icbc.rel.hefei.entity.salary.reimbursement.Reimbursement;
 import com.icbc.rel.hefei.service.salary.reimbursement.service.ReService;
+import com.icbc.rel.hefei.service.salary.service.impl.SalaryServiceImpl;
 import com.icbc.rel.hefei.util.DateUtils;
 import com.icbc.rel.hefei.util.ExcelUtil;
 import com.icbc.rel.hefei.util.MobileUtil;
@@ -72,6 +76,7 @@ import com.icbc.rel.hefei.util.UUIDUtils;
 @Transactional
 @Service
 public class ReServiceImpl implements ReService {
+	private static Logger logger = Logger.getLogger(SalaryServiceImpl.class);
 	@Autowired
 	ReMapper reMapper;
 	
@@ -85,36 +90,36 @@ public class ReServiceImpl implements ReService {
 	/**
 	 * 处理上传的Excel文件
 	 */
-	@Override
-	public AjaxResult uploadSalary(File file,String companyId)throws FileNotFoundException, IOException, ParseException, NullPointerException {
-		String fileName = file.getName();
-        if(!(fileName.contains("xls"))){
-        	return AjaxResult.warn("格式错误!仅支持xls格式文件.");
-        }
-        //指定文件存放路径，可以是相对路径或者绝对路径
-        String filePath = "./src/main/resources/templates/";
-        try {
-        	uploadFile(File2byte(file), filePath, fileName);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
-        //根据公司id取出该公司对面的模板信息
-        List<ReCustomTemplate> templateList = reMapper.getReTemplate(companyId);
-        List<String> staffMobList = salaryUserMapper.getMobByCompanyId(companyId);	
-        AjaxResult ajaxResult= read2003Excel(file,templateList,staffMobList);
-        int code = (int) ajaxResult.get("code");
-        if(code==500) {
-        	 return ajaxResult;
-        }else {
-        	Reimbursement reimbursement =(Reimbursement)ajaxResult.get("data");  
-        	reimbursement.setId(UUIDUtils.getGuid());
-        	if(reimbursement!=null) {
-        		reMapper.insertReimbursement(reimbursement);
-        		reMapper.insertReimbursementImport(reimbursement);
-        	}
-        	return ajaxResult;
-        }
-	}
+//	@Override
+//	public AjaxResult uploadSalary(File file,String companyId)throws FileNotFoundException, IOException, ParseException, NullPointerException {
+//		String fileName = file.getName();
+//        if(!(fileName.contains("xls"))){
+//        	return AjaxResult.warn("格式错误!仅支持xls格式文件.");
+//        }
+//        //指定文件存放路径，可以是相对路径或者绝对路径
+//        String filePath = "./src/main/resources/templates/";
+//        try {
+//        	uploadFile(File2byte(file), filePath, fileName);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		} 
+//        //根据公司id取出该公司对面的模板信息
+//        List<ReCustomTemplate> templateList = reMapper.getReTemplate(companyId);
+//        List<String> staffMobList = salaryUserMapper.getMobByCompanyId(companyId);	
+//        AjaxResult ajaxResult= read2003Excel(file,templateList,staffMobList);
+//        int code = (int) ajaxResult.get("code");
+//        if(code==500) {
+//        	 return ajaxResult;
+//        }else {
+//        	Reimbursement reimbursement =(Reimbursement)ajaxResult.get("data");  
+//        	reimbursement.setId(UUIDUtils.getGuid());
+//        	if(reimbursement!=null) {
+//        		reMapper.insertReimbursement(reimbursement);
+//        		reMapper.insertReimbursementImport(reimbursement);
+//        	}
+//        	return ajaxResult;
+//        }
+//	}
 	
 	@Override
 	public AjaxResult uploadRe1(String value, String companyId)throws FileNotFoundException, IOException, ParseException, NullPointerException {
@@ -128,22 +133,40 @@ public class ReServiceImpl implements ReService {
 	        }else {
 	        	Map<String,Object> map = (Map<String, Object>) ajaxResult.get("data");
 	        	Reimbursement reimbursement =(Reimbursement)map.get("reimbursement");  
-	        	reimbursement.setId(UUIDUtils.getGuid());
 	        	if(reimbursement.getImportList()!=null&&reimbursement.getImportList().size()>0) {
+	        		Long startTime = System.currentTimeMillis();
+	        		logger.info("开始插入报销信息-----------------------");
 	        		reMapper.insertReimbursement(reimbursement);
-	        		reMapper.insertReimbursementImport(reimbursement);
+	        		List<ReImport> importList = reimbursement.getImportList();
+	        		int size = importList.size();
+	        		int index = 0;
+	        		int limit =3000;
+	        		while(true) {
+	        			if(index+limit>=size) {
+	        				reMapper.insertReimbursementImport(importList.subList(index, size));
+	        				break;
+	        			}else {
+	        				reMapper.insertReimbursementImport(importList.subList(index, index+limit));
+	        				index = index+limit;
+	        			}
+	        			
+	        		}
+	        		Long endTime = System.currentTimeMillis();
+	        		logger.info("插入报销信息完成-----------------------");
+	        		long count = endTime-startTime;
+	        		logger.info("插入报销信息耗时:"+count+"毫秒");
 	        	}
 	        	return ajaxResult;
 	        }
 	}
 	/**
-	 * 保存工资信息
+	 * 保存报销信息
 	 */
-	 @Override
-	public void insertReimbursement(Reimbursement reimbursement) {
-		  reMapper.insertReimbursement(reimbursement);
-		 reMapper.insertReimbursementImport(reimbursement);
-		}
+//	 @Override
+//	public void insertReimbursement(Reimbursement reimbursement) {
+//		  reMapper.insertReimbursement(reimbursement);
+//		 reMapper.insertReimbursementImport(reimbursement);
+//		}
 	
 	 	
 	
@@ -202,9 +225,16 @@ public class ReServiceImpl implements ReService {
 			    oaRe.setExcelName(excelName);
 			    List<Long> mobileList = new ArrayList<Long>();
 			    //根据excel的行数循环
+				String 	batchNo = UUIDUtils.getGuid();
+				String companyId = templateList.get(0).getCompanyId();
 			    for(int i = 1;i< data.size();i++){
-			    	ErrorInfo eInfo  = new  ErrorInfo();
+					String specialInfoJson =""; 
+					Map<String, Object> specialInfoMap = new HashMap<String, Object>();
+					Map<String, Object> TReim = new HashMap<String, Object>();//报销信息
+					ReImport oaReImport =new  ReImport();
+					ReImport reImport =new  ReImport();
 					String mbl = data.get(i)[0];
+			    	ErrorInfo eInfo  = new  ErrorInfo();
 					if (StringUtils.isEmpty(mbl)) {
 						return AjaxResult.error("第"+i+"行手机号为空，请填写后重新上传！");
 					}
@@ -231,29 +261,36 @@ public class ReServiceImpl implements ReService {
 					}*/
 			    	//根据模板信息去取想要的信息
 			    	for(int j=0;j<templateList.size();j++) {
-			    		ReImport oaReImport =new  ReImport();
 			    		//列号
 			    		int colIndex = templateList.get(j).getColIndex();
+			    		String  name = data.get(0)[colIndex];
 						String  value = data.get(i)[colIndex];
 						if(StringUtils.isEmpty(value)) {
 							value="0";
 						}
-			    		oaReImport.setImportAmount(value);//具体值
-			    		oaReImport.setTemplateColName(data.get(0)[colIndex]);//名称
-			    		oaReImport.setReimbursementItemId(j);//元素id
-			    		oaReImport.setTemplateId(templateList.get(j).getCompanyId());//公司id与模板id一致
-			    		oaReImport.setUserId(Long.valueOf(data.get(i)[0]));//员工编号(固定且具体的某一列)
-			    		oaReImport.setColIndex(colIndex);
-			    		int category = getCategory(templateList,data.get(0)[colIndex]);
-			    		oaReImport.setCategory(category);
-			    		oaReImportList.add(oaReImport);
+						if(data.get(0)[colIndex].equals("报销合计")) {
+							oaReImport.setTotalReim(value);
+						}else {
+							TReim.put(name,value);
+						}
 			    	}
+			    	if(TReim.size()>0) {
+			    		oaReImport.setSpecialInfo(JSON.toJSON(TReim).toString());;
+			    	}
+						oaReImport.setBatchNo(batchNo);
+						oaReImport.setCreateTime(new Date());
+						oaReImport.setIssueTime(issueTime);
+						oaReImport.setUserId(mbl);
+						oaReImport.setCompanyId(companyId);
+						oaReImportList.add(oaReImport);
 			    }
+			    oaRe.setCompanyId(companyId);
+			    oaRe.setId(batchNo);
 			    oaRe.setImportList(oaReImportList);
 		 		resultMap.put("errorReList" , errorReList);
 		 		resultMap.put("reimbursement" , oaRe);
 		 		resultMap.put("mobileList" , mobileList);
-		 		int rightRowsCount = oaReImportList.size()/templateList.size();
+		 		int rightRowsCount = oaReImportList.size();
 		 		if(oaReImportList!=null&&oaReImportList.size()>0) {
 		 			return AjaxResult.success("本次上传成功"+rightRowsCount+"条记录。",resultMap);    
 		 		}
@@ -278,47 +315,47 @@ public class ReServiceImpl implements ReService {
 	    
 	    
 
-	    /**
-	     * 读取Office 2007 excel
-	     * */
-	    private static Reimbursement read2007Excel(File file,List<ReCustomTemplate> templateList)  {
-	    	XSSFWorkbook xwb;
-	        XSSFSheet sheet=null;
-	        Reimbursement oaSalary =new Reimbursement();
-	        List<ReImport>  oaSalaryImportList = new ArrayList<ReImport>();
-	        try {
-	        	xwb = new XSSFWorkbook(new FileInputStream(file));
-				sheet = xwb.getSheetAt(0);
-				XSSFRow row = null;
-			    XSSFCell cell = null;
-			    oaSalary.setImportTime(new Date());//创建时间
-			    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-			    Date issueTime;
-			    issueTime = sdf.parse(String.valueOf((int)sheet.getRow(1).getCell(4).getNumericCellValue()));
-			    oaSalary.setIssueTime(issueTime);//工资发放时间
-			    //根据excel的行数循环
-			    for(int i = 1;i<= sheet.getLastRowNum();i++){
-			    	row = sheet.getRow(i);
-			    	//根据模板信息去取想要的信息
-			    	for(int j=0;j<templateList.size();j++) {
-			    		ReImport oaSalaryImport =new  ReImport();
-			    		//列号
-			    		int ColIndex = templateList.get(j).getColIndex();
-			    		cell = row.getCell(ColIndex);
-			    		oaSalaryImport.setImportAmount(cell.getStringCellValue());//具体值
-			    		oaSalaryImport.setTemplateColName(sheet.getRow(0).getCell(ColIndex).getStringCellValue());//名称
-			    		oaSalaryImport.setReimbursementItemId(j);//元素id
-			    		oaSalaryImport.setTemplateId(templateList.get(j).getCompanyId());//模板id
-			    		oaSalaryImport.setUserId((long) row.getCell(2).getNumericCellValue());//员工编号(固定且具体的某一列)
-			    		oaSalaryImportList.add(oaSalaryImport);
-			    	}
-			    }
-	        } catch (Exception e) {
-				e.printStackTrace();
-			}
-	        oaSalary.setImportList(oaSalaryImportList);
-	        return oaSalary;
-	    }
+//	    /**
+//	     * 读取Office 2007 excel
+//	     * */
+//	    private static Reimbursement read2007Excel(File file,List<ReCustomTemplate> templateList)  {
+//	    	XSSFWorkbook xwb;
+//	        XSSFSheet sheet=null;
+//	        Reimbursement oaSalary =new Reimbursement();
+//	        List<ReImport>  oaSalaryImportList = new ArrayList<ReImport>();
+//	        try {
+//	        	xwb = new XSSFWorkbook(new FileInputStream(file));
+//				sheet = xwb.getSheetAt(0);
+//				XSSFRow row = null;
+//			    XSSFCell cell = null;
+//			    oaSalary.setImportTime(new Date());//创建时间
+//			    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+//			    Date issueTime;
+//			    issueTime = sdf.parse(String.valueOf((int)sheet.getRow(1).getCell(4).getNumericCellValue()));
+//			    oaSalary.setIssueTime(issueTime);//工资发放时间
+//			    //根据excel的行数循环
+//			    for(int i = 1;i<= sheet.getLastRowNum();i++){
+//			    	row = sheet.getRow(i);
+//			    	//根据模板信息去取想要的信息
+//			    	for(int j=0;j<templateList.size();j++) {
+//			    		ReImport oaSalaryImport =new  ReImport();
+//			    		//列号
+//			    		int ColIndex = templateList.get(j).getColIndex();
+//			    		cell = row.getCell(ColIndex);
+//			    		oaSalaryImport.setImportAmount(cell.getStringCellValue());//具体值
+//			    		oaSalaryImport.setTemplateColName(sheet.getRow(0).getCell(ColIndex).getStringCellValue());//名称
+//			    		oaSalaryImport.setReimbursementItemId(j);//元素id
+//			    		oaSalaryImport.setTemplateId(templateList.get(j).getCompanyId());//模板id
+//			    		oaSalaryImport.setUserId((long) row.getCell(2).getNumericCellValue());//员工编号(固定且具体的某一列)
+//			    		oaSalaryImportList.add(oaSalaryImport);
+//			    	}
+//			    }
+//	        } catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//	        oaSalary.setImportList(oaSalaryImportList);
+//	        return oaSalary;
+//	    }
 	    
 	
 	
@@ -476,9 +513,9 @@ public class ReServiceImpl implements ReService {
 	}
 
 	@Override
-	public void delLog(String salaryId) {
-	    reMapper.delLog(salaryId);
-	    reMapper.delLog1(salaryId);
+	public void delLog(String reId) {
+	    reMapper.delLog(reId);
+	    reMapper.delLog1(reId);
 	}
 
 	@Override

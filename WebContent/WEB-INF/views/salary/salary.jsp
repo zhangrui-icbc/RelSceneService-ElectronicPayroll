@@ -193,7 +193,15 @@ layui.use(['element','laydate','table','form','upload'],function(){
 		url:'../mp/salary/uploadStaff',
 		accept:'file', 
 		exts:'xls|xlsx',
+		before: function(obj){ 
+		      var loading = layer.msg('加载中...', {
+		            icon:16,
+		            shade:[0.5,'#cdcdcd'],
+		            time:false  //取消自动关闭
+		        }); 
+		  },
 		done:function(data){
+			layer.closeAll('loading'); //关闭loading
 			if(data.code==1){
 				data.msg="上传成功";
 			}
@@ -208,6 +216,7 @@ layui.use(['element','laydate','table','form','upload'],function(){
 			}
 		},
 		error:function(){
+			layer.closeAll('loading'); //关闭loading
 			layer.open({
 				title:'提示',
 				type:0,
@@ -221,7 +230,15 @@ layui.use(['element','laydate','table','form','upload'],function(){
 		url:'../mp/salary/uploadSalary',
 		accept:'file', 
 		exts:'xls|xlsx',
+		before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+		      var loading = layer.msg('加载中...', {
+		            icon:16,
+		            shade:[0.5,'#cdcdcd'],
+		            time:false  //取消自动关闭
+		        }); 
+		  },
 		done:function(data){
+			layer.closeAll('loading'); //关闭loading
 			if(data.code==1){
 				data.msg="上传成功";
 			}
@@ -236,6 +253,7 @@ layui.use(['element','laydate','table','form','upload'],function(){
 			}
 		},
 		error:function(){
+			layer.closeAll('loading'); //关闭loading
 			layer.open({
 				title:'提示',
 				type:0,

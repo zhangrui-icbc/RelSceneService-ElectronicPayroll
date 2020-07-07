@@ -36,7 +36,7 @@ public interface SalaryWebMapper{
 	void insertOaSalaryImport(Salary oaSalary);
 	
 	
-	List<SalaryVO> getSalaryInfo(@Param("params")Map<String, Object> paramsMap);
+	List<SalaryImportVO> getSalaryInfo(@Param("params")Map<String, Object> paramsMap);
 	
 	/**
 	 * Лузм
@@ -49,7 +49,7 @@ public interface SalaryWebMapper{
 	 * @param paramsMap
 	 * @return
 	 */
-	List<SalaryImportVO> getSalaryDetail(@Param("params")Map<String, Object> paramsMap);
+	SalaryImportVO getSalaryDetail(@Param("params")Map<String, Object> paramsMap);
 	List<SalaryImportVO> getSumSalaryInfoList(Map<String, Object> paramsMap);
 	List<SalaryImportVO> getSalaryInfoList(Map<String, Object> paramsMap);
 	

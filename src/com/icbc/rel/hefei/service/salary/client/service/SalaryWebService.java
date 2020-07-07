@@ -13,13 +13,13 @@ public interface SalaryWebService {
 	 * @param paramsMap
 	 * @return
 	 */
-	List<SalaryVO> getSalaryInfo(Map<String, Object> paramsMap);
+	List<SalaryImportVO> getSalaryInfo(Map<String, Object> paramsMap);
 	/**
 	 * 查询工资明细
 	 * @param paramsMap
 	 * @return
 	 */
-	List<SalaryImportVO> getSalaryDetail(Map<String, Object> paramsMap);
+	SalaryImportVO getSalaryDetail(Map<String, Object> paramsMap);
 	/**
 	 *  查询工资信息/汇总
 	 * @param paramsMap

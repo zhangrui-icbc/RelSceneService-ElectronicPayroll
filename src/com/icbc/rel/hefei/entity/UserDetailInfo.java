@@ -163,6 +163,14 @@ public class UserDetailInfo {
 		this.customerType = customerType;
 	}
 
+	@Override
+	public String toString() {
+		return "UserDetailInfo [iid=" + iid + ", mpId=" + mpId + ", imUserId=" + imUserId + ", province=" + province
+				+ ", city=" + city + ", nickName=" + nickName + ", sex=" + sex + ", icbcUserId=" + icbcUserId
+				+ ", unino=" + unino + ", mobileNo=" + mobileNo + ", customerType=" + customerType + ", cisno=" + cisno
+				+ ", starLevel=" + starLevel + ", registerTime=" + registerTime + ", createTime=" + createTime + "]";
+	}
+
 	
     
 }

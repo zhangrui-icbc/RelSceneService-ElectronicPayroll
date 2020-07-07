@@ -22,6 +22,11 @@ public class SalaryVO {
 	private String excelName;
 	
 	private List<SalaryImportVO> importList;
+	
+	private Long companyId;
+	
+	private String remark;
+	
 
 	public String getId() {
 		return id;
@@ -61,6 +66,22 @@ public class SalaryVO {
 
 	public void setExcelName(String excelName) {
 		this.excelName = excelName;
+	}
+
+	public Long getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(Long companyId) {
+		this.companyId = companyId;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 	
 	

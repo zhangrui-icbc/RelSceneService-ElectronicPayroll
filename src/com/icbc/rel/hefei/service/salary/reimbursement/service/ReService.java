@@ -22,12 +22,12 @@ public interface ReService {
 	 * @param file
 	 * @return
 	 */
-	AjaxResult uploadSalary(File file,String companyId) throws FileNotFoundException, IOException, ParseException, NullPointerException;
+//	AjaxResult uploadSalary(File file,String companyId) throws FileNotFoundException, IOException, ParseException, NullPointerException;
 	/**
 	 * 保存工资信息
 	 * @param reimbursement
 	 */
-	void insertReimbursement(Reimbursement reimbursement);
+//	void insertReimbursement(Reimbursement reimbursement);
 	/**
 	 * 导出模板
 	 * @param request 

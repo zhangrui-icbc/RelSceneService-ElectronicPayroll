@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.icbc.rel.hefei.entity.salary.Salary;
 import com.icbc.rel.hefei.entity.salary.SalaryCustomTemplate;
+import com.icbc.rel.hefei.entity.salary.SalaryImport;
 import com.icbc.rel.hefei.entity.salary.SalaryStaff;
 
 
@@ -32,9 +33,9 @@ public interface SalaryMapper{
 	
 	/**
 	 * 
-	 * @param oaSalary
+	 * @param list
 	 */
-	void insertOaSalaryImport(Salary oaSalary);
+	void insertOaSalaryImport(@Param("importList")List<SalaryImport> list);
 	
 	
 	/**

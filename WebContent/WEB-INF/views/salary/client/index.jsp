@@ -22,15 +22,14 @@
 			<button class="btn" id="reimbursement"><img src="../../image/salary/client/reimbursement-btn.png" /></button>
 			<button class="btn" id="reset"><img src="../../image/salary/client/pwd-btn.png" onclick="show()"/></button>
 		</div>
-		<img class="btn-back" src="../../image/salary/client/btn-back.png"  />
 		<div class="alert-pwd" style="display: none;">
 			<p  class="return">关闭</p>
 			<div class="pwd-box">
-				<input id="npwd" type="text" placeholder="请输入新密码"/><br />
-				<input id="npwd1" type="text" placeholder="请再次输入密码"/><br />
+				<input id="npwd" type="password" placeholder="请输入新密码"/><br />
+				<input id="npwd1" type="password" placeholder="请再次输入密码"/><br />
 				<button class="submin-btn" onclick="check()">确认</button>
 			</div>
-			<img class="back" src="../../image/salary/client/btn-back.png" />
+	<!-- 		<img class="back" src="../../image/salary/client/btn-back.png" /> -->
 		</div>
 	    <script src="../../js/jquery-3.2.1.min.js"></script>
 		<script src="../../js/salary/client/layer.js"  ></script>

@@ -1,7 +1,14 @@
+body{
+ min-height: 100%;
+ background:  url(../../../image/salary/client/bg.jpg);
+ background-size:100% 100%;
+ background-position: center top;
+ background-repeat: no-repeat;
+}
 .btn-box{
 				    position: absolute;
 				    width: 100%;
-				    top: 32%;
+				    top: 36%;
 				    left: 50%;
 				    transform: translate(-50%,-50%);
 			}
@@ -19,6 +26,7 @@
 				    color: brown;
 				    font-weight: bold;
 				    border: 0;
+			        background: transparent;
 			}
 			.alert-pwd{
 				position: absolute;
@@ -26,19 +34,24 @@
 				height: 100%;
 				top: 0;
 				left: 0;
-				background: white;
+			 	min-height: 100%;
+				 background:  url(../../../image/salary/client/bg.jpg);
+				 background-size:100% 100%;
+				 background-position: center top;
+				 background-repeat: no-repeat;	
 			}
 			.alert-pwd input{
-				margin-bottom: 22px;
+			    margin-bottom: 22px;
 			    padding: 2px 10px;
-			    border-radius: 5px;
+			    border-radius: 25px;
 			    border: 0;
 			    height: 35px;
 			    width: 66%;
 			    font-size: 16px;
 			    text-align: center;
-			    background: burlywood;
-			    color: white;
+			    background: white;
+			    color: black;
+			    font-weight: 600;
 			}
 			.pwd-box{
 			    margin-top: 25%;
@@ -51,7 +64,7 @@
 			    z-index:1;
 			}
 			.submin-btn{
-				border: 0;
+			    border: 0;
 			    width: 66%;
 			    font-size: 16px;
 			    letter-spacing: 2px;
@@ -61,9 +74,10 @@
 			    display: block;
 			    margin: 0 auto;
 			    padding: 8px 10px;
-			    background: #FF9E91;
+			    background: #af0000;
 			    color: white;
 			    text-decoration: none;
+			    border-radius: 25px;
 			}
 			.back,.btn-back{
 				position: absolute;
@@ -83,7 +97,7 @@
 			}
 			input::-webkit-input-placeholder,
 				textarea::-webkit-input-placeholder {
-			    color: white;
+			    color: #914e3f;
 			}
 			.return{
     		position: absolute;

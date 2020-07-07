@@ -23,7 +23,7 @@ public interface SalaryService {
 	 * @param file
 	 * @return
 	 */
-	AjaxResult uploadSalary(/*HttpServletRequest request ,*/File file,String companyId) throws FileNotFoundException, IOException, ParseException, NullPointerException;
+//	AjaxResult uploadSalary(/*HttpServletRequest request ,*/File file,String companyId) throws FileNotFoundException, IOException, ParseException, NullPointerException;
 	/**
 	 * 保存工资信息
 	 * @param oaSalary

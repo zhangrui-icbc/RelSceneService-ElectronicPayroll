@@ -18,41 +18,42 @@ img{
     width: 76%;
     height: 40px;
     line-height: 25px;
-    caret-color:black;
+    caret-color: black;
     text-align: center;
     font-size: 1.1rem;
-    border-radius: 8px 8px;
+    border-radius: 25px 25px;
     margin: 0 auto;
     display: block;
     margin-top: 4%;
     border: none;
-    background: burlywood;
+    background: white;
+    font-weight: bold;
 }
 .login-btn {
-        width: 76%;
+    width: 76%;
     height: 2.5rem;
     display: block;
     margin: 0 auto;
     margin-top: 4%;
     /* height: 2rem; */
-    background: #F37260;
+    background: #af0000;
     line-height: 2rem;
     text-align: center;
     font-size: 1.2rem;
     letter-spacing: 5px;
     font-weight: bold;
-    border-radius: 8px;
+    border-radius: 25px;
     color: white;
     margin-bottom: 20px;
 }
 
 .forget-pwd{
-       color: red;
-       display: block;
-       width: 66%;
-       margin-left: 20%;
-       text-align: right;
-       text-decoration: none;
-       margin-top: 12px;
-       font-size: 14px;
+    color: #fee882;
+    display: block;
+    width: 66%;
+    margin-left: 20%;
+    text-align: right;
+    margin-top: 12px;
+    font-size: 14px;
+    text-decoration: underline;
    }

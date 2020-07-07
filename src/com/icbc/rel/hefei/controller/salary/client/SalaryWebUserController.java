@@ -98,11 +98,9 @@ public class SalaryWebUserController {
 	 * @return
 	 */
 	@RequestMapping("/salaryWebUser/jumpDetail")
-	public String jumpDetail( Model model,String salaryId,@DateTimeFormat(pattern = "yyyy-MM-dd")String issueTime,String  userId)
+	public String jumpDetail( Model model,String id)
 	{
-		model.addAttribute("salaryId",salaryId);
-		model.addAttribute("issueTime",issueTime);
-		model.addAttribute("userId",userId);
+		model.addAttribute("id",id);
 	    return  "salary/client/detail";
 	}
 	
@@ -121,12 +119,10 @@ public class SalaryWebUserController {
 	 * @return
 	 */
 	@RequestMapping("/salaryWebUser/jumpReDetail")
-	public String jumpReDetail( Model model,String salaryId,@DateTimeFormat(pattern = "yyyy-MM-dd")String issueTime,String  userId)
+	public String jumpReDetail( Model model,String id)
 	{
-		model.addAttribute("salaryId",salaryId);
-		model.addAttribute("issueTime",issueTime);
-		model.addAttribute("userId",userId);
-	    return  "salary/client/detailRe";
+		model.addAttribute("id",id);
+		return  "salary/client/detailRe";
 	}
 	/**
 	 *首页
@@ -157,10 +153,15 @@ public class SalaryWebUserController {
     @RequestMapping(value="/salaryWebUser/login",method = RequestMethod.POST)
     @ResponseBody
     public AjaxResult login(HttpServletRequest request, String password){
+    	logger.info("登录接口访问-------------------");
+    	//sid   accesstime= 
+    	String sid= request.getSession().getId();
+    	logger.info("11sid:"+sid+",accesstime:"+System.currentTimeMillis());
     	UserDetailInfo userinfo= new UserDetailInfo();
     	String username="";
     	String IMUserId=SessionUtil.getImUserId(request.getSession()); //正确的获取openid方式
 //    	String IMUserId="123";
+    	logger.info("22sid:"+sid+",accesstime:"+System.currentTimeMillis()+",IMUserId:"+IMUserId);
     	if(StringUtils.isEmpty(IMUserId)) {
 			logger.error("session失效,获取IMUserId失败！");
 			return AjaxResult.error("页面失效,请重新进入！");
@@ -169,6 +170,7 @@ public class SalaryWebUserController {
 		//拉取用户详情
     	try {
     		userinfo = ImUserService.FetchUserInfo(IMUserId);
+    		logger.info("33sid:"+sid+",accesstime:"+System.currentTimeMillis()+",userinfo:"+userinfo.toString());
     		username = userinfo.getMobileNo();
     		if(StringUtils.isEmpty(username)) {
     			logger.error("拉取用户详情失败！");
@@ -180,6 +182,7 @@ public class SalaryWebUserController {
 		}
 		logger.info("拉取用户详情为："+JSON.toJSON(userinfo));
 		String  companyId = (String) request.getSession().getAttribute(SessionParamConstant.SESSION_PARAM_COMPANYID);
+		logger.info("44sid:"+sid+",accesstime:"+System.currentTimeMillis()+",companyId:"+companyId);
     	if(StringUtils.isEmpty(password)) {
     		logger.error("密码为空,请检查后重新输入");
     		return AjaxResult.error("密码为空,请检查后重新输入");

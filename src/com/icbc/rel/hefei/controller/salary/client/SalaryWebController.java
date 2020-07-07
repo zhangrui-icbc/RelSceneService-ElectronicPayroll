@@ -45,7 +45,7 @@ public class SalaryWebController {
     @RequestMapping("/salary/getSalaryInfo")
     @ResponseBody
     public AjaxResult getSalaryInfo(HttpServletRequest request){
-    	List<SalaryVO>  oaSalaryList =new ArrayList<SalaryVO>();
+    	List<SalaryImportVO>  oaSalaryImportList =new ArrayList<SalaryImportVO>();
     	try {
     		SalaryUser user =  (SalaryUser) request.getSession().getAttribute("user");
     		String  companyId = (String) request.getSession().getAttribute(SessionParamConstant.SESSION_PARAM_COMPANYID);
@@ -56,11 +56,11 @@ public class SalaryWebController {
     		paramsMap.put("companyId" , companyId);
     		paramsMap.put("startDate", startDate);
     		paramsMap.put("endDate", endDate);
-    	    oaSalaryList= salaryWebService.getSalaryInfo(paramsMap);
+    		oaSalaryImportList= salaryWebService.getSalaryInfo(paramsMap);
     	}catch (Exception e) {
-    		logger.error("查询工资信息汇总报错:"+e.getMessage());
+    		logger.error("查询工资信息/汇总报错:"+e.getMessage(),e);
     	}
-    	return AjaxResult.success("成功", oaSalaryList);
+    	return AjaxResult.success("成功", oaSalaryImportList);
     }
     
     /**
@@ -69,19 +69,15 @@ public class SalaryWebController {
     @RequestMapping("/salary/getSalaryDetail")
     @ResponseBody
     public AjaxResult getSalaryDetail(HttpServletRequest request){
-    	List<SalaryImportVO> oaSalaryList = new ArrayList<SalaryImportVO>();
+    	SalaryImportVO salaryImportVO = new SalaryImportVO();
     	try {
-    		String userId = request.getParameter("userId");
-    		String issueTime = request.getParameter("issueTime");
-    		String salaryId = request.getParameter("salaryId");
+    		String id = request.getParameter("id");
     		Map<String, Object> paramsMap =new HashMap<String, Object>();
-    		paramsMap.put("userId" , userId);
-    		paramsMap.put("issueTime" , issueTime);
-    		paramsMap.put("salaryId", salaryId);
-    	    oaSalaryList= salaryWebService.getSalaryDetail(paramsMap);
+    		paramsMap.put("id", id);
+    		salaryImportVO= salaryWebService.getSalaryDetail(paramsMap);
     	}catch (Exception e) {
     		logger.error("获取工资明细报错:"+e.getMessage());
     	}
-    	return AjaxResult.success("成功", oaSalaryList);
+    	return AjaxResult.success("成功", salaryImportVO);
     }
 }

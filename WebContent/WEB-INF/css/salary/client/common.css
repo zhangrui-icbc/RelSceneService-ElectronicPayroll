@@ -42,13 +42,13 @@ textarea { -webkit-appearance: none;}
 /*webkit表单输入框placeholder的颜色值改变*/
 input:-ms-input-placeholder,
 textarea:-ms-input-placeholder {
-    color: white;
+    color: #767676;
     
 }
 
 input::-webkit-input-placeholder,
 textarea::-webkit-input-placeholder {
-    color: white;
+    color: #767676;
 }
 
 /*logo图片**/

@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.icbc.rel.hefei.dao.salary.client.ReWebMapper;
+import com.icbc.rel.hefei.entity.salary.client.ReImportVO;
+import com.icbc.rel.hefei.entity.salary.client.ReVO;
 import com.icbc.rel.hefei.entity.salary.client.SalaryImportVO;
 import com.icbc.rel.hefei.entity.salary.client.SalaryVO;
 import com.icbc.rel.hefei.service.salary.client.service.ReWebService;
@@ -29,25 +31,19 @@ public class ReWebServiceImpl implements ReWebService {
 	ReWebMapper reWebMapper;
 	    
 	/**
-	 * 获取工资信息 
+	 * 获取报销信息 
 	 */
 	@Override
-	public List<SalaryVO> getReInfo(Map<String, Object> paramsMap) {
-		String startDate = (String) paramsMap.get("startDate");
-		String endDate = (String) paramsMap.get("endDate");
-		List<SalaryVO> list  = new ArrayList<SalaryVO>();
-		if(!StringUtils.isEmpty(startDate)&&!StringUtils.isEmpty(endDate)) {
-			return reWebMapper.getReInfo(paramsMap);
-		}else {
-			 list =reWebMapper.getReInfo(paramsMap);
-			 sort(list);
-			return list;
-		}
+	public List<ReVO> getReInfo(Map<String, Object> paramsMap) {
+//		String startDate = (String) paramsMap.get("startDate");
+//		String endDate = (String) paramsMap.get("endDate");
+		List<ReVO> list  = new ArrayList<ReVO>();
+		list = reWebMapper.getReInfo(paramsMap);
+		return list;
 	}
 
 	@Override
-	public List<SalaryImportVO> getReDetail(Map<String, Object> paramsMap) {
-		// TODO Auto-generated method stub
+	public List<ReImportVO> getReDetail(Map<String, Object> paramsMap) {
 		return reWebMapper.getReDetail(paramsMap);
 	}
 	

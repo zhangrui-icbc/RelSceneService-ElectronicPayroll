@@ -4,29 +4,34 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.icbc.rel.hefei.dao.salary.SalaryMapper">
     <resultMap id="salaryResultMap" type="com.icbc.rel.hefei.entity.salary.Salary">
-        <id column="id" property="id"/>
-        <result column="import_time" property="importTime"/>
-        <result column="issue_time" property="issueTime"/>
-         <result column="excel_name" property="excelName"/>
+	        <id column="id" property="id"/>
+	        <result column="import_time" property="importTime"/>
+	        <result column="issue_time" property="issueTime"/>
+	        <result column="excel_name" property="excelName"/>
+	        <result column="company_id" property="companyId"/>
+	        <result column="remark" property="remark"/>
         <collection property="importList" ofType="com.icbc.rel.hefei.entity.salary.SalaryImport">
-            <id column="city_id" property="id"/>
-            <result column="salary_item_id" property="salaryItemId"/>
-            <result column="salary_id" property="salaryId"/>
-            <result column="template_id" property="templateId"/>
-            <result column="template_col_name" property="templateColName"/>
-            <result column="import_amount" property="importAmount"/>
+            <result column="importId" property="id"/>
+            <result column="batch_no" property="batchNo"/>
+            <result column="issue_time" property="issueTime"/>
+            <result column="create_time" property="createTime"/>
+            <result column="real_income" property="realIncome"/>
+            <result column="total_revenue" property="totalRevenue"/>
+            <result column="total_expenditure" property="totalExpenditure"/>
+            <result column="salary_remark" property="salaryRemark"/>
+            <result column="special_deduction" property="specialDeduction"/>
+            <result column="unit_expenditure" property="unitExpenditure"/>
+            <result column="special_info" property="specialInfo"/>
             <result column="user_id" property="userId"/>
         </collection>
     </resultMap>
     <!-- 查询工资日志信息 -->
     <select id="getUpLoadLog" resultMap="salaryResultMap">
-		SELECT a.id AS id ,a.import_time AS import_time,a.issue_time AS issue_time,a.excel_name AS excel_name, oai.salary_item_id AS salary_item_id , oai.salary_id AS salary_id, oai.col_index AS col_index,
-		oai.template_id AS template_id, oai.template_col_name AS template_col_name,  oai.import_amount AS import_amount, oai.user_id AS user_id,oai.category AS category 
-		FROM salary a LEFT JOIN  salary_import oai  ON a.`id`=oai.`salary_id` where oai.template_id =#{params.companyId}	order by a.import_time desc
+		SELECT  id AS id,  import_time AS import_time,  issue_time AS issue_time,excel_name as excel_name	FROM  salary WHERE company_id= #{params.companyId}	order by import_time desc 
     </select>
     <!-- 删除日志 -->
     <delete id="delLog">
-    	  <![CDATA[DELETE FROM salary_import WHERE salary_id = #{salaryId};]]>
+    	  <![CDATA[DELETE FROM salary_import WHERE batch_no = #{salaryId};]]>
     </delete>
     <delete id="delLog1">
      		<![CDATA[DELETE FROM salary WHERE id = #{salaryId};]]>
@@ -42,15 +47,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<!-- 保存工资信息 -->
 	<insert id="insertOaSalary" useGeneratedKeys="true" keyProperty="id"  parameterType = "com.icbc.rel.hefei.entity.salary.Salary">
-		insert into salary (id,import_time,issue_time,excel_name) values (#{id},#{importTime},#{issueTime},#{excelName})
+		insert into salary (id,import_time,issue_time,excel_name,company_id) values (#{id},#{importTime},#{issueTime},#{excelName},#{companyId})
 	</insert>
     
     
 	<!-- 插入自定义项 -->
-	<insert id="insertOaSalaryImport"   parameterType = "com.icbc.rel.hefei.entity.salary.Salary">
+<!-- 	<insert id="insertOaSalaryImport"   parameterType = "java.util.List">
 		insert into salary_import (salary_item_id , salary_id , template_id  , template_col_name , import_amount , user_id, col_index , category) values
 			<foreach collection="importList" item="item"  separator="," >
-				(#{item.salaryItemId} , #{id} , #{item.templateId}  , #{item.templateColName} , #{item.importAmount} , #{item.userId}, #{item.colIndex}, #{item.category} )
+				(#{item.salaryItemId} , #{item.salaryId} , #{item.templateId}  , #{item.templateColName} , #{item.importAmount} , #{item.userId}, #{item.colIndex}, #{item.category} )
+   			</foreach>
+   	</insert> -->
+   	<insert id="insertOaSalaryImport"   parameterType = "java.util.List">
+		insert into salary_import (batch_no , user_id , issue_time  , real_income , total_revenue , total_expenditure, salary_remark , special_deduction , 
+		unit_expenditure ,special_info ,create_time,company_id) values
+			<foreach collection="importList" item="item"  separator="," >
+				(#{item.batchNo} , #{item.userId} , #{item.issueTime}  , #{item.realIncome} , #{item.totalRevenue} , #{item.totalExpenditure}, #{item.salaryRemark}, #{item.specialDeduction}
+				, #{item.unitExpenditure}, #{item.specialInfo}, #{item.createTime} , #{item.companyId})
    			</foreach>
    	</insert>
    	<!-- 插入员工信息 -->
@@ -98,7 +111,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    	</insert>
 	
 	 <select id="getExcelNameList" resultType="java.lang.String">
-		SELECT a.excel_name AS excel_name  FROM salary a LEFT JOIN  salary_import oai  ON a.`id`=oai.`salary_id` where oai.template_id =#{companyId}	
+		SELECT excel_name  FROM salary  where company_id =#{companyId}	
     </select>
 	
 </mapper>

@@ -1,8 +1,10 @@
-package com.icbc.rel.hefei.entity.salary.reimbursement;
+package com.icbc.rel.hefei.entity.salary.client;
 
 
 import java.util.Date;
 import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 /**
@@ -10,22 +12,21 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  * @author fc
  *
  */
-public class Reimbursement {
+public class ReVO {
 	private String id;
-	
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
 	private Date importTime;
-
 	@JsonFormat(pattern="yyyy-MM-dd",timezone="GMT+8")
 	private Date issueTime;
 	
 	private String excelName;
 	
-	private List<ReImport> importList;
+	private List<ReImportVO> importList;
 	
-	private String companyId;
+	private Long companyId;
 	
 	private String remark;
+	
 
 	public String getId() {
 		return id;
@@ -51,11 +52,12 @@ public class Reimbursement {
 		this.issueTime = issueTime;
 	}
 
-	public List<ReImport> getImportList() {
+
+	public List<ReImportVO> getImportList() {
 		return importList;
 	}
 
-	public void setImportList(List<ReImport> importList) {
+	public void setImportList(List<ReImportVO> importList) {
 		this.importList = importList;
 	}
 
@@ -67,11 +69,11 @@ public class Reimbursement {
 		this.excelName = excelName;
 	}
 
-	public String getCompanyId() {
+	public Long getCompanyId() {
 		return companyId;
 	}
 
-	public void setCompanyId(String companyId) {
+	public void setCompanyId(Long companyId) {
 		this.companyId = companyId;
 	}
 

@@ -13,9 +13,7 @@
 		<link rel="stylesheet" href="../../css/salary/client/detail.css">
 	</head>
 	<body>
-	<input type="hidden" id="salaryId" name="salaryId"  value="${salaryId}">
-	<input type="hidden" id="issueTime" name="issueTime"  value="${issueTime}">
-	<input type="hidden" id="userId" name="userId"  value="${userId}">
+	<input type="hidden" id="id" name="id"  value="${id}">
 		<h2 class="title">报销单明细</h2>
 		<img src="../../image/salary/client/home.png" class="home-btn" />
 		<p class="tit">单位：元</p>

@@ -16,14 +16,14 @@
 		<!--登陆框-->
 		<!-- <img th:src="@{/oa/salary/images/back.png}" /> -->
         <div class="g-shade">
-    		<input  class="input-val" id="pwd" placeholder="请输入密码"/>
+    		<input type="password" class="input-val" id="pwd" placeholder="请输入密码"/>
             <button class="login-btn" onclick="check()">确认</button>
             <div  class="forget-pwd">忘记密码？</div>
         </div>
         <div id="CheckMsg" class="msg"></div>
 		<script src="../../js/jquery-3.2.1.min.js"></script>
 		<script src="../../js/salary/client/layer.js"  ></script>
-		<script src="../../js/salary/client/login.js"  ></script>
+		<script src="../../js/salary/client/login.js?version=20200616"  ></script>
 		<script src="../../js/salary/md5.js"></script>
 		<script src="../../js/ICBCutil.js"></script>
 		<script src="../../js/icbc_core.js"></script>

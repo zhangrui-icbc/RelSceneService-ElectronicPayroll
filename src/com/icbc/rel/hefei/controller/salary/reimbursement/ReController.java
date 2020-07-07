@@ -71,7 +71,7 @@ public class ReController {
     @SuppressWarnings("unchecked")
 	@RequestMapping(value="/reimbursement/uploadRe")
     @ResponseBody
-    public AjaxResult uploadSalary(HttpServletRequest request) throws Exception{
+    public AjaxResult uploadRe(HttpServletRequest request) throws Exception{
     	List<Long> mobileList = new ArrayList<Long>();
     	Map<String,Object> map = new HashMap<String,Object>();
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
@@ -211,8 +211,8 @@ public class ReController {
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
     	}
-    	String salaryId = request.getParameter("reId");
-    	reService.delLog(salaryId);
+    	String reId = request.getParameter("reId");
+    	reService.delLog(reId);
     	return AjaxResult.success("删除成功!");
     }
     /**

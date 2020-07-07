@@ -22,7 +22,7 @@
 	    	  alert("XMLHttpRequest.status:"+XMLHttpRequest.status);
 	    	  alert("XMLHttpRequest.readyState:"+XMLHttpRequest.readyState);
 	    	  alert("textStatus:"+textStatus);
-	    	  actAlert("网络错误!");
+	    	  actAlert("网络异常,请切换网络后重试!");
 	      }
 	  });
 	}

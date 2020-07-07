@@ -140,43 +140,6 @@ $("#mytab_03").click(function(){
 	  });
 })
 
-function uploadFile(){
-	var fileM=document.querySelector("#filePath");
-	var flag = $("#filePath").val();
-	if(flag=='' || flag==null){
-		layerMsg("请先上传文件");
-	}else{
-		  var fileObj = fileM.files[0];
-		    //创建formdata对象，formData用来存储表单的数据，表单数据时以键值对形式存储的。
-		    var formData = new FormData();
-		    formData.append('file', fileObj);
-		    $.ajax({
-		        url: ctx+"/mp/salary/uploadSalary",
-		        type: "post",
-		        dataType: "json",
-		        data: formData,
-		        async: false,
-		        cache: false,
-		        contentType: false,
-		        processData: false,
-		        success: function (res) {
-		        	if(res.code=="0"){
-		        		var test = document.getElementById('filePath');
-		        		test.value = ''; 
-		        		layerMsg(res.msg);
-		        		$("#mytab_04").click();
-		        	}else if(res.code=="301" || res.code=="500"){
-		        		layerMsg(res.msg);
-		        	}else{
-		        		 layerMsg("上传失败!");
-		        	}
-		        },error:function(){
-			 		 layerMsg("上传失败!");
-			 	}
-		    });
-	}
-	
-}
 /**
  * 更换员工手机号码
  * @returns

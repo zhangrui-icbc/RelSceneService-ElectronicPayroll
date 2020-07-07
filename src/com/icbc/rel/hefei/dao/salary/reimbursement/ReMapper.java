@@ -10,6 +10,7 @@ import org.apache.ibatis.annotations.Param;
 import com.icbc.rel.hefei.entity.salary.SalaryCustomTemplate;
 import com.icbc.rel.hefei.entity.salary.SalaryStaff;
 import com.icbc.rel.hefei.entity.salary.reimbursement.ReCustomTemplate;
+import com.icbc.rel.hefei.entity.salary.reimbursement.ReImport;
 import com.icbc.rel.hefei.entity.salary.reimbursement.Reimbursement;
 
 
@@ -33,9 +34,9 @@ public interface ReMapper{
 	
 	/**
 	 * 
-	 * @param reimbursement
+	 * @param list
 	 */
-	void insertReimbursementImport(Reimbursement reimbursement);
+	void insertReimbursementImport(@Param("importList")List<ReImport> list);
 	
 	
 	/**
@@ -72,13 +73,13 @@ public interface ReMapper{
 	
 	List<Reimbursement> getUpLoadLog(@Param("params")Map<String, Object> paramsMap);
 	
-	void delLog(@Param("reId")String salaryId);
+	void delLog(@Param("reId")String reId);
 	
 	int delStaff(@Param("userName")String userName, @Param("companyId") String companyId);
 	
 	int updateMobile(@Param("userName")String userName,@Param("newUserName") String newUserName,@Param("companyId") String companyId);
 	
-	void delLog1(@Param("reId")String salaryId);
+	void delLog1(@Param("reId")String reId);
 	List<String> getExcelNameList(@Param("companyId")String companyId);
 	
 

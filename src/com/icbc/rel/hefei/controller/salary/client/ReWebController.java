@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
+import com.icbc.rel.hefei.entity.salary.client.ReImportVO;
+import com.icbc.rel.hefei.entity.salary.client.ReVO;
 import com.icbc.rel.hefei.entity.salary.client.SalaryImportVO;
 import com.icbc.rel.hefei.entity.salary.client.SalaryUser;
 import com.icbc.rel.hefei.entity.salary.client.SalaryVO;
@@ -42,20 +44,16 @@ public class ReWebController {
     @RequestMapping("/reimbursement/getReDetail")
     @ResponseBody
     public AjaxResult getReDetail(HttpServletRequest request){
-    	List<SalaryImportVO>  oaSalaryList =new ArrayList<SalaryImportVO>();
+    	List<ReImportVO>  oaReList =new ArrayList<ReImportVO>();
     	try {
-    		String userId = request.getParameter("userId");
-    		String issueTime = request.getParameter("issueTime");
-    		String salaryId = request.getParameter("salaryId");
+    		String id = request.getParameter("id");
     		Map<String, Object> paramsMap =new HashMap<String, Object>();
-    		paramsMap.put("userId" , userId);
-    		paramsMap.put("issueTime" , issueTime);
-    		paramsMap.put("salaryId", salaryId);
-    		oaSalaryList= reWebService.getReDetail(paramsMap);
+    		paramsMap.put("id", id);
+    		oaReList= reWebService.getReDetail(paramsMap);
 		} catch (Exception e) {
-			logger.error("获取报销明细报错:"+e.getMessage());
+			logger.error("获取报销明细报错:"+e.getMessage(),e);
 		}
-    	return AjaxResult.success("成功", oaSalaryList);
+    	return AjaxResult.success("成功", oaReList);
     }
     
     /**
@@ -66,7 +64,7 @@ public class ReWebController {
     @RequestMapping("/reimbursement/getReInfo")
     @ResponseBody
     public AjaxResult getSalaryInfo(HttpServletRequest request){
-    	List<SalaryVO>  oaSalaryList =new ArrayList<SalaryVO>();
+    	List<ReVO>  oaReList =new ArrayList<ReVO>();
     	try {
         	SalaryUser user =  (SalaryUser) request.getSession().getAttribute("user");
         	String  companyId = (String) request.getSession().getAttribute(SessionParamConstant.SESSION_PARAM_COMPANYID);
@@ -77,11 +75,11 @@ public class ReWebController {
         	paramsMap.put("companyId" , companyId);
         	paramsMap.put("startDate", startDate);
         	paramsMap.put("endDate", endDate);
-        	oaSalaryList= reWebService.getReInfo(paramsMap);
+        	oaReList= reWebService.getReInfo(paramsMap);
 		} catch (Exception e) {
 			logger.error("查询报销信息汇总报错:"+e.getMessage());
 		}
-    	return AjaxResult.success("成功", oaSalaryList);
+    	return AjaxResult.success("成功", oaReList);
     }
     
     
