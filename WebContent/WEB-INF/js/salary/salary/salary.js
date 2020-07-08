@@ -1126,7 +1126,7 @@ $("#ygMsg-detail").click(function(){
  			for(var i in data){
  				var dataList=data[i];
  				var _num=Number(i)+1;
- 				str += "<tr><td class='hid'>"+data[i].id+"</td><td class='yg-name'>"+data[i].name+"</td><td class=''>"+data[i].mobile+"</td><td class='action-btns'>"+btnHtml+"</td>";
+       		   str += "<tr><td class='hid'>"+data[i].id+"</td><td class='dept'>"+ifnul(data[i].dept)+"</td><td class='yg-name'>"+data[i].name+"</td><td class=''>"+data[i].mobile+"</td><td class='action-btns'>"+btnHtml+"</td>";
  			}
  			$('#ygMsg_tbody').html(str);
 	      },
