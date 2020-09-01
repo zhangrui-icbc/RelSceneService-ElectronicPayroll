@@ -1,0 +1,4 @@
+进入场景后操作.
+ip+mp/salary/dataMigration 数据迁移接口,访问该接口后即开始迁移,只可访问一次.
+
+ip+mp/salary/checkSuccess 数据迁移成功验证接口 salList  reList 不为0即为成功.

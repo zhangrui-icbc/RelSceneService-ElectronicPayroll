@@ -11,6 +11,7 @@ encoding//WebContent/WEB-INF/js/salary/salary/zdy.js=UTF-8
 encoding//src/com/icbc/rel/hefei/controller/salary/AlternativeTemplateController.java=GBK
 encoding//src/com/icbc/rel/hefei/controller/salary/CommonTemplateController.java=GBK
 encoding//src/com/icbc/rel/hefei/controller/salary/CustomTemplateController.java=GBK
+encoding//src/com/icbc/rel/hefei/controller/salary/DataMigrationController.java=UTF-8
 encoding//src/com/icbc/rel/hefei/controller/salary/SalaryController.java=UTF-8
 encoding//src/com/icbc/rel/hefei/controller/salary/SalaryUserController.java=GBK
 encoding//src/com/icbc/rel/hefei/controller/salary/reimbursement=GBK
@@ -20,3 +21,4 @@ encoding//src/com/icbc/rel/hefei/controller/salary/reimbursement/ReCustomTemplat
 encoding//src/com/icbc/rel/hefei/service/rel/ImUserService.java=UTF-8
 encoding//src/properties/default.properties=UTF-8
 encoding/<project>=GBK
+encoding/\u6570\u636E\u8FC1\u79FB\u8BF4\u660E.txt=UTF-8

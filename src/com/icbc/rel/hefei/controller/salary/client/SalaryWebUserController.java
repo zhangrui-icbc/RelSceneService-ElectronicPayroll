@@ -51,6 +51,7 @@ public class SalaryWebUserController {
 	 */
 	@RequestMapping("/salaryWebUser/jumpLogin")
 	public String jumpSalary(HttpServletRequest request){
+		logger.info("进入客户端跳转工资条登录页面=========>>>>>>>");
 		//TODO 增加地区判断 
 		/*客户端得通过活动链接里的activityuid获取对应的mpid然后通过syspublicnumberinfo那张表找到该公众号的机构号，如果这张表里还没有机构号这个数据，就再走一次拉取公众号信息的接口来获取机构号(个人判断不会没有机构号,因为pc端已经判断好了)*/
 		String activityUid = request.getParameter("activityUid");
@@ -205,6 +206,7 @@ public class SalaryWebUserController {
     @RequestMapping(value="/salaryWebUser/resetPassword",method = RequestMethod.POST)
     @ResponseBody
     public AjaxResult resetPassword(HttpServletRequest request,String newPassword1,String newPassword2){
+    	logger.info("进入客户端跳转密码修改=========>>>>>>>");
     	 if(!newPassword1.equals(newPassword2)) {
     		logger.error("新密码两次输入不一致!,请检查后重新输入");
     		return AjaxResult.error("新密码两次输入不一致!,请检查后重新输入");

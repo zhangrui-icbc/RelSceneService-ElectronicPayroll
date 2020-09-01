@@ -7,7 +7,7 @@ package com.icbc.rel.hefei.entity.salary;
  * @author fc
  *
  */
-public class SalaryImport2 {
+public class SalaryImportOld {
 	
 	//不需要分组字段,必要时关联模板表查询
 	private int salaryItemId;//一批多条的项目

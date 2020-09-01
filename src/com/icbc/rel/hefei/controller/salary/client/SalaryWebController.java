@@ -45,6 +45,7 @@ public class SalaryWebController {
     @RequestMapping("/salary/getSalaryInfo")
     @ResponseBody
     public AjaxResult getSalaryInfo(HttpServletRequest request){
+    	logger.info("进入客户端查询工资信息/汇总=========>>>>>>>");
     	List<SalaryImportVO>  oaSalaryImportList =new ArrayList<SalaryImportVO>();
     	try {
     		SalaryUser user =  (SalaryUser) request.getSession().getAttribute("user");
@@ -69,6 +70,7 @@ public class SalaryWebController {
     @RequestMapping("/salary/getSalaryDetail")
     @ResponseBody
     public AjaxResult getSalaryDetail(HttpServletRequest request){
+    	logger.info("进入客户端获取工资明细=========>>>>>>>");
     	SalaryImportVO salaryImportVO = new SalaryImportVO();
     	try {
     		String id = request.getParameter("id");

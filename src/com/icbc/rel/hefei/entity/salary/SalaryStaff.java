@@ -1,5 +1,8 @@
 package com.icbc.rel.hefei.entity.salary;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class SalaryStaff {
 	private int id;
@@ -14,8 +17,11 @@ public class SalaryStaff {
 	private String openId;
 	
 	private String dept;
-	
+	//创建时间
+	private Date createTime;
 
+	private Date updateTime;
+	
 	public int getId() {
 		return id;
 	}
@@ -70,6 +76,29 @@ public class SalaryStaff {
 
 	public void setDept(String dept) {
 		this.dept = dept;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	@Override
+	public String toString() {
+		return "SalaryStaff [id=" + id + ", mobile=" + mobile + ", companyId=" + companyId + ", name=" + name
+				+ ", password=" + password + ", openId=" + openId + ", dept=" + dept + ", createTime=" + createTime
+				+ ", updateTime=" + updateTime + "]";
 	}
 	
 }

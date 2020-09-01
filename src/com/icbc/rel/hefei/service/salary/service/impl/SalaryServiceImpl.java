@@ -54,6 +54,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.icbc.rel.hefei.controller.salary.client.ReWebController;
 import com.icbc.rel.hefei.dao.salary.SalaryCommonMapper;
 import com.icbc.rel.hefei.dao.salary.SalaryCustomMapper;
@@ -66,6 +67,8 @@ import com.icbc.rel.hefei.entity.salary.Salary;
 import com.icbc.rel.hefei.entity.salary.SalaryCommonTemplate;
 import com.icbc.rel.hefei.entity.salary.SalaryCustomTemplate;
 import com.icbc.rel.hefei.entity.salary.SalaryImport;
+import com.icbc.rel.hefei.entity.salary.SalaryImportOld;
+import com.icbc.rel.hefei.entity.salary.SalaryOld;
 import com.icbc.rel.hefei.entity.salary.SalaryStaff;
 import com.icbc.rel.hefei.service.rel.MessageHelper;
 import com.icbc.rel.hefei.service.rel.MessageService;
@@ -197,12 +200,14 @@ public class SalaryServiceImpl implements SalaryService {
 		    	salaryStaff.setDept(row[0]);
 		    	salaryStaff.setName(row[1]);
 		    	salaryStaff.setMobile(row[2]);
+		    	salaryStaff.setCreateTime(new Date());
+		    	salaryStaff.setUpdateTime(new Date());
 		    	staffList.add(salaryStaff);
 		    }
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error("上传员工信息service", e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("上传员工信息service", e);
 		}
         return AjaxResult.success("解析员工信息成功!", staffList);
 	}
@@ -267,7 +272,7 @@ public class SalaryServiceImpl implements SalaryService {
 				out.flush();
 				out.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 	    }
 	  
@@ -509,14 +514,14 @@ public class SalaryServiceImpl implements SalaryService {
 			os = response.getOutputStream();
 			createWorkbook(salaryCommonTemplate,oaSalaryImportTemplates).write(os);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}finally{
 			try {
 				if(os!=null){
 					os.close();
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 		
@@ -545,14 +550,14 @@ public class SalaryServiceImpl implements SalaryService {
 			os = response.getOutputStream();
 			createErrWorkbook(errList).write(os);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("错误手机号码导出service", e);
 		}finally{
 			try {
 				if(os!=null){
 					os.close();
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("错误手机号码导出service", e);
 			}
 		}
 		
@@ -590,7 +595,7 @@ public class SalaryServiceImpl implements SalaryService {
 					os.close();
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 		
@@ -785,7 +790,7 @@ public class SalaryServiceImpl implements SalaryService {
 				os = response.getOutputStream();
 				workBook.write(os);
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		
 	}
@@ -950,9 +955,9 @@ public class SalaryServiceImpl implements SalaryService {
 	            bos.close();
 	            buffer = bos.toByteArray();
 	        }catch (FileNotFoundException e){
-	            e.printStackTrace();
+	        	logger.error(e.getMessage(), e);
 	        }catch (IOException e){
-	            e.printStackTrace();
+	        	logger.error(e.getMessage(), e);
 	        }
 	        return buffer;
 	    }
@@ -978,7 +983,177 @@ public class SalaryServiceImpl implements SalaryService {
 	public List<String> getExcelNameList(String companyId) {
 		return salaryMapper.getExcelNameList(companyId);
 	}
-    
-	  
-	  
+
+
+	@Override
+	public List<SalaryOld> getOldData() {
+		
+		int count = salaryMapper.getCount();
+        //类型转换
+        Integer pnum=Integer.valueOf(1);
+        Integer psize=Integer.valueOf(1);
+        //调用PageHelper获取第1页，10条内容，默认查询总数count
+        PageHelper.startPage(pnum,psize);
+		return salaryMapper.getOldData();
+	}
+
+
+	@Override
+	public List<SalaryOld> getOldUpLoadLog(String companyId) {
+//		int count = salaryMapper.getCount();
+//        //类型转换
+//        Integer pnum=Integer.valueOf(1);
+//        Integer psize=Integer.valueOf(1);
+//        //调用PageHelper获取第1页，10条内容，默认查询总数count
+//        PageHelper.startPage(pnum,psize);
+		return salaryMapper.getOldUpLoadLog(companyId);
+	}
+
+
+	@Override
+	public void addSalCompanyId(String companyId) {
+		salaryMapper.addSalCompanyId(companyId);
+	}
+
+	@Transactional
+	@Override
+	public boolean salDM(String companyId) {
+		try {
+			Map<String, Object> paramsMap = new HashMap<String, Object>();
+	    	paramsMap.put("companyId", companyId);
+	    	List<Salary> salList = salaryMapper.getUpLoadLog(paramsMap);
+	    	if(salList.size()==0||salList.isEmpty()) {
+	    		List<String> salaryIds  = salaryMapper.getSalaryIds(companyId);
+	    		if(salaryIds.size()!=0) {
+	    			for (int ii = 0; ii < salaryIds.size(); ii++) {
+	    	        	List<SalaryOld> salaryList = salaryMapper.getOldUpLoadLog(salaryIds.get(ii));
+	    	        	if(salaryList.size()!=0&&!salaryList.isEmpty()) {
+	    	        		logger.info("工资信息迁移中=========>>>>>>>");
+	    	            	List<SalaryImport> importList = new ArrayList<SalaryImport>();
+	    	        		String specialInfoJson =""; 
+	    	            	Map<String, List<SalaryImportOld>> resultMap= new HashMap<String,List<SalaryImportOld>>(); // 最终要的结果
+	    	            	for (int i = 0; i < salaryList.size(); i++) {
+	    	            		List<SalaryImportOld> oldImportList = salaryList.get(i).getImportList();
+	    	        			for (int j = 0; j < oldImportList.size(); j++) {
+	    	        				if(resultMap.containsKey(oldImportList.get(j).getSalaryId()+oldImportList.get(j).getUserId()+"#"+dateToString(salaryList.get(i).getIssueTime()))){
+	    	        					resultMap.get(oldImportList.get(j).getSalaryId()+oldImportList.get(j).getUserId()+"#"+dateToString(salaryList.get(i).getIssueTime())).add(oldImportList.get(j));
+	    	        				}else{
+	    	        					List<SalaryImportOld> list = new ArrayList<SalaryImportOld>();
+	    	        					list.add(oldImportList.get(j));
+	    	        					resultMap.put(oldImportList.get(j).getSalaryId()+oldImportList.get(j).getUserId()+"#"+dateToString(salaryList.get(i).getIssueTime()),list);
+	    	        				}
+	    	        			}
+	    	        		}
+	    	                for (Map.Entry<String, List<SalaryImportOld>> entry : resultMap.entrySet()) {
+	    	                	Date issueTime = java.sql.Date.valueOf(entry.getKey().split("#")[1]);
+	    	            		Map<String, Object> specialInfoMap = new HashMap<String, Object>();
+	    	            		Map<String, Object> TRevenue = new HashMap<String, Object>();//收入合计
+	    	            		Map<String, Object> TExpenditure = new HashMap<String, Object>();//支出合计
+	    	            		Map<String, Object> SDeduction = new HashMap<String, Object>();//专项扣除
+	    	            		Map<String, Object> UExpenditure = new HashMap<String, Object>();//单位支出
+	    	                	SalaryImport salaryImport = new SalaryImport();
+	    	                    System.out.println(entry.getKey() + " ==> " + entry.getValue());
+	    	                    List<SalaryImportOld> salaryImportOlds = entry.getValue();
+	    	                    for (int k = 0; k < salaryImportOlds.size(); k++) {
+	    	                    	String templateColName = salaryImportOlds.get(k).getTemplateColName();
+	    	                    	String importAmount = salaryImportOlds.get(k).getImportAmount();
+	    	        				if(templateColName.equals("实际收入")) {
+	    	        					salaryImport.setRealIncome(importAmount);
+	    	        				}else if (templateColName.equals("收入合计")) {
+	    	        					salaryImport.setTotalRevenue(importAmount);
+	    	        				}else if (templateColName.equals("支出合计")) {
+	    	        					salaryImport.setTotalExpenditure(importAmount);
+	    	        				}else if (templateColName.equals("专项附加扣除")) {
+	    	        					salaryImport.setSpecialDeduction(importAmount);
+	    	        				}else if (templateColName.equals("单位支出")) {
+	    	        					salaryImport.setUnitExpenditure(importAmount);
+	    	        				}else if (templateColName.equals("备注")) {
+	    	        					salaryImport.setSalaryRemark(importAmount);
+	    	        				}
+	    	        				//个性化信息分组封装为json {"实际收入":{"area":"北京","smsCheckType":"white"},"收入合计":{"initTotal":"0","whiteEffect":"1"}}
+	    	        				int category = salaryImportOlds.get(k).getCategory();
+	    	        				if(category==1) {
+	    	        					TRevenue.put(templateColName,importAmount);
+	    	        				}else if (category==2) {
+	    	        					TExpenditure.put(templateColName,importAmount);
+	    	        				}else if (category==4) {
+	    	        					SDeduction.put(templateColName,importAmount);
+	    	        				}else if (category==5) {
+	    	        					UExpenditure.put(templateColName,importAmount);
+	    	        				}
+	    	        			}
+	    	        			if (TExpenditure.size()>0) {
+	    	        				specialInfoMap.put("totalExpenditure", TExpenditure);
+	    	        			}
+	    	        			if (SDeduction.size()>0) {
+	    	        				specialInfoMap.put("specialDeduction", SDeduction);
+	    	        			}
+	    	        			if (UExpenditure.size()>0) {
+	    	        				specialInfoMap.put("unitExpenditure", UExpenditure);
+	    	        			}
+	    	        			if (TRevenue.size()>0) {
+	    	        				specialInfoMap.put("totalRevenue", TRevenue);
+	    	        			}
+	    	        			specialInfoJson =JSON.toJSON(specialInfoMap).toString();
+	    	        			salaryImport.setSpecialInfo(specialInfoJson);
+	    	        			salaryImport.setBatchNo(salaryImportOlds.get(0).getSalaryId());
+	    	        			salaryImport.setCreateTime(new Date());
+	    	        			salaryImport.setIssueTime(issueTime);
+	    	        			salaryImport.setUserId(String.valueOf(salaryImportOlds.get(0).getUserId()));
+	    	        			salaryImport.setCompanyId(salaryImportOlds.get(0).getTemplateId());
+	    	        			importList.add(salaryImport);
+	    	                }
+	    	            				
+	    	         		int size = importList.size();
+	    	         		int index = 0;
+	    	         		int limit =3000;
+	    	         		List<SalaryImport> importList1 = new ArrayList<SalaryImport>();
+	    	         		while(true) {
+	    	         			if(index+limit>=size) {
+	    	         				importList1 = importList.subList(index, size);
+	    	         				salaryMapper.insertOaSalaryImport(importList1);
+	    	         				break;
+	    	         			}else {
+	    	         				salaryMapper.insertOaSalaryImport(importList.subList(index, index+limit));
+	    	         				index = index+limit;
+	    	         			}
+	    	         			
+	    	         		}
+	    	        	}
+	    			}
+	    			salaryMapper.addSalCompanyId(companyId);
+	    			logger.info("工资信息迁移完成=========>>>>>>>");
+	    			return true;
+	    		}else {
+		    		logger.info("没有工资信息需要迁移=========>>>>>>>");
+		    		return true;
+		    	}
+	    	}
+	    	logger.info("工资信息迁移,公司id已存在迁移完成=========>>>>>>>");
+			return true;
+		} catch (Exception e) {
+			logger.error("公司:"+companyId+",工资信息迁移出错",e);
+			return false;
+		}
+    	
+	}
+
+    private static String dateToString(Date date) {
+        SimpleDateFormat sformat = new SimpleDateFormat("yyyy-MM-dd");//日期格式
+        String tiem = sformat.format(date);
+        return tiem;
+    }
+
+
+	@Override
+	public List<String> getActivityByRelScenUid() {
+		return salaryMapper.getActivityByRelScenUid();
+	}
+
+
+	@Override
+	public List<String> getNotNull() {
+		
+		return salaryMapper.getNotNull();
+	}  
 }

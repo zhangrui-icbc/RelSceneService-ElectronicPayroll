@@ -30,7 +30,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		SELECT id,batch_no as batchNo,user_id as userId,issue_time as issueTime,real_income as realIncome,total_revenue as totalRevenue,
 		total_expenditure as totalExpenditure,salary_remark as salaryRemark,special_deduction as specialDeduction,unit_expenditure as unitExpenditure,
 		special_info as specialInfo,create_time as createTime FROM 
-		salary_import WHERE user_id =#{params.userId} and company_id =#{params.companyId} 
+		salary_import_new WHERE user_id =#{params.userId} and company_id =#{params.companyId} 
 		<if test="params.startDate != null and  params.startDate != '' ">
 			and date_format(issue_time,'%Y-%m') &gt; #{params.startDate}
 		</if>
@@ -54,8 +54,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getSumSalaryInfo" resultMap="salaryResultMap">
 		SELECT oa.id AS id , oa.import_time AS import_time , oa.issue_time AS issue_time , oai.salary_item_id AS salary_item_id , oai.salary_id AS salary_id,  oai.col_index as col_index,
 		oai.template_id AS template_id, oai.template_col_name AS template_col_name, oai.import_amount AS import_amount, oai.user_id AS user_id,oai.category as category
-		FROM salary oa LEFT JOIN salary_import oai ON oa.`id` = oai.`salary_id` WHERE oai.`user_id`=#{params.userId} AND  oai.`template_id`=#{params.companyId} AND oai.`template_col_name`!='备注'
-			and  oa.issue_time in ( SELECT a.issue_time FROM (SELECT a.`issue_time` AS issue_time FROM  salary a LEFT JOIN salary_import b ON a.`id` = b.`salary_id` WHERE b.`user_id`=#{params.userId} ORDER BY a.`issue_time` DESC) AS a)	
+		FROM salary oa LEFT JOIN salary_import_new oai ON oa.`id` = oai.`salary_id` WHERE oai.`user_id`=#{params.userId} AND  oai.`template_id`=#{params.companyId} AND oai.`template_col_name`!='备注'
+			and  oa.issue_time in ( SELECT a.issue_time FROM (SELECT a.`issue_time` AS issue_time FROM  salary a LEFT JOIN salary_import_new b ON a.`id` = b.`salary_id` WHERE b.`user_id`=#{params.userId} ORDER BY a.`issue_time` DESC) AS a)	
 		<if test="params.startDate != null and  params.startDate != '' ">
 			and date_format(oa.issue_time,'%Y-%m') &gt;= #{params.startDate}
 		</if>
@@ -68,6 +68,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="getSalaryDetail" resultType="com.icbc.rel.hefei.entity.salary.client.SalaryImportVO">
     	select  id,batch_no as batchNo,user_id as userId,issue_time as issueTime,real_income as realIncome,total_revenue as totalRevenue,
 		total_expenditure as totalExpenditure,salary_remark as salaryRemark,special_deduction as specialDeduction,unit_expenditure as unitExpenditure,
-		special_info as specialInfo,create_time as createTime 	from salary_import  where id = #{params.id} 
+		special_info as specialInfo,create_time as createTime 	from salary_import_new  where id = #{params.id} 
     </select>
 </mapper>

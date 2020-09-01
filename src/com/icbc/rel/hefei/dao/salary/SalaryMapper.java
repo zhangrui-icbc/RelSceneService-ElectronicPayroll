@@ -7,9 +7,11 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.icbc.rel.hefei.entity.SysActivityInfo;
 import com.icbc.rel.hefei.entity.salary.Salary;
 import com.icbc.rel.hefei.entity.salary.SalaryCustomTemplate;
 import com.icbc.rel.hefei.entity.salary.SalaryImport;
+import com.icbc.rel.hefei.entity.salary.SalaryOld;
 import com.icbc.rel.hefei.entity.salary.SalaryStaff;
 
 
@@ -82,6 +84,14 @@ public interface SalaryMapper{
 	void delLog1(@Param("salaryId")String salaryId);
 	void updateAddStaffInfo(SalaryStaff salaryStaff);
 	List<String> getExcelNameList(@Param("companyId")String companyId);
+	List<SalaryOld> getOldData();
+	int getCount();
+//	List<SalaryOld> getOldUpLoadLog(@Param("companyId")String companyId);
+	List<SalaryOld> getOldUpLoadLog(@Param("salaryId")String salaryId);
+	void addSalCompanyId(@Param("companyId")String companyId);
+	List<String> getSalaryIds(@Param("companyId")String companyId);
+	List<String> getActivityByRelScenUid();
+	List<String> getNotNull();
 	
 
 	

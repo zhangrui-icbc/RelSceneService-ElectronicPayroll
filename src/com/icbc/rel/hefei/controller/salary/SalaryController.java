@@ -12,9 +12,12 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -34,6 +37,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -43,15 +47,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ibm.btt.base.LinkedList;
 import com.ibm.nws.ffdc.FFDC;
 import com.icbc.rel.hefei.TO.Msg;
 import com.icbc.rel.hefei.TO.TwoTupleTO;
+import com.icbc.rel.hefei.dao.salary.SalaryMapper;
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
 import com.icbc.rel.hefei.entity.salary.ErrorInfo;
 import com.icbc.rel.hefei.entity.salary.Salary;
+import com.icbc.rel.hefei.entity.salary.SalaryImport;
+import com.icbc.rel.hefei.entity.salary.SalaryImportOld;
+import com.icbc.rel.hefei.entity.salary.SalaryOld;
 import com.icbc.rel.hefei.entity.salary.SalaryStaff;
+import com.icbc.rel.hefei.entity.salary.reimbursement.ReImportOld;
 import com.icbc.rel.hefei.service.rel.MessageHelper;
 import com.icbc.rel.hefei.service.rel.MessageService;
 import com.icbc.rel.hefei.service.salary.service.SalaryImportService;
@@ -75,6 +85,8 @@ public class SalaryController {
 	private static final Logger logger = Logger.getLogger(SalaryController.class);
 	@Autowired
 	private SalaryService salaryService;
+	@Autowired
+	SalaryMapper salaryMapper;
 	/**
 	 * 跳转工资条页面
 	 * @return
@@ -95,6 +107,7 @@ public class SalaryController {
 	@RequestMapping(value="/salary/uploadSalary")
     @ResponseBody
     public AjaxResult uploadSalary(HttpServletRequest request) throws Exception{
+    	logger.info("进入上传工资Excel=========>>>>>>>");
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	List<Long> mobileList = new ArrayList<Long>();
     	Map<String,Object> map = new HashMap<String,Object>();
@@ -161,10 +174,10 @@ public class SalaryController {
 			}
 			return ajaxResult;
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			return AjaxResult.warn("模板格式不正确或者表格内有空值(不允许有空值,如无此项请填写0!)");
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 			return AjaxResult.error("上传失败!");
 		} 
     }
@@ -179,6 +192,7 @@ public class SalaryController {
 	@RequestMapping(value="/salary/uploadStaff")
     @ResponseBody
     public AjaxResult uploadStaff(HttpServletRequest request,HttpServletResponse response) throws Exception{
+    	logger.info("进入上传员工信息Excel=========>>>>>>>");
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
@@ -200,6 +214,7 @@ public class SalaryController {
     	}
 		List<SalaryStaff> staffList = (List<SalaryStaff>)ajaxResult.get("data");
         if(staffList.size()>SessionParamConstant.rowsLimit) {
+        	logger.info("该功能仅支持单次最多上传三万条数据!");
         	return AjaxResult.error("该功能仅支持单次最多上传三万条数据!");
         }
     	AjaxResult  ajaxRes = salaryService.insertStaffInfo(staffList,companyId);
@@ -219,6 +234,7 @@ public class SalaryController {
     @SuppressWarnings("unchecked")
 	@RequestMapping("/salary/exportErrPhone")
     public void exportErrPhone(HttpServletRequest request,HttpServletResponse response){
+    	logger.info("导出错误的员工信息======>>>>>");
     	List<SalaryStaff> list =  (List<SalaryStaff>) request.getSession().getAttribute("errList");
     	salaryService.exportErrPhone(request,response,list);
     	request.getSession().removeAttribute("errList");
@@ -231,6 +247,7 @@ public class SalaryController {
      */
        @RequestMapping("/salary/exportErrSalaryInfo")
        public void exportErrSalInfo(HttpServletRequest request,HttpServletResponse response){
+    	logger.info("导出错误的工资单信息  ======>>>>>");
        	List<ErrorInfo> list =  (List<ErrorInfo>) request.getSession().getAttribute("errorSalaryList");
        	salaryService.exportErrSalInfo(request,response,list);
        	request.getSession().removeAttribute("errorSalaryList");
@@ -243,6 +260,7 @@ public class SalaryController {
      */
     @RequestMapping("/salary/export")
     public void export(HttpServletRequest request,HttpServletResponse response){
+    	logger.info("进入工资模板下载=========>>>>>>>");
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	salaryService.export(request,response,companyId);
     }
@@ -262,6 +280,7 @@ public class SalaryController {
     @RequestMapping("/salary/updatePwd")
     @ResponseBody
     public AjaxResult updatePwd(HttpServletRequest request){
+    	logger.info("员工密码初始化=========>>>>>>>");
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
@@ -277,6 +296,7 @@ public class SalaryController {
     @RequestMapping("/salary/delStaff")
     @ResponseBody
     public AjaxResult delStaff(HttpServletRequest request){
+    	logger.info("删除员工手机号码=========>>>>>>>");
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
@@ -292,6 +312,7 @@ public class SalaryController {
     @RequestMapping("/salary/updateStaffInfo")
     @ResponseBody
     public AjaxResult exchangeMobile(HttpServletRequest request,SalaryStaff salaryStaff){
+    	logger.info("新增/更换手机号码=========>>>>>>>");
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
@@ -313,6 +334,7 @@ public class SalaryController {
     @RequestMapping("/salary/upLoadLog")
     @ResponseBody
     public AjaxResult upLoadLog(HttpServletRequest request){
+    	logger.info("查询工资单上传日志=========>>>>>>>");
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
@@ -320,6 +342,7 @@ public class SalaryController {
     	Map<String, Object> paramsMap =new HashMap<String, Object>();
     	paramsMap.put("companyId" , companyId);
     	List<Salary>  oaSalaryList= salaryService.getUpLoadLog(paramsMap);
+    	logger.info("查询工资单上传日志信息:"+oaSalaryList);
     	return AjaxResult.success("成功", oaSalaryList);
     }  
     
@@ -329,6 +352,7 @@ public class SalaryController {
     @RequestMapping("/salary/delLog")
     @ResponseBody
     public AjaxResult delLog(HttpServletRequest request){
+    	logger.info("删除工资单上传日志=========>>>>>>>");
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
@@ -344,6 +368,7 @@ public class SalaryController {
     @RequestMapping("/salary/getAllStaff")
     @ResponseBody
     public AjaxResult getAllStaff(HttpServletRequest request){
+    	logger.info("查询公司员工信息=========>>>>>>>");
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
@@ -352,6 +377,13 @@ public class SalaryController {
     	List<SalaryStaff> staffList = salaryService.getStaffInfo(companyId,mobile);
     	return AjaxResult.success("查询成功", staffList);
     }  
+    
+    
+    
+    
+    
+    
+    
     /**
      * 文件下载方法
      * @param response
@@ -360,6 +392,7 @@ public class SalaryController {
      */
     @RequestMapping("/salary/explain")
     public void download(HttpServletResponse response,HttpServletRequest request) {
+    	logger.info("文件下载方法=========>>>>>>>");
         try {
            String path= request.getSession().getServletContext().getRealPath("/WEB-INF/file/Instructions.pptx");
           // path是指欲下载的文件的路径。
@@ -384,10 +417,15 @@ public class SalaryController {
           toClient.write(buffer);
           toClient.flush();
           toClient.close();
-        } catch (IOException ex) {
-          ex.printStackTrace();
+        } catch (IOException e) {
+        	logger.error(e.getMessage(), e);
         }
       }
     
+    private static String dateToString(Date date) {
+        SimpleDateFormat sformat = new SimpleDateFormat("yyyy-MM-dd");//日期格式
+        String tiem = sformat.format(date);
+        return tiem;
+    }
     
 }

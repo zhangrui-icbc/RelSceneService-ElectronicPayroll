@@ -15,4 +15,10 @@
             <property name="dialectClass" value="com.github.miemiedev.mybatis.paginator.dialect.SQLServerDialect"/>
         </plugin>
     </plugins> -->
+   <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <property name="helperDialect" value="mysql"/>
+        </plugin>
+    </plugins>
+    
 </configuration>

@@ -9,7 +9,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  	</select>
  	
 	<update id="resetPassword">
-		update salary_user set password =#{password1}  where mobile = #{username}
+		update salary_user set password =#{password1},update_time = now()  where mobile = #{username}
 	</update>
 	<select id="getUserByOpenId"    resultType="com.icbc.rel.hefei.entity.salary.client.SalaryUser">
 		select id,mobile,password,company_id as companyId , openId as openId from  salary_user where openId = #{openId} and company_id =#{companyId}

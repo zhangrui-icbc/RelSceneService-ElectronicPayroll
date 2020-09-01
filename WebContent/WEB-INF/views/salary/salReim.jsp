@@ -63,7 +63,9 @@
 </div>
 <script src="../js/common.js"></script>
 <script src="../js/salary/jquery-ui.js"></script>
+<script src="../js/salary/loading.js"></script>
 <script src="../js/salary/layer.js"></script>
+<!-- <script src="../js/salary/salReim.js"></script> -->
 <script>
 //  选项卡切换
     $(function(){

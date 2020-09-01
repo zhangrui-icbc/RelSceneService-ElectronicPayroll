@@ -10,9 +10,12 @@ import java.util.Map;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.icbc.rel.hefei.entity.SysActivityInfo;
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
 import com.icbc.rel.hefei.entity.salary.ErrorInfo;
 import com.icbc.rel.hefei.entity.salary.Salary;
+import com.icbc.rel.hefei.entity.salary.SalaryImport;
+import com.icbc.rel.hefei.entity.salary.SalaryOld;
 import com.icbc.rel.hefei.entity.salary.SalaryStaff;
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,5 +82,11 @@ public interface SalaryService {
 	void exportErrPhone(HttpServletRequest request, HttpServletResponse response, List<SalaryStaff> list);
 	void exportErrSalInfo(HttpServletRequest request, HttpServletResponse response, List<ErrorInfo> list);
 	List<String> getExcelNameList(String companyId);
+	List<SalaryOld> getOldData();
+	List<SalaryOld> getOldUpLoadLog(String companyId);
+	void addSalCompanyId(String companyId);
+	boolean salDM(String companyId);
+	List<String> getActivityByRelScenUid();
+	List<String> getNotNull();
 	
 }

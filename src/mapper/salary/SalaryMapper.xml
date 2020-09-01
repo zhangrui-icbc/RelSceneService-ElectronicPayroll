@@ -25,13 +25,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <result column="user_id" property="userId"/>
         </collection>
     </resultMap>
+    
     <!-- 查询工资日志信息 -->
     <select id="getUpLoadLog" resultMap="salaryResultMap">
 		SELECT  id AS id,  import_time AS import_time,  issue_time AS issue_time,excel_name as excel_name	FROM  salary WHERE company_id= #{params.companyId}	order by import_time desc 
     </select>
     <!-- 删除日志 -->
     <delete id="delLog">
-    	  <![CDATA[DELETE FROM salary_import WHERE batch_no = #{salaryId};]]>
+    	  <![CDATA[DELETE FROM salary_import_new WHERE batch_no = #{salaryId};]]>
     </delete>
     <delete id="delLog1">
      		<![CDATA[DELETE FROM salary WHERE id = #{salaryId};]]>
@@ -59,7 +60,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    			</foreach>
    	</insert> -->
    	<insert id="insertOaSalaryImport"   parameterType = "java.util.List">
-		insert into salary_import (batch_no , user_id , issue_time  , real_income , total_revenue , total_expenditure, salary_remark , special_deduction , 
+		insert into salary_import_new (batch_no , user_id , issue_time  , real_income , total_revenue , total_expenditure, salary_remark , special_deduction , 
 		unit_expenditure ,special_info ,create_time,company_id) values
 			<foreach collection="importList" item="item"  separator="," >
 				(#{item.batchNo} , #{item.userId} , #{item.issueTime}  , #{item.realIncome} , #{item.totalRevenue} , #{item.totalExpenditure}, #{item.salaryRemark}, #{item.specialDeduction}
@@ -68,14 +69,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
    	</insert>
    	<!-- 插入员工信息 -->
 	<insert id="insertStaffInfo"   parameterType = "java.util.List">
-		insert into salary_user (mobile , company_id , name , dept) values
+		insert into salary_user (mobile , company_id , name , dept ,create_time ,update_time) values
 			<foreach collection="List" item="item"  separator="," >
-				(#{item.mobile} , #{item.companyId} , #{item.name} , #{item.dept} )
+				(#{item.mobile} , #{item.companyId} , #{item.name} , #{item.dept}, #{item.createTime}, #{item.updateTime} )
 			</foreach>
    	</insert>
    	<!-- 修改员工登录密码 -->
    	<update id="updatePwd">
-   		update salary_user set password = '0477d3da16cb08766b45682299b8a211' where id =#{id}
+   		update salary_user set password = '0477d3da16cb08766b45682299b8a211',update_time = now() where id =#{id}
    	</update>
    	<!-- 删除员工账号 -->
    	<delete id="delStaff">
@@ -113,5 +114,103 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	 <select id="getExcelNameList" resultType="java.lang.String">
 		SELECT excel_name  FROM salary  where company_id =#{companyId}	
     </select>
+    <resultMap id="findCountryListMap" type="map">
+    <result property="countryId" column="countryId"/>
+    <result property="country" column="country"/>
+    <collection property="cityList" column="countryId" ofType="map" javaType="java.util.List" 
+			    select="getCityByCountryId">
+        <result property="city" column="city"/>
+        <result property="cityId" column="cityId"/>
+    </collection>
+</resultMap>
+
+
+	    
+      <resultMap id="salaryOldResultMap" type="com.icbc.rel.hefei.entity.salary.SalaryOld">
+         <id column="id" property="id"/>
+         <result column="import_time" property="importTime"/>
+         <result column="issue_time" property="issueTime"/>
+         <result column="excel_name" property="excelName"/>
+         <result column="company_id" property="companyId"/>
+         <result column="remark" property="remark"/>
+        <collection property="importList" column="id" ofType="com.icbc.rel.hefei.entity.salary.SalaryImportOld"    select="getImportBySalaryId">
+            <id column="city_id" property="id"/>
+            <result column="salary_item_id" property="salaryItemId"/>
+            <result column="salary_id" property="salaryId"/>
+            <result column="template_id" property="templateId"/>
+            <result column="template_col_name" property="templateColName"/>
+            <result column="import_amount" property="importAmount"/>
+            <result column="user_id" property="userId"/>
+            <result column="col_index" property="colIndex"/>
+            <result column="category" property="category"/>
+        </collection>
+    </resultMap>
+
+    
+<!-- 	<select id="getOldData" resultMap="salaryOldResultMap">
+		SELECT   oa.id AS id,  oa.import_time AS import_time,  oa.issue_time AS issue_time FROM salary oa 
+	</select>
+	
+	<select id="getImportBySalaryId" resultType="com.icbc.rel.hefei.entity.salary.SalaryImportOld">
+		select oai.salary_item_id AS salary_item_id,  oai.salary_id AS salary_id,  oai.col_index AS col_index,	oai.template_id AS template_id,  oai.template_col_name AS template_col_name, 
+		oai.import_amount AS import_amount,  oai.user_id AS user_id,  oai.category AS category from  salary_import_old oai where oai.salary_id = #{id}
+	</select> -->
+	
+	<select id="getCount" resultType="java.lang.Integer">
+		SELECT   count(1) FROM salary  
+	</select>
+	
+	
+    <resultMap id="oldSalaryResultMap" type="com.icbc.rel.hefei.entity.salary.SalaryOld">
+        <id column="id" property="id"/>
+        <result column="import_time" property="importTime"/>
+        <result column="issue_time" property="issueTime"/>
+         <result column="excel_name" property="excelName"/>
+        <collection property="importList" ofType="com.icbc.rel.hefei.entity.salary.SalaryImportOld">
+            <id column="city_id" property="id"/>
+            <result column="salary_item_id" property="salaryItemId"/>
+            <result column="salary_id" property="salaryId"/>
+            <result column="template_id" property="templateId"/>
+            <result column="template_col_name" property="templateColName"/>
+            <result column="import_amount" property="importAmount"/>
+            <result column="user_id" property="userId"/>
+            <result column="category" property="category"/>
+        </collection>
+    </resultMap>
+    <!-- 查询旧的工资信息 -->
+<!--     <select id="getOldUpLoadLog" resultMap="oldSalaryResultMap">
+		SELECT a.id AS id ,a.import_time AS import_time,a.issue_time AS issue_time,a.excel_name AS excel_name, oai.salary_item_id AS salary_item_id , oai.salary_id AS salary_id, oai.col_index AS col_index,
+		oai.template_id AS template_id, oai.template_col_name AS template_col_name,  oai.import_amount AS import_amount, oai.user_id AS user_id,oai.category AS category 
+		FROM salary a LEFT JOIN  salary_import oai  ON a.`id`=oai.`salary_id`  where oai.template_id =#{companyId} 	order by a.import_time desc
+    </select> -->
+	
+    <select id="getOldUpLoadLog" resultMap="oldSalaryResultMap">
+		SELECT a.id AS id ,a.import_time AS import_time,a.issue_time AS issue_time,a.excel_name AS excel_name, oai.salary_item_id AS salary_item_id , oai.salary_id AS salary_id, oai.col_index AS col_index,
+		oai.template_id AS template_id, oai.template_col_name AS template_col_name,  oai.import_amount AS import_amount, oai.user_id AS user_id,oai.category AS category 
+		FROM salary a LEFT JOIN  salary_import oai  ON a.`id`=oai.`salary_id`  where oai.salary_id =#{salaryId}
+    </select>
+	
+	
+	
+	<select id="getSalaryIds"  resultType="java.lang.String">
+		SELECT MIN(salary_id) FROM salary_import WHERE template_id=#{companyId} GROUP BY salary_id
+	</select>
+	
+	
+	<!-- salary表新增公司id信息(旧) -->
+	<update id="addSalCompanyId">
+		UPDATE salary s,salary_import si SET s.company_id = si.template_id WHERE  s.`id`=si.`salary_id`  AND si.template_id = #{companyId};
+	</update>
+	
+	
+	<select id="getActivityByRelScenUid" resultType="java.lang.String">
+		select ACTIVITYUID from sys_activityinfo where RELSCENEUID ="salary" and Status = 0;
+	</select>
+	
+	
+    <select id="getNotNull" resultType="java.lang.String">
+		SELECT  company_id	FROM  salary WHERE company_id is not null GROUP BY company_id;;
+    </select>
+	
 	
 </mapper>

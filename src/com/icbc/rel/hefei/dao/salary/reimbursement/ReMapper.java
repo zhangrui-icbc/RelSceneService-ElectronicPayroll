@@ -12,6 +12,7 @@ import com.icbc.rel.hefei.entity.salary.SalaryStaff;
 import com.icbc.rel.hefei.entity.salary.reimbursement.ReCustomTemplate;
 import com.icbc.rel.hefei.entity.salary.reimbursement.ReImport;
 import com.icbc.rel.hefei.entity.salary.reimbursement.Reimbursement;
+import com.icbc.rel.hefei.entity.salary.reimbursement.ReimbursementOld;
 
 
 /**
@@ -81,6 +82,11 @@ public interface ReMapper{
 	
 	void delLog1(@Param("reId")String reId);
 	List<String> getExcelNameList(@Param("companyId")String companyId);
+	List<ReimbursementOld> getOldData();
+	List<ReimbursementOld> getOldUpLoadLog(@Param("reId")String reId);
+	void addReCompanyId(@Param("companyId")String companyId);
+	List<String> getReIds(@Param("companyId")String companyId);
+	List<String> getNotNull();
 	
 
 	

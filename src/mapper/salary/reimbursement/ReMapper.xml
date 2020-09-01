@@ -20,6 +20,26 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <result column="user_id" property="userId"/>
         </collection>
     </resultMap>
+    
+        <resultMap id="ReOldResultMap" type="com.icbc.rel.hefei.entity.salary.reimbursement.ReimbursementOld">
+        <id column="id" property="id"/>
+        <result column="import_time" property="importTime"/>
+        <result column="issue_time" property="issueTime"/>
+         <result column="excel_name" property="excelName"/>
+         <result column="company_id" property="companyId"/>
+         <result column="remark" property="remark"/>
+        <collection property="importList" ofType="com.icbc.rel.hefei.entity.salary.reimbursement.ReImportOld">
+            <result column="reimbursement_item_id" property="reimbursementItemId"/>
+            <result column="reimbursement_id" property="reimbursementId"/>
+            <result column="template_id" property="templateId"/>
+            <result column="template_col_name" property="templateColName"/>
+            <result column="import_amount" property="importAmount"/>
+            <result column="user_id" property="userId"/>
+            <result column="col_index" property="colIndex"/>
+            <result column="category" property="category"/>
+        </collection>
+    </resultMap>
+    
     <!-- 查询报销日志信息 -->
     <select id="getUpLoadLog" resultMap="ReResultMap">
 		SELECT id AS id,import_time AS import_time,issue_time AS issue_time,excel_name AS excel_name FROM  reimbursement WHERE company_id= #{params.companyId}	order by import_time desc     
@@ -51,7 +71,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
 	<!-- 插入自定义项 -->
 	<insert id="insertReimbursementImport"   parameterType = "java.util.List">
-		insert into reimbursement_import (batch_no , user_id , issue_time , total_reim , special_info , create_time, company_id) values
+		insert into reimbursement_import_new (batch_no , user_id , issue_time , total_reim , special_info , create_time, company_id) values
 			<foreach collection="importList" item="item"  separator="," >
 				(#{item.batchNo} , #{item.userId} , #{item.issueTime} , #{item.totalReim} , #{item.specialInfo} , #{item.createTime}, #{item.companyId})
    			</foreach>
@@ -60,4 +80,47 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="getExcelNameList" resultType="java.lang.String">
 		SELECT excel_name  FROM reimbursement  where company_id =#{companyId}	
     </select>
+    
+<!--     <select id="getOldData" resultMap="ReOldResultMap">
+		SELECT oa.id AS id , oa.import_time AS import_time , oa.issue_time AS issue_time , oai.reimbursement_item_id AS reimbursement_item_id , oai.reimbursement_id AS reimbursement_id, oai.col_index AS col_index,
+		oai.template_id AS template_id , oai.template_col_name AS template_col_name,  oai.import_amount AS import_amount, oai.user_id AS user_id,oai.category AS category
+		FROM reimbursement_import_old oai LEFT JOIN reimbursement oa  ON oa.`id` = oai.`reimbursement_id` 
+    </select> -->
+    
+        <resultMap id="oldReResultMap" type="com.icbc.rel.hefei.entity.salary.reimbursement.ReimbursementOld">
+        <id column="id" property="id"/>
+        <result column="import_time" property="importTime"/>
+        <result column="issue_time" property="issueTime"/>
+         <result column="excel_name" property="excelName"/>
+        <collection property="importList" ofType="com.icbc.rel.hefei.entity.salary.reimbursement.ReImportOld">
+            <id column="city_id" property="id"/>
+            <result column="reimbursement_item_id" property="reimbursementItemId"/>
+            <result column="reimbursement_id" property="reimbursementId"/>
+            <result column="template_id" property="templateId"/>
+            <result column="template_col_name" property="templateColName"/>
+            <result column="import_amount" property="importAmount"/>
+            <result column="user_id" property="userId"/>
+        </collection>
+    </resultMap>
+    <!-- 查询工资日志信息 -->
+    <select id="getOldUpLoadLog" resultMap="oldReResultMap">
+		SELECT a.id AS id ,a.import_time AS import_time,a.issue_time AS issue_time,a.excel_name AS excel_name, oai.reimbursement_item_id AS reimbursement_item_id , oai.reimbursement_id AS reimbursement_id, oai.col_index AS col_index,
+		oai.template_id AS template_id, oai.template_col_name AS template_col_name,  oai.import_amount AS import_amount, oai.user_id AS user_id,oai.category AS category 
+		FROM reimbursement a LEFT JOIN  reimbursement_import oai  ON a.`id`=oai.`reimbursement_id` where oai.reimbursement_id =#{reId}	
+    </select>
+    
+   	<select id="getReIds"  resultType="java.lang.String">
+		SELECT MIN(reimbursement_id) FROM reimbursement_import WHERE template_id=#{companyId} GROUP BY reimbursement_id
+	</select>
+    
+    	<!-- reimbursement表新增公司id信息 -->
+	<update id="addReCompanyId">
+		UPDATE reimbursement s,reimbursement_import si SET s.company_id = si.template_id WHERE  s.`id`=si.`reimbursement_id`  AND si.template_id = #{companyId};
+	</update>
+	
+	    <!-- 查询报销日志信息 -->
+    <select id="getNotNull" resultType="java.lang.String">
+		SELECT company_id FROM  reimbursement WHERE company_id is not null GROUP BY company_id;
+	</select>
+	
 </mapper>

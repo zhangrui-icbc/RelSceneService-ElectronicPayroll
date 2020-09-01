@@ -48,7 +48,6 @@ public class ReCustomServiceImpl implements ReCustomService {
 	}
 	@Override
 	public List<ReCustomTemplate> getCustomTemplate(String companyId) {
-		// TODO Auto-generated method stub
 		return reCustomMapper.getCustomTemplate(companyId);
 	}
 	

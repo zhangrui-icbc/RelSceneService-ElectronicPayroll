@@ -83,7 +83,7 @@ public class SalConfigController {
 	 */
 	@RequestMapping(value="/salConfig")
 	public ModelAndView salConfig(HttpServletRequest request) {
-		
+		logger.info("进入工资单配置页=========>>>>>>>");
 		ModelAndView mav = new ModelAndView();
 		String activityUid=request.getParameter("activityUid");
 		String mpId=SessionUtil.getMpId(request.getSession());
@@ -143,6 +143,7 @@ public class SalConfigController {
 	@ResponseBody
 	public Msg saveParaInfo(HttpServletRequest request, @RequestBody SalParaInfo info)
 	{
+		logger.info("进入保存工资单参数配置=========>>>>>>>");
 		Msg  msg=new Msg();
 		SysActivityInfo activity=new SysActivityInfo();
 		String mpId=SessionUtil.getMpId(request.getSession());

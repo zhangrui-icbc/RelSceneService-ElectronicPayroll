@@ -4,8 +4,11 @@ package com.icbc.rel.hefei.controller.salary.reimbursement;
 
 import java.io.File;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,12 +25,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.icbc.rel.hefei.TO.TwoTupleTO;
 import com.icbc.rel.hefei.controller.salary.SalaryController;
+import com.icbc.rel.hefei.dao.salary.reimbursement.ReMapper;
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
 import com.icbc.rel.hefei.entity.salary.ErrorInfo;
+import com.icbc.rel.hefei.entity.salary.Salary;
+import com.icbc.rel.hefei.entity.salary.SalaryImport;
+import com.icbc.rel.hefei.entity.salary.SalaryImportOld;
+import com.icbc.rel.hefei.entity.salary.SalaryOld;
+import com.icbc.rel.hefei.entity.salary.reimbursement.ReImport;
+import com.icbc.rel.hefei.entity.salary.reimbursement.ReImportOld;
 import com.icbc.rel.hefei.entity.salary.reimbursement.Reimbursement;
+import com.icbc.rel.hefei.entity.salary.reimbursement.ReimbursementOld;
 import com.icbc.rel.hefei.service.rel.MessageHelper;
 import com.icbc.rel.hefei.service.rel.MessageService;
 import com.icbc.rel.hefei.service.salary.reimbursement.service.ReImportService;
@@ -52,6 +64,8 @@ public class ReController {
 	private ReService reService;
 	@Autowired
 	private ReImportService reImportService;
+	@Autowired
+	private ReMapper reMapper;
 	/**
 	 * 跳转报销页面
 	 * @return
@@ -72,6 +86,7 @@ public class ReController {
 	@RequestMapping(value="/reimbursement/uploadRe")
     @ResponseBody
     public AjaxResult uploadRe(HttpServletRequest request) throws Exception{
+    	logger.info("进入上传报销Excel=========>>>>>>>");
     	List<Long> mobileList = new ArrayList<Long>();
     	Map<String,Object> map = new HashMap<String,Object>();
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
@@ -139,10 +154,10 @@ public class ReController {
 			}
 			return ajaxResult;
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			logger.error("模板格式不正确或者表格内有空值(不允许有空值,如无此项请填写0!)", e);
 			return AjaxResult.warn("模板格式不正确或者表格内有空值(不允许有空值,如无此项请填写0!)");
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("上传报销Excel", e);
 			return AjaxResult.error("上传失败!");
 		} 
     }
@@ -166,6 +181,7 @@ public class ReController {
     @RequestMapping("/reimbursement/upLoadLog")
     @ResponseBody
     public AjaxResult upLoadLog(HttpServletRequest request){
+    	logger.info("进入查询报销单上传日志=========>>>>>>>");
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
@@ -181,6 +197,7 @@ public class ReController {
     @RequestMapping("/reimbursement/upLoadDetail")
     @ResponseBody
     public AjaxResult upLoadDetail(HttpServletRequest request){
+    	logger.info("进入查询工资单上传详情=========>>>>>>>");
     	String companyId=(String) request.getSession().getAttribute(SessionParamConstant.PC_SESSION_PARAM_COMPANYID);
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
@@ -226,4 +243,6 @@ public class ReController {
        	reService.exportErrReInfo(request,response,list);
        	request.getSession().removeAttribute("errorReList");
        }
+       
+       
 }

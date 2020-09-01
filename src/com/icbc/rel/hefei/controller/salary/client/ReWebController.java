@@ -44,6 +44,7 @@ public class ReWebController {
     @RequestMapping("/reimbursement/getReDetail")
     @ResponseBody
     public AjaxResult getReDetail(HttpServletRequest request){
+    	logger.info("进入客户端获取报销明细=========>>>>>>>");
     	List<ReImportVO>  oaReList =new ArrayList<ReImportVO>();
     	try {
     		String id = request.getParameter("id");
@@ -64,6 +65,7 @@ public class ReWebController {
     @RequestMapping("/reimbursement/getReInfo")
     @ResponseBody
     public AjaxResult getSalaryInfo(HttpServletRequest request){
+    	logger.info("进入客户端查询报销信息/汇总=========>>>>>>>");
     	List<ReVO>  oaReList =new ArrayList<ReVO>();
     	try {
         	SalaryUser user =  (SalaryUser) request.getSession().getAttribute("user");

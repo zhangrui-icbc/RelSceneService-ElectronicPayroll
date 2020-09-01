@@ -211,7 +211,7 @@ table thead{
     margin-top: 25px;
 }
 .add{
-	    width: 80%;
+    width: 80%;
     min-height: 100px;
     padding: 10px;
     margin: 30px auto;
@@ -221,6 +221,7 @@ table thead{
     border-radius: 10px;
     padding: 10px;
     border: 1px solid #013;
+    overflow: auto;
 }
 .tab3_btnBox div{
     width: 118px;

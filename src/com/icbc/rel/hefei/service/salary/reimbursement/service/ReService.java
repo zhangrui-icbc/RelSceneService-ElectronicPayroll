@@ -12,7 +12,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.icbc.rel.hefei.entity.salary.AjaxResult;
 import com.icbc.rel.hefei.entity.salary.ErrorInfo;
+import com.icbc.rel.hefei.entity.salary.reimbursement.ReImport;
 import com.icbc.rel.hefei.entity.salary.reimbursement.Reimbursement;
+import com.icbc.rel.hefei.entity.salary.reimbursement.ReimbursementOld;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,5 +49,15 @@ public interface ReService {
 	AjaxResult uploadRe1(String value, String companyId) throws FileNotFoundException, IOException, ParseException, NullPointerException;
 	void exportErrReInfo(HttpServletRequest request, HttpServletResponse response, List<ErrorInfo> list);
 	List<String> getExcelNameList(String companyId);
+
+	List<ReimbursementOld> getOldData();
+
+	List<ReimbursementOld> getOldUpLoadLog(String companyId);
+
+	void addReCompanyId(String companyId);
+
+	boolean reDM(String companyId);
+
+	List<String> getNotNull();
 
 }

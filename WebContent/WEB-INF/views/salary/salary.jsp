@@ -13,7 +13,7 @@
 		<link rel="stylesheet" href="../css/salary/indexNew.css">
 		<style type="text/css">
 			.hid{
-			display:none
+			  display:none
 			}
 			.tab .act1{
 			  background:brown;

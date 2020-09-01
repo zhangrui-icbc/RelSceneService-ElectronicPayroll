@@ -55,10 +55,13 @@ import com.icbc.rel.hefei.entity.salary.ErrorInfo;
 import com.icbc.rel.hefei.entity.salary.Salary;
 import com.icbc.rel.hefei.entity.salary.SalaryCustomTemplate;
 import com.icbc.rel.hefei.entity.salary.SalaryImport;
+import com.icbc.rel.hefei.entity.salary.SalaryOld;
 import com.icbc.rel.hefei.entity.salary.reimbursement.ReCommonTemplate;
 import com.icbc.rel.hefei.entity.salary.reimbursement.ReCustomTemplate;
 import com.icbc.rel.hefei.entity.salary.reimbursement.ReImport;
+import com.icbc.rel.hefei.entity.salary.reimbursement.ReImportOld;
 import com.icbc.rel.hefei.entity.salary.reimbursement.Reimbursement;
+import com.icbc.rel.hefei.entity.salary.reimbursement.ReimbursementOld;
 import com.icbc.rel.hefei.service.salary.reimbursement.service.ReService;
 import com.icbc.rel.hefei.service.salary.service.impl.SalaryServiceImpl;
 import com.icbc.rel.hefei.util.DateUtils;
@@ -184,6 +187,7 @@ public class ReServiceImpl implements ReService {
 				out.close();
 			} catch (Exception e) {
 				e.printStackTrace();
+				logger.error("uploadFile()", e);
 			}
 	    }
 	  
@@ -228,11 +232,8 @@ public class ReServiceImpl implements ReService {
 				String 	batchNo = UUIDUtils.getGuid();
 				String companyId = templateList.get(0).getCompanyId();
 			    for(int i = 1;i< data.size();i++){
-					String specialInfoJson =""; 
-					Map<String, Object> specialInfoMap = new HashMap<String, Object>();
 					Map<String, Object> TReim = new HashMap<String, Object>();//报销信息
 					ReImport oaReImport =new  ReImport();
-					ReImport reImport =new  ReImport();
 					String mbl = data.get(i)[0];
 			    	ErrorInfo eInfo  = new  ErrorInfo();
 					if (StringUtils.isEmpty(mbl)) {
@@ -386,14 +387,14 @@ public class ReServiceImpl implements ReService {
 			os = response.getOutputStream();
 			createWorkbook(reCommonTemplate,reImportTemplates).write(os);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}finally{
 			try {
 				if(os!=null){
 					os.close();
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}
 		
@@ -425,9 +426,9 @@ public class ReServiceImpl implements ReService {
 				cell.setCellValue(salaryCommonTemplate.get(i).getName());
 			}
 			HSSFCell cell0 = headRow1.createCell(0);
-			cell0.setCellValue(Long.valueOf("18088880000"));
+			cell0.setCellValue(Long.valueOf("18888888001"));
 			HSSFCell cell1 = headRow1.createCell(1);
-			cell1.setCellValue(20010101);
+			cell1.setCellValue(20200101);
 			//设置标题
 			int comSize =  salaryCommonTemplate.size();
 			for (int j =comSize; j < fieldName.size()+comSize; j++) {//循环excel的标题
@@ -552,9 +553,9 @@ public class ReServiceImpl implements ReService {
 	            bos.close();
 	            buffer = bos.toByteArray();
 	        }catch (FileNotFoundException e){
-	            e.printStackTrace();
+	        	logger.error(e.getMessage(), e);
 	        }catch (IOException e){
-	            e.printStackTrace();
+	        	logger.error(e.getMessage(), e);
 	        }
 	        return buffer;
 	    }
@@ -589,14 +590,14 @@ public class ReServiceImpl implements ReService {
 				os = response.getOutputStream();
 				createReWorkbook(errList).write(os);
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}finally{
 				try {
 					if(os!=null){
 						os.close();
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					logger.error(e.getMessage(), e);
 				}
 			}
 			
@@ -643,9 +644,119 @@ public class ReServiceImpl implements ReService {
 
 		@Override
 		public List<String> getExcelNameList(String companyId) {
-			// TODO Auto-generated method stub
 			return reMapper.getExcelNameList(companyId);
 		}
+		@Override
+		public List<ReimbursementOld> getOldData() {
+			return reMapper.getOldData();
+		}
+		@Override
+		public List<ReimbursementOld> getOldUpLoadLog(String companyId) {
+			return reMapper.getOldUpLoadLog(companyId);
+		}
+		@Override
+		public void addReCompanyId(String companyId) {
+			reMapper.addReCompanyId(companyId);
+		}
+		@Transactional
+		@Override
+		public boolean reDM(String companyId) {
+			try {
+				Map<String, Object> paramsMap = new HashMap<String, Object>();
+		    	paramsMap.put("companyId", companyId);
+		    	List<Reimbursement> reLists = reMapper.getUpLoadLog(paramsMap);
+		    	if(reLists.size()==0||reLists.isEmpty()) {
+		    		List<String> reIds  = reMapper.getReIds(companyId);
+		    		if(reIds.size()!=0) {
+		    			for (int ii = 0; ii < reIds.size(); ii++) {
+		    				List<ReimbursementOld> reList = reMapper.getOldUpLoadLog(reIds.get(ii));
+				           	if(reList.size()!=0&&!reList.isEmpty()) {
+				           		logger.info("报销信息迁移中=========>>>>>>>");
+					           	List<ReImport> importList = new ArrayList<ReImport>();
+					           	Map<String, List<ReImportOld>> resultMap= new HashMap<String,List<ReImportOld>>(); // 最终要的结果
+					           	for (int i = 0; i < reList.size(); i++) {
+					           		List<ReImportOld> oldImportList = reList.get(i).getImportList();
+					       			for (int j = 0; j < oldImportList.size(); j++) {
+					    	   				if(resultMap.containsKey(oldImportList.get(j).getReimbursementId()+oldImportList.get(j).getUserId()+"#"+dateToString(reList.get(i).getIssueTime()))){
+					    	   					resultMap.get(oldImportList.get(j).getReimbursementId()+oldImportList.get(j).getUserId()+"#"+dateToString(reList.get(i).getIssueTime())).add(oldImportList.get(j));
+					    	   				}else{
+					    	   					List<ReImportOld> list = new ArrayList<ReImportOld>();
+					    	   					list.add(oldImportList.get(j));
+					    	   					resultMap.put(oldImportList.get(j).getReimbursementId()+oldImportList.get(j).getUserId()+"#"+dateToString(reList.get(i).getIssueTime()),list);
+					    	   				}
+					    	   			}
+					           		}
+					       		  for (Map.Entry<String, List<ReImportOld>> entry : resultMap.entrySet()) {
+					       			  	Date issueTime = java.sql.Date.valueOf(entry.getKey().split("#")[1]);
+					       			  	Map<String, Object> TReim = new HashMap<String, Object>();//报销信息
+					       			  	System.out.println("key= " + entry.getKey() + " and value= " + entry.getValue());
+					       	        	ReImport reImport = new ReImport();
+					       	            System.out.println(entry.getKey() + " ==> " + entry.getValue());
+					       	            List<ReImportOld> reImportOlds = entry.getValue();
+					       	            for (int k = 0; k < reImportOlds.size(); k++) {
+					       	            	String templateColName = reImportOlds.get(k).getTemplateColName();
+					       	            	String importAmount = reImportOlds.get(k).getImportAmount();
+					       					if(templateColName.equals("报销合计")) {
+					       						reImport.setTotalReim(importAmount);
+					       					}else {
+					    						TReim.put(templateColName,importAmount);
+					    					}
+					       					
+					    			    	if(TReim.size()>0) {
+					    			    		reImport.setSpecialInfo(JSON.toJSON(TReim).toString());;
+					    			    	}
+					    			    	reImport.setBatchNo(reImportOlds.get(0).getReimbursementId());
+					    			    	reImport.setCreateTime(new Date());
+					    			    	reImport.setIssueTime(issueTime);
+					    			    	reImport.setUserId(String.valueOf(reImportOlds.get(0).getUserId()));
+					    			    	reImport.setCompanyId(reImportOlds.get(0).getTemplateId());
+					       				}
+					       	            importList.add(reImport);
+					       	        }
+					           				
+					       		
+					        		int size = importList.size();
+					        		int index = 0;
+					        		int limit =3000;
+					        		List<ReImport> importList1 = new ArrayList<ReImport>();
+					        		while(true) {
+					        			if(index+limit>=size) {
+					        				importList1 = importList.subList(index, size);
+					        				reMapper.insertReimbursementImport(importList1);
+					        				break;
+					        			}else {
+					        				reMapper.insertReimbursementImport(importList.subList(index, index+limit));
+					        				index = index+limit;
+					        			}
+					        			
+					        		}
+				           	}
+		    			}
+		    			reMapper.addReCompanyId(companyId);
+		    			logger.info("报销信息迁移完成=========>>>>>>>");
+		    			return true;
+		    		}else {
+		           		logger.info("没有报销信息需要迁移=========>>>>>>>");
+		           		return true;
+		           	}
+		    	}
+		    	logger.info("报销信息迁移,公司id已存在迁移完成=========>>>>>>>");
+				return true;
+			} catch (Exception e) {
+				logger.error("公司:"+companyId+",报销信息迁移出错",e);
+				return false;
+			}
+	       	
+		}
 	  
-	  
+	       private static String dateToString(Date date) {
+	           SimpleDateFormat sformat = new SimpleDateFormat("yyyy-MM-dd");//日期格式
+	           String tiem = sformat.format(date);
+	           return tiem;
+	       }
+		@Override
+		public List<String> getNotNull() {
+			// TODO Auto-generated method stub
+			return reMapper.getNotNull();
+		}
 }
