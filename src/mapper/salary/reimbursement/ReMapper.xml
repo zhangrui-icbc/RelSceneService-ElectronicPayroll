@@ -47,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
     <!-- 删除日志 -->
     <delete id="delLog">
-    	DELETE FROM reimbursement_import WHERE batch_no = #{reId};
+    	DELETE FROM reimbursement_import_new WHERE batch_no = #{reId};
     </delete>
     <delete id="delLog1">
    	    DELETE FROM reimbursement WHERE id = #{reId};

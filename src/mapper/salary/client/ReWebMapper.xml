@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<!-- 查询工资信息 -->
 		<select id="getReInfo" resultType="com.icbc.rel.hefei.entity.salary.client.ReImportVO">
 			SELECT id,batch_no as batchNo,user_id as userId,issue_time as issueTime,total_reim as totalReim,special_info as specialInfo,create_time as createTime FROM 
-			reimbursement_import WHERE user_id =#{params.userId} and company_id =#{params.companyId} 
+			reimbursement_import_new WHERE user_id =#{params.userId} and company_id =#{params.companyId} 
 			<if test="params.startDate != null and  params.startDate != '' ">
 				and date_format(issue_time,'%Y-%m') &gt;= #{params.startDate}
 			</if>
@@ -50,7 +50,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 报销明细 -->
     <select id="getReDetail" resultType="com.icbc.rel.hefei.entity.salary.client.ReImportVO">
     	select  id,batch_no as batchNo,user_id as userId,issue_time as issueTime,total_reim as totalReim,
-		special_info as specialInfo,create_time as createTime 	from reimbursement_import  where id = #{params.id}     
+		special_info as specialInfo,create_time as createTime 	from reimbursement_import_new  where id = #{params.id}     
 	</select>
 <!--     <select id="getReDetail" resultType="com.icbc.rel.hefei.entity.salary.client.SalaryImportVO">
     	select  si.reimbursement_item_id as salaryItemId , si.reimbursement_id as salaryId, si.template_id as templateId  , si.template_col_name as templateColName, si.import_amount as importAmount , si.user_id as userId, si.col_index as colIndex, si.category as category 
