@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -232,7 +233,7 @@ public class ReServiceImpl implements ReService {
 				String 	batchNo = UUIDUtils.getGuid();
 				String companyId = templateList.get(0).getCompanyId();
 			    for(int i = 1;i< data.size();i++){
-					Map<String, Object> TReim = new HashMap<String, Object>();//报销信息
+					Map<String, Object> TReim = new LinkedHashMap<String, Object>();//报销信息
 					ReImport oaReImport =new  ReImport();
 					String mbl = data.get(i)[0];
 			    	ErrorInfo eInfo  = new  ErrorInfo();

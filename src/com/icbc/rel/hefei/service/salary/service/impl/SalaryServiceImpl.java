@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -320,10 +321,10 @@ public class SalaryServiceImpl implements SalaryService {
 			for(int i = 1;i< data.size();i++){
 				String specialInfoJson =""; 
 				Map<String, Object> specialInfoMap = new HashMap<String, Object>();
-				Map<String, Object> TRevenue = new HashMap<String, Object>();//收入合计
-				Map<String, Object> TExpenditure = new HashMap<String, Object>();//支出合计
-				Map<String, Object> SDeduction = new HashMap<String, Object>();//专项扣除
-				Map<String, Object> UExpenditure = new HashMap<String, Object>();//单位支出
+				Map<String, Object> TRevenue = new LinkedHashMap<String, Object>();//收入合计
+				Map<String, Object> TExpenditure = new LinkedHashMap<String, Object>();//支出合计
+				Map<String, Object> SDeduction = new LinkedHashMap<String, Object>();//专项扣除
+				Map<String, Object> UExpenditure = new LinkedHashMap<String, Object>();//单位支出
 				SalaryImport oaSalaryImport =new  SalaryImport();
 				ErrorInfo eInfo  = new  ErrorInfo();
 				String mbl = data.get(i)[0];
@@ -710,7 +711,7 @@ public class SalaryServiceImpl implements SalaryService {
 				cell.setCellValue(salaryCommonTemplate.get(i).getName());
 			}
 			HSSFCell cell0 = headRow1.createCell(0);
-			cell0.setCellValue(Long.valueOf("18088880000"));
+			cell0.setCellValue(Long.valueOf("18888888001"));
 			HSSFCell cell1 = headRow1.createCell(1);
 			cell1.setCellValue(20010101);
 			//设置标题
