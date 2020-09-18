@@ -967,6 +967,7 @@ $(".pwd_up").click(function(){
 	  });
 })
 	$(".alternative").on("click","span",function(){
+		var category = $(this). attr("data-category");
 		var id = $(this).attr("data-id");
 		var category = $(this).attr("data-category");
 		var type = $(this).attr("data-type");
@@ -974,9 +975,40 @@ $(".pwd_up").click(function(){
 		if($(this).hasClass("act")){
 		   return false;
 		}
-		if(addLabel(id,category,type,name)){                  //添加，并要把标签库里相应的标签设置为已选择
-			   $(this).addClass("act");
+		var data_cate = $(".DIY span")
+		console.log(data_cate);
+		if(category == "4"){
+			for(var i=0; i<data_cate.length; i++){
+				var DIY_span = data_cate[i];
+				if($(DIY_span).attr("data-category")=="44"){
+					if(addLabel(id,category,type,name)){//添加，并要把标签库里相应的标签设置为已选择
+						   $(this).addClass("act");
+						   return false;
+					}
+				}
+			}
+		}else if (category == "5"){
+			for(var i=0; i<data_cate.length; i++){
+				var DIY_span = data_cate[i];
+				if($(DIY_span).attr("data-category")=="55"){
+					if(addLabel(id,category,type,name)){//添加，并要把标签库里相应的标签设置为已选择
+						   $(this).addClass("act");
+						   return false;
+					}
+				}
+			}
+		}else if(category == "1"||category == "2"||category == "44"||category == "55"){
+			if(addLabel(id,category,type,name)){//添加，并要把标签库里相应的标签设置为已选择
+				   $(this).addClass("act");
+				   return false;
+			}
 		}
+		layerMsg("请勾选单位支出或专项附加扣除后再勾选该项!");
+		
+		
+//		if(addLabel(id,category,type,name)){//添加，并要把标签库里相应的标签设置为已选择
+//			   $(this).addClass("act");
+//		}
 	
 	});
 
