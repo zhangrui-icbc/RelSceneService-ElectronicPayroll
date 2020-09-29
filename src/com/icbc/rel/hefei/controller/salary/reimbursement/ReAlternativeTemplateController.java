@@ -48,6 +48,10 @@ public class ReAlternativeTemplateController {
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
     	}
+    	String name = reTemplateAlternative.getName();
+    	if(name.equals("报销合计")) {
+    		return AjaxResult.error("该字段已存在");
+    	}
     	reTemplateAlternative.setCompanyId(companyId);
     	reTemplateAlternative= reAlternativeService.addAlternative(reTemplateAlternative);
         if(reTemplateAlternative!=null) {

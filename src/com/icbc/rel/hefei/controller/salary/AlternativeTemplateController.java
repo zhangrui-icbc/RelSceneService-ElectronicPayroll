@@ -52,6 +52,10 @@ public class AlternativeTemplateController {
     	if(com.alibaba.druid.util.StringUtils.isEmpty(companyId)) {
     		return AjaxResult.error("请先保存参数配置信息！");
     	}
+    	String name = oaSalaryTemplateAlternative.getName();
+    	if(name.equals("实际收入")||name.equals("收入合计")||name.equals("支出合计")||name.equals("专项附加扣除")||name.equals("单位支出")||name.equals("备注")) {
+    		return AjaxResult.error("该字段已存在");
+    	}
     	oaSalaryTemplateAlternative.setCompanyId(companyId);
         oaSalaryTemplateAlternative= salaryAlternativeService.addAlternative(oaSalaryTemplateAlternative);
         if(oaSalaryTemplateAlternative!=null) {
