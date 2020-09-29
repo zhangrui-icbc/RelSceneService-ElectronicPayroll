@@ -131,7 +131,7 @@ eDate = (year.toString()+'-'+month.toString());
 var this_year=year.toString()+'-'+month.toString()
 		$(".three-btn").click(function(){
 			var date1 = new Date();
-			date1.setMonth(date1.getMonth()-3);
+			date1.setMonth(date1.getMonth()-2);
 			var year1=date1.getFullYear();
 			var month1=date1.getMonth()+1;
 			month1 =(month1<10 ? '0'+month1:month1);
@@ -143,7 +143,7 @@ var this_year=year.toString()+'-'+month.toString()
 		
 		$(".six-btn").click(function(){
 			var date1 = new Date();
-			date1.setMonth(date1.getMonth()-6);
+			date1.setMonth(date1.getMonth()-5);
 			var year1=date1.getFullYear();
 			var month1=date1.getMonth()+1;
 			month1 =(month1<10 ? '0'+month1:month1);
