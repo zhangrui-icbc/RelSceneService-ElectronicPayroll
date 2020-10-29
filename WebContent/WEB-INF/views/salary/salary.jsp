@@ -6,6 +6,9 @@
 <title>工资单管理</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../css/salary/page/font-awesome.min.css"/>
+<link rel="stylesheet" href="../css/salary/page/jquery.paginate.css"/>
+<link rel="stylesheet" href="../css/salary/page/jquery.yhhDataTable.css"/>
 <link rel="stylesheet" href="../css/layui/css/layui.css" media="all"/>
 <link rel="stylesheet" href="../css/common.css"  type="text/css"/> 
 <link rel="stylesheet" href="../css/order/ordercfg.css"  type="text/css"/> 
@@ -156,13 +159,15 @@
 		    	<button type="button" class="yg-download" style="background: #2fafe6;">员工信息模板下载</button>
 				<button class="sub" lay-event="uploadSta" id="sta_sub"><i class="layui-icon"></i>上传员工信息</button>
 			</div>
+<table id="menuTable" class="layui-table" lay-filter="menufilter" style="width:100%"></table>
 		</div>	
 		<div class="ygMsg" id="ygMsg">
 			<table id="ygMsg_tab" cellspacing="0">
-				
-				<thead><th style="width: 25%;">部门</th><th style="width: 25%;">姓名</th><th style="width: 25%;">手机号</th><th style="width: 25%;">操作</th></thead>
+				<thead><th style="width: 25%;background-color: #009688;">部门</th><th style="width: 25%;background-color: #009688;">姓名</th><th style="width: 25%;background-color: #009688;">手机号</th><th style="width: 25%;background-color: #009688;">操作</th></thead>
 				<tbody id="ygMsg_tbody"></tbody>
 			</table>
+			
+			
 		</div>
 	</div>
 		</div>
@@ -176,6 +181,9 @@
 <script src="../css/layui/layui.js"></script>
 <script src="../js/salary/salary/salary.js"></script>
 <script src="../js/salary/salary/zdy.js"></script>
+<!-- <script src="../js/salary/salary/test.js"></script> -->
+<script src="../js/salary/page/jquery.paginate.js"></script>
+<script src="../js/salary/page/jquery.yhhDataTable.js"></script>
 <script>
 var flag=1;
 var paraInfo=111;
@@ -187,6 +195,8 @@ layui.use(['element','laydate','table','form','upload'],function(){
 	var table = layui.table;
 	var form=layui.form;
 	var upload=layui.upload;
+	var laypage = layui.laypage
+	  ,layer = layui.layer;
 	//员工信息上传
  	upload.render({
 		elem:"#sta_sub",
@@ -317,5 +327,6 @@ else {
 } 
 
 </script>
+<%-- <%@ include file="../Pager.jsp" %> --%>
 </body>
 </html>

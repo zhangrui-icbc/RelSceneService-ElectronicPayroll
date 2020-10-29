@@ -42,21 +42,54 @@
               //	layerMsg("员工信息获取失败!")
               },
               success:function(res){
-                 var data=res.data;
+                 var data=res;
                  if(data==null&&res.code=='500'){
 //              	   layerMsg(res.msg); 
                  }else{
-              	   //将数据显示在页面上
-              	   var btnHtml="<span class='change-btn' onclick='Edit(this)'>编辑</span> | <span class='delEmploy-btn' onclick='delStaff(this)'>删除</span> | <span class='initialPwd-btn' onclick='updatePwd(this)'>初始化密码</span>"
-              	   //遍历数据
-              	   var str="";
-              	   for(var i in data){
-              		   var dataList=data[i];
-              		   var _num=Number(i)+1;
-              		   str += "<tr><td class='hid'>"+data[i].id+"</td><td class='dept'>"+ifnul(data[i].dept)+"</td><td class='yg-name'>"+data[i].name+"</td><td class=''>"+data[i].mobile+"</td><td class='action-btns'>"+btnHtml+"</td>";
-              	   }
-              	   $('#ygMsg_tbody').html(str);
-              	   
+                	 $('.data-table-top-box').remove();
+                	 $('.data-table-bottom-box').remove();
+                	   var btnHtml="<span class='change-btn' onclick='Edit(this)'>编辑</span> | <span class='delEmploy-btn' onclick='delStaff(this)'>删除</span> | <span class='initialPwd-btn' onclick='updatePwd(this)'>初始化密码</span>"
+                		$('#ygMsg_tab').yhhDataTable({
+                			'paginate':{
+                				'changeDisplayLen':true,
+                				'type':'updown',
+                				'visibleGo': true
+                			},
+                			'tbodyRow':{
+                				'zebra':true,
+                				'write':function(d){
+                					return "<tr><td class='hid'>"+d.id+"</td><td class='dept'>"+ifnul(d.dept)+"</td><td class='yg-name'>"+d.name+"</td><td class=''>"+d.mobile+"</td><td class='action-btns'>"+btnHtml+"</td>";
+                				}
+                			},
+                			'tbodyData':{
+                				'enabled':true,  /*是否传入表格数据*/
+                				'source':data /*传入的表格数据*/
+                			},
+                			'backDataHandle':function(d){
+                				if (d.code == 0){
+                					return d.data;
+                				} else {
+                					alert('出错信息');
+                					return [];
+                				}
+                			}
+                		});
+                	 
+                	 
+                	 
+                	 
+                	 
+//              	   //将数据显示在页面上
+//              	   var btnHtml="<span class='change-btn' onclick='Edit(this)'>编辑</span> | <span class='delEmploy-btn' onclick='delStaff(this)'>删除</span> | <span class='initialPwd-btn' onclick='updatePwd(this)'>初始化密码</span>"
+//              	   //遍历数据
+//              	   var str="";
+//              	   for(var i in data){
+//              		   var dataList=data[i];
+//              		   var _num=Number(i)+1;
+//              		   str += "<tr><td class='hid'>"+data[i].id+"</td><td class='dept'>"+ifnul(data[i].dept)+"</td><td class='yg-name'>"+data[i].name+"</td><td class=''>"+data[i].mobile+"</td><td class='action-btns'>"+btnHtml+"</td>";
+//              	   }
+//              	   $('#ygMsg_tbody').html(str);
+//              	   
                  }
       		}
       	})
@@ -1142,6 +1175,8 @@ function layerMsg(msg){
 //根据手机号查询员工信息
 $("#ygMsg-detail").click(function(){
 	var mobile=$(".mobile-input").val();
+	$("#ygMsg_tbody").remove();
+	$("#ygMsg_tab").append("<tbody id='ygMsg_tbody'></tbody>");
 	$.ajax({
 	    url : ctx+"/mp/salary/getAllStaff",// 获取自己系统后台用户信息接口
 	    type : "get",
@@ -1149,8 +1184,10 @@ $("#ygMsg-detail").click(function(){
 	    contentType:"application/json",
 	    dataType: "json",
 	    data:{"mobile":mobile},
-	    success : function(res) {
-            var data=res.data;
+	    success : function(data) {
+       	 $('.data-table-top-box').remove();
+    	 $('.data-table-bottom-box').remove();
+            var data=data.data;
  	    	//将数据显示在页面上
  	    	var btnHtml="<span class='change-btn' onclick='Edit(this)'>编辑</span>|<span class='delEmploy-btn' onclick='delStaff(this)'>删除</span>|<span class='initialPwd-btn'  onclick='updatePwd(this)'>初始化密码</span>"
  	     	//遍历数据
