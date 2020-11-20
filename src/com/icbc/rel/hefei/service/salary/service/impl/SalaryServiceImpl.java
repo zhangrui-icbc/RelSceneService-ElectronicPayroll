@@ -363,6 +363,18 @@ public class SalaryServiceImpl implements SalaryService {
 					if(!data.get(0)[colIndex].equals("备注")&&StringUtils.isEmpty(value)) {
 						value="0";
 					}
+					
+					//判断两位小数
+					if(!data.get(0)[colIndex].equals("备注")) {
+						try {
+							checkData(value);
+						} catch (Exception e) {
+							logger.info("第"+(i+1)+"行数据:"+value+"长度校验异常:"+e.getMessage(),e);
+							return AjaxResult.error("第"+(i+1)+"行数据:"+value+"数据格式不正确!");
+						}
+					}
+					
+					
 					// TODO 加判断次数限制?
 					if(data.get(0)[colIndex].equals("实际收入")) {
 						oaSalaryImport.setRealIncome(value);
@@ -426,6 +438,25 @@ public class SalaryServiceImpl implements SalaryService {
 	 		return AjaxResult.warn("本次上传成功"+rightRowsCount+"条记录。",resultMap);
 	    }
 	    /**
+	     * 校验数据是否是两位小数
+	     * @param value
+	     * @throws Exception 
+	     */
+	    private static void checkData(String value) throws Exception {
+			// TODO Auto-generated method stub
+	    	String[] arr = value.split("\\.");
+	    	if(arr.length>1) {
+		    	int length = arr[1].length();
+		    	if(length>2) {
+		    		throw new Exception("数据不是两位小数!");
+		    	}	
+	    	}
+
+			
+		}
+
+
+		/**
 	     * 获取字段分组
 	     * @param companyId
 	     * @param name
@@ -913,6 +944,10 @@ public class SalaryServiceImpl implements SalaryService {
 		return salaryMapper.getStaffInfo(companyId,mobile);
 	}
 
+	@Override
+	public List<SalaryStaff> getStaffInfo( String companyId,String mobile, int pageNum, int limit) {
+		return salaryMapper.getStaffInfoLimit(companyId,mobile, pageNum, limit);
+	}
 	@Override
 	public List<Salary> getUpLoadLog(Map<String, Object> paramsMap) {
 		return salaryMapper.getUpLoadLog(paramsMap);
